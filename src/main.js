@@ -6,7 +6,6 @@ import './plugins/element.js'
 import './assets/CSS/global.css'
 import axios from 'axios'
 import '../vue.config'
-
 axios.defaults.baseURL = 'http://timemeetyou.com:8889/api/private/v1/'
 Vue.prototype.$http = axios
 Vue.config.productionTip = false

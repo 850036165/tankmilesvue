@@ -27,7 +27,6 @@
           <el-link type="success" class="el-icon-message" :underline="false">联系我们</el-link>
         </div>
       </el-form>
-
     </div>
   </div>
 </template>
