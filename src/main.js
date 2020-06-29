@@ -6,12 +6,16 @@ import './plugins/element.js'
 import './assets/CSS/global.css'
 import axios from 'axios'
 import '../vue.config'
-axios.defaults.baseURL = 'http://timemeetyou.com:8889/api/private/v1/'
+import i18n from './I18n/i18n'
+import '../src/assets/Iconfont/iconfont.css'
+
+axios.defaults.baseURL = 'http://125.72.105.218:59090'
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
