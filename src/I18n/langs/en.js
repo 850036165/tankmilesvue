@@ -19,6 +19,11 @@ const en = {
     alert5: 'Welcome Back!',
     alert6: 'Check Username&Password'
   },
+  home: {},
+  table: {
+    selectAll: 'Select All',
+    searchOoo: 'Search...'
+  },
   ...enLocale
 }
 

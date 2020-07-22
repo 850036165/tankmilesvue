@@ -3,7 +3,9 @@
     <!--    语言切换-->
     <div class="switchLang">
       <el-dropdown trigger="click" @command="handleCommand" size="mini">
-        <span class="iconfont icon-fanyix"></span>
+        <svg class="iconchange" aria-hidden="true">
+          <use xlink:href="#icon-fanyix"></use>
+        </svg>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="cn">中文</el-dropdown-item>
           <el-dropdown-item command="en">English</el-dropdown-item>
@@ -11,14 +13,14 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-<!--    轮播组件-->
-    <el-carousel :interval=5000  class="el-carousel" :height="carouselHeight+'px'" >
+    <!--    轮播组件-->
+    <el-carousel :interval=5000 id="el-carousel" :height="carouselHeight+'px'">
       <el-carousel-item v-for="(item,index) in imageBox" :key="index">
         <img :src="item.path" alt="未加载" :width="carouselHeight*2+'px'" :height="carouselHeight+'px'">
       </el-carousel-item>
     </el-carousel>
     <!--    登录块-->
-    <div class="login_box" >
+    <div id="login_box">
       <div class="login_logo">
         <img src="../assets/Image/Login_logo.png" alt="未加载"/>
         <p class="text_left">{{$t('login.welcome')}}</p>
@@ -26,12 +28,12 @@
       <el-form :model="loginForm" ref="loginFormRef" :rules="loginFormRules" class="form_group" hide-required-asterisk>
         <!--<label>用户名</label>-->
         <el-form-item class="form_input" prop="name"><!--用户名-->
-          <el-input v-model="loginForm.name" prefix-icon="el-icon-user"
+          <el-input id="input1" v-model="loginForm.name" prefix-icon="el-icon-user"
                     :placeholder="$t('login.username')"></el-input>
         </el-form-item>
         <!--<label>密码</label>-->
         <el-form-item class="form_input" prop="password"><!--密码-->
-          <el-input type="password" v-model="loginForm.password" prefix-icon="el-icon-lock"
+          <el-input id="input" type="password" v-model="loginForm.password" prefix-icon="el-icon-lock"
                     :placeholder="$t('login.password')"></el-input>
         </el-form-item>
         <el-checkbox class="form_checkbox">{{$t('login.remember')}}</el-checkbox><!--记住密码-->
@@ -51,7 +53,7 @@
           <el-link type="info" class="el-icon-message" :underline="false">|{{$t('login.contact')}}</el-link>
         </div>
       </el-form>
-      <p class="bottom_text">Copyright ©Tankmiles</p>
+      <span class="bottom_text">Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.</span>
     </div>
   </div>
 </template>
@@ -113,27 +115,39 @@ export default {
           this.loadingStatus = false
           return
         }
-        const { data: res } = await this.$http.post('/user/login', this.loginForm)
-        // console.log(res)
-        if (res.code !== 0) {
+        // start
+        await this.$http.post('/user/login', this.loginForm).then(async (response) => {
+          // console.log(response.data.code)
+          if (response.data.code !== 0) {
+            this.$notify({
+              title: `${this.$t('login.alert3')}`,
+              message: `${this.$t('login.alert6')}`,
+              type: 'warning'
+            })
+            this.loadingText1.loadingText = `${this.$t('login.login')}`
+            this.loadingStatus = false
+          } else {
+            // this.$notify({
+            //   title: `${this.$t('login.alert4')}`,
+            //   message: `${this.loginForm.name}!${this.$t('login.alert5')}`,
+            //   type: 'success'
+            // })
+            this.loadingText1.loadingText = `${this.$t('login.login')}`
+            this.loadingStatus = false
+            window.sessionStorage.setItem('token', response.data.message)
+            await this.$router.push('/home')
+          }
+          // end
+        }).catch((error) => {
           this.$notify({
             title: `${this.$t('login.alert3')}`,
-            message: `${this.$t('login.alert6')}`,
+            message: `${error}!`,
             type: 'error'
           })
           this.loadingText1.loadingText = `${this.$t('login.login')}`
           this.loadingStatus = false
-        } else {
-          this.loadingText1.loadingText = `${this.$t('login.login')}`
-          this.loadingStatus = false
-          window.sessionStorage.setItem('token', res.message)
-          await this.$router.push('/home')
-          this.$notify({
-            title: `${this.$t('login.alert4')}`,
-            message: `${this.loginForm.name}!${this.$t('login.alert5')}`,
-            type: 'success'
-          })
-        }
+          console.log(error)
+        })
       })
     },
     // 切换语言
@@ -145,7 +159,6 @@ export default {
 
   },
   mounted () {
-    // const that = this
     window.onresize = () => {
       return (() => {
         this.carouselHeight = window.innerHeight
@@ -158,18 +171,19 @@ export default {
 
 </script>
 
-<style lang="less">
+<style  lang="less">
   .login_container {
     background-size: 100% 100%;
     background: #6c6e6f no-repeat;
     height: 100%;
   }
 
-  .login_box {
+#login_box {
     width: 37.5%;
     height: 100%;
-    background: rgb(0, 9, 23);
-    border-radius: 0px;
+    background-image: linear-gradient(141deg, #202020 0%, #242A4F 51%, #2d3463 75%);
+    //background: #202020;
+    border-radius: 1px;
     position: absolute;
     right: 0;
     top: 50%;
@@ -181,6 +195,7 @@ export default {
       top: 10%;
       //transform: translate(-50%, 100%);
       margin-bottom: 0;
+      -webkit-user-select: none;
 
       img {
         width: 180px;
@@ -194,6 +209,7 @@ export default {
         font-size: 20px;
         color: #ffffff;
         margin: 15px;
+        font-family: "Helvetica Neue", sans-serif;
       }
     }
 
@@ -207,7 +223,7 @@ export default {
       box-sizing: border-box;
     }
   }
-
+/*只显示下边框*/
   .form_input .el-input__inner {
     border-radius: 0;
     //border: none;
@@ -226,16 +242,16 @@ export default {
     padding: 0 15px 22px 0;
   }
 
-  .form_input .el-form-item__label {
-    color: black;
-    padding: 0 0 0 0 !important;
-  }
+  /*.form_input .el-form-item__label {*/
+  /*  color: black;*/
+  /*  padding: 0 0 0 0 !important;*/
+  /*}*/
 
   .form_button {
     left: 50%;
     width: 300px;
-    // display: flex;
-    justify-content: center;
+    display: flex;
+    justify-content: space-between;
 
     .form_login {
       width: 120px;
@@ -243,12 +259,14 @@ export default {
   }
 
   .form_link1 {
+    -webkit-user-select: none;
     position: absolute;
     bottom: -10px;
     margin: 15px 0 0 0;
   }
 
   .form_link2 {
+    -webkit-user-select: none;
     position: absolute;
     right: 0;
     bottom: -10px;
@@ -265,9 +283,12 @@ export default {
     cursor: pointer
   }
 
-  /*谷歌浏览器自动填充*/
-  input {
-    background-color: rgba(255, 255, 255, 0) !important;
+  /*去除谷歌浏览器自动填充*/
+  #input {
+    background-color: rgba(255, 255, 255, 0) ;
+  }
+  #input1 {
+    background-color: rgba(255, 255, 255, 0) ;
   }
 
   input:-webkit-autofill {
@@ -278,34 +299,22 @@ export default {
   input:-webkit-autofill:focus {
     -webkit-text-fill-color: #ffffff !important;
   }
-
-  .el-carousel__item h3 {
-    color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 150px;
-    margin: 0;
-  }
-
-  .el-carousel__item:nth-child(2n) {
-    background-color: #99a9bf;
-  }
-
-  .el-carousel__item:nth-child(2n+1) {
-    background-color: #d3dce6;
-  }
-
+/*底部字体*/
   .bottom_text {
-    font-size: 12px;
+    -webkit-user-select: none;
+    font-weight: lighter;
+    font-size: 10px;
     position: absolute;
     bottom: 0;
     margin: 3px;
     color: #6c6e6f;
     left: 50%;
     transform: translate(-50%);
+    font-family: "Helvetica Neue", sans-serif;
   }
-
-  .el-carousel {
-width: 62.5%;
+/*轮播宽度*/
+  #el-carousel {
+    width: 62.5%;
+    -webkit-user-select: none;
   }
 </style>

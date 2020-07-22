@@ -1,6 +1,70 @@
 /*全局样式表*/
-html,body,#app{
+html, body, #app {
     height: 100%;
     margin: 0;
     padding: 0;
 }
+
+.iconchange {
+    width: 30px;
+    height: 30px;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.icon {
+    width: 2em;
+    height: 2em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+    margin: 0 5px 0 0;
+}
+
+.your-table .el-table__body-wrapper::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+.your-table .el-table__body-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(161, 163, 169, 0.12);
+    border-radius: 1px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    /*height: 11px;*/
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(161, 163, 169, 0.78);
+}
+
+.el-breadcrumb {
+    margin-bottom: 15px;
+    font-size: 12px;
+}
+
+.el-card {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+.el-table {
+    font-size: 12px;
+}
+
+.enterButton {
+    outline:none;
+    cursor: pointer;
+    color: white;
+    background: grey;
+    border-radius: 3px;
+    border: 1px ;
+}
+
+.enterButton:hover {
+    background: #2F74EB;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+}
+

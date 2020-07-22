@@ -20,6 +20,13 @@ const cn = {
     alert6: '账号或密码错误!'
 
   },
+  home: {
+
+  },
+  table: {
+    selectAll: '全选',
+    searchOoo: '搜索...'
+  },
   ...zhLocale
 }
 

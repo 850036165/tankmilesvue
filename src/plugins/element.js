@@ -1,6 +1,53 @@
 import Vue from 'vue'
-import { Button, Form, FormItem, Input, Checkbox, Notification, Link, Select, Option, Dropdown, DropdownItem, DropdownMenu, Popover, Carousel, CarouselItem } from 'element-ui'
-
+import {
+  Button,
+  Form,
+  FormItem,
+  Input,
+  Checkbox,
+  Notification,
+  Link,
+  Select,
+  Option,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  Popover,
+  Carousel,
+  CarouselItem,
+  Row,
+  Col,
+  Container,
+  Header,
+  Main,
+  Aside,
+  Footer,
+  Avatar,
+  Divider,
+  Table,
+  TableColumn,
+  Menu,
+  MenuItem,
+  Submenu,
+  MenuItemGroup,
+  Image,
+  Dialog,
+  Breadcrumb,
+  BreadcrumbItem,
+  Card,
+  PageHeader,
+  Drawer,
+  Loading,
+  Pagination,
+  Tabs,
+  TabPane,
+  DatePicker,
+  TimePicker,
+  Switch,
+  Radio,
+  RadioGroup, CheckboxGroup, Tooltip, Cascader, RadioButton, Message, MessageBox, InputNumber
+} from 'element-ui'
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
 Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)
@@ -15,4 +62,44 @@ Vue.use(Dropdown)
 Vue.use(Popover)
 Vue.use(CarouselItem)
 Vue.use(Carousel)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Container)
+Vue.use(Header)
+Vue.use(Main)
+Vue.use(Aside)
+Vue.use(Footer)
+Vue.use(Avatar)
+Vue.use(Divider)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Menu)
+Vue.use(MenuItem)
+Vue.use(Submenu)
+Vue.use(MenuItemGroup)
+Vue.use(Image)
+Vue.use(Dialog)
+Vue.use(Breadcrumb)
+Vue.use(BreadcrumbItem)
+Vue.use(Card)
+Vue.use(PageHeader)
+Vue.use(Drawer)
+Vue.use(Loading)
+Vue.use(Pagination)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(DatePicker)
+Vue.use(TimePicker)
+Vue.use(Switch)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(Checkbox)
+Vue.use(CheckboxGroup)
+Vue.use(Tooltip)
+Vue.use(Cascader)
+Vue.use(RadioButton)
+Vue.use(InputNumber)
+Vue.prototype.$message = Message
 Vue.prototype.$notify = Notification
+Vue.prototype.$confirm = MessageBox.confirm
+Vue.component(CollapseTransition.name, CollapseTransition)
