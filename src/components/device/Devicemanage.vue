@@ -65,6 +65,7 @@ export default {
     return {
       inputValue: '',
       gridOptions: {
+        rowModelType: 'serverSide',
         defaultColDef: {
           resizable: true,
           filter: true,
@@ -163,9 +164,14 @@ export default {
     addDevices () {
       this.$router.push('/adddevices')
     },
-    onGridReady () {
+    onGridReady(params) {
       // 表格初始化后自适应
       this.gridOptions.api.sizeColumnsToFit()
+      // const updateData = data => {
+      //   var fakeServer = createFakeServer(data)
+      //   var datasource = createServerSideDatasource(fakeServer)
+      //   params.api.setServerSideDatasource(datasource)
+      // }
     },
     getRowData () {
       const rowData = [
