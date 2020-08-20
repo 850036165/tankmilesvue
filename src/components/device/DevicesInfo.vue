@@ -4,15 +4,19 @@
       <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>后台管理</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/devicemanage' }">设备管理</el-breadcrumb-item>
-      <el-breadcrumb-item>添加设备</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ this.$route.query.id }}</el-breadcrumb-item>
     </el-breadcrumb>
-    <h1>添加设备</h1>
     <el-card>
+      <div slot="header">
+        <h1 style="margin: 0;display: inline-block">设备详情</h1>
+        <el-button style="float: right;" type="primary" size="mini">编辑</el-button>
+      </div>
       <el-tabs active-name="first">
+        <!--        分页1-->
         <el-tab-pane label="基础信息" name="first">
           <div style="width: 50%;float: left;height: 375px">
-            <el-form status-icon label-width="100px" style="width: 400px" :model="addForm" size="medium"
-                     :rules="addRules" ref="ruleForm">
+            <el-form status-icon style="width: 400px" :model="addForm" size="medium" :rules="addRules" ref="ruleForm"
+                     disabled>
               <!--              选择设备类型-->
               <div>
                 <el-form-item label="设备类型:" label-width="100px" prop="deviceType">
@@ -23,7 +27,7 @@
                 </el-form-item>
               </div>
               <!--              选择项目-->
-              <el-form-item label="所属项目:">
+              <el-form-item label="所属项目:" label-width="100px">
                 <el-cascader
                   placeholder="请选择项目"
                   v-model="addForm.deviceProject"
@@ -35,28 +39,26 @@
                   clearable></el-cascader>
               </el-form-item>
               <!--              设备名称-->
-              <el-form-item label="设备名称:" prop="deviceName">
-                <el-input placeholder="5-20位" :maxlength="20" v-model="addForm.deviceName"></el-input>
+              <el-form-item label="设备名称:" label-width="100px" prop="deviceName">
+                <el-input placeholder="5-20位" :maxlength="20" v-model="this.$route.query.id"></el-input>
               </el-form-item>
               <!--              设备SN-->
-              <el-form-item label="DeviceSN:" prop="deviceSN">
+              <el-form-item label="DeviceSN:" label-width="100px" prop="deviceSN">
                 <el-input placeholder="12位数字" :maxlength="20" v-model.number="addForm.deviceSN"></el-input>
               </el-form-item>
               <!--              设备key-->
-              <el-form-item label="ProductKey:" prop="productKey">
+              <el-form-item label="ProductKey:" label-width="100px" prop="productKey">
                 <el-input placeholder="12位数字" :maxlength="20" v-model.number="addForm.productKey"></el-input>
               </el-form-item>
               <!--              备注-->
-              <el-form-item label="备注:">
+              <el-form-item label="备注:" label-width="100px">
                 <el-input
                   type="text"
                   placeholder="请输入内容"
                   v-model="addForm.deviceTxt"
                   :maxlength="30"
-                  show-word-limit
-                >
+                  show-word-limit>
                 </el-input>
-
               </el-form-item>
             </el-form>
           </div>
@@ -65,9 +67,9 @@
               <div slot="content">*部分为必填<br/>SN/ProductKey为数字<br/>监控参数至少选择一项</div>
               <i class="el-icon-warning-outline" style="font-size: 20px;float: right;margin: 10px;cursor: pointer"></i>
             </el-tooltip>
-            <el-form style="width: 300px" :model="addForm" size="medium" label-width="100px">
+            <el-form style="width: 300px" :model="addForm" size="medium" disabled>
               <!--              监控参数选择-->
-              <el-form-item label="监控参数:">
+              <el-form-item label="监控参数:" label-width="100px">
                 <el-checkbox-group :min="1" v-model="addForm.checkedFunction">
                   <el-checkbox label="deviceTemp" checked>设备温度</el-checkbox>
                   <el-checkbox label="level">液位</el-checkbox>
@@ -76,12 +78,12 @@
                 </el-checkbox-group>
               </el-form-item>
               <!--              激活开关选择-->
-              <el-form-item label="设备激活:">
+              <el-form-item label="设备激活:" label-width="100px">
                 <el-switch active-color="#13ce66"
                            inactive-color="#ff4949"
                            v-model="addForm.deviceState"></el-switch>
               </el-form-item>
-              <el-form-item label="设备日志:">
+              <el-form-item label="设备日志:" label-width="100px">
                 <el-switch
                   v-model="addForm.deviceLog"
                 ></el-switch>
@@ -98,25 +100,24 @@
                 <i class="el-icon-warning-outline" style="font-size: 20px;cursor: pointer"></i>
               </el-tooltip>
             </div>
-            <el-form style="width: 300px" size="small" :model="addForm" :rules="addRules" ref="ruleForm"
-                     label-width="150px">
-              <el-form-item label="休眠时间(s):" prop="restTime">
+            <el-form style="width: 300px" size="small" :model="addForm" :rules="addRules" ref="ruleForm" disabled>
+              <el-form-item label="休眠时间(s):" label-width="150px" prop="restTime">
                 <el-input-number :min="1" :max="99" v-model.number="addForm.restTime"></el-input-number>
               </el-form-item>
-              <el-form-item label="GPS周期(s):" prop="gpsTime">
+              <el-form-item label="GPS周期(s):" label-width="150px" prop="gpsTime">
                 <el-input-number :min="1" :max="99" v-model.number="addForm.gpsTime"></el-input-number>
               </el-form-item>
-              <el-form-item label="通讯基站周期(s):" prop="cellTime">
+              <el-form-item label="通讯基站周期(s):" label-width="150px" prop="cellTime">
                 <el-input-number :min="1" :max="99" v-model.number="addForm.cellTime"></el-input-number>
               </el-form-item>
-              <el-form-item label="最大工作时间(s):" prop="maxJobTime">
+              <el-form-item label="最大工作时间(s):" label-width="150px" prop="maxJobTime">
                 <el-input-number :min="1" :max="99" v-model.number="addForm.maxJobTime"></el-input-number>
               </el-form-item>
-              <el-form-item label="低液位报警(mm):" prop="minLevelAlert">
+              <el-form-item label="低液位报警(mm):" label-width="150px" prop="minLevelAlert">
                 <el-input-number controls-position="right" :min="1" :max="3000" :step="100"
                                  v-model.number="addForm.minLevelAlert"></el-input-number>
               </el-form-item>
-              <el-form-item label="高液位报警(mm):" prop="maxLevelAlert">
+              <el-form-item label="高液位报警(mm):" label-width="150px" prop="maxLevelAlert">
                 <el-input-number controls-position="right" :min="3001" :max="5000" :step="100"
                                  v-model.number="addForm.maxLevelAlert"></el-input-number>
               </el-form-item>
@@ -157,15 +158,11 @@
             </el-form>
           </div>
         </el-tab-pane>
-        <div style="width: 100%;float: left;">
-          <el-form style="display: flex;justify-content: flex-end" v-model="addForm">
-            <el-form-item>
-              <el-button type="primary" @click="addDevices">添加设备</el-button>
-              <el-button>取消返回</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
+        <!--        分页3-->
+        <el-tab-pane label="设备日志" name="third">
+        </el-tab-pane>
       </el-tabs>
+
     </el-card>
 
   </div>
@@ -173,23 +170,82 @@
 
 <script>
 export default {
-  beforeRouteLeave(to, from, next) {
-    if (this.changeStatus >= 2) {
-      setTimeout(() => {
-        this.$confirm('检测到未保存的信息，是否保存修改？', '确认信息', {
-          closeOnClickModal: false,
-          confirmButtonText: '确认离开',
-          cancelButtonText: '留在此页',
-          type: 'warning'
-        }).then(() => {
-          next(true)
-        }).catch(() => {
-            next(false)
-          }
-        )
-      }, 100)
-    } else {
-      next(true)
+  name: 'DevicesInfo',
+  data() {
+    return {
+      changeStatus: 0,
+      ruleForm: {
+        deviceName: '',
+        deviceType: '',
+        deviceSN: '',
+        restTime: '',
+        gpsTime: '',
+        cellTime: '',
+        maxJobTime: '',
+        minLevelAlert: '',
+        maxLevelAlert: ''
+      },
+      props: {
+        checkStrictly: true,
+        multiple: true,
+        value: 'value',
+        label: 'label',
+        children: 'children'
+      },
+      options: [
+        {
+          value: 1,
+          label: '万华',
+          children:
+            [{value: 2, label: '万华烟台'},
+              {
+                value: 3,
+                label: '万华宁波',
+                children: [
+                  {value: 7, label: '万华宁波子用户1'},
+                  {value: 8, label: '万华宁波子用户2'},
+                  {value: 9, label: '万华宁波子用户3'},
+                  {value: 10, label: '万华宁波子用户4'},
+                  {value: 11, label: '万华宁波子用户5'}
+                ]
+              }]
+        },
+        {
+          value: 4,
+          label: 'exsif',
+          children:
+            [{value: 5, label: 'exsif国内'},
+              {value: 6, label: 'exsif国外'}]
+        }
+      ],
+      addForm: {
+        deviceType: '',
+        deviceSN: '',
+        deviceName: '',
+        productKey: '',
+        deviceState: true,
+        deviceProject: '',
+        deviceTxt: '',
+        deviceLog: true,
+        checkedFunction: [],
+        restTime: 5,
+        gpsTime: 10,
+        cellTime: 15,
+        maxJobTime: 99,
+        minLevelAlert: 2000,
+        maxLevelAlert: 3000,
+        pressureUnit: 2,
+        temperatureUnit: 1,
+        levelUnit: 1,
+        screenOn: 1
+      },
+      typeList: [
+        {value: 1, label: 'tanktrac'},
+        {value: 2, label: 'smartflank'},
+        {value: 3, label: 'fleettrac'},
+        {value: 4, label: 'cargotrac'},
+        {value: 5, label: 'heatingsystem'}
+      ]
     }
   },
   computed: {
@@ -233,85 +289,39 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      changeStatus: 0,
-      ruleForm: {
-        deviceName: '',
-        deviceType: '',
-        deviceSN: '',
-        restTime: '',
-        gpsTime: '',
-        cellTime: '',
-        maxJobTime: '',
-        minLevelAlert: '',
-        maxLevelAlert: ''
+  watch: {
+    addForm: {
+      handler(val) {
+        this.watchChange()
       },
-      props: {
-        checkStrictly: true,
-        multiple: true,
-        value: 'value',
-        label: 'label',
-        children: 'children'
-      },
-      options: [
-        {
-          value: 1,
-          label: '万华',
-          children:
-              [{ value: 2, label: '万华烟台' },
-                {
-                  value: 3,
-                  label: '万华宁波',
-                  children: [
-                    { value: 7, label: '万华宁波子用户1' },
-                    { value: 8, label: '万华宁波子用户2' },
-                    { value: 9, label: '万华宁波子用户3' },
-                    { value: 10, label: '万华宁波子用户4' },
-                    { value: 11, label: '万华宁波子用户5' }
-                  ]
-                }]
-        },
-        {
-          value: 4,
-          label: 'exsif',
-          children:
-              [{ value: 5, label: 'exsif国内' },
-                { value: 6, label: 'exsif国外' }]
-        }
-      ],
-      addForm: {
-        deviceType: '',
-        deviceSN: '',
-        deviceName: '',
-        productKey: '',
-        deviceState: true,
-        deviceProject: '',
-        deviceTxt: '',
-        deviceLog: true,
-        checkedFunction: [],
-        restTime: 5,
-        gpsTime: 10,
-        cellTime: 15,
-        maxJobTime: 99,
-        minLevelAlert: 2000,
-        maxLevelAlert: 3000,
-        pressureUnit: 2,
-        temperatureUnit: 1,
-        levelUnit: 1,
-        screenOn: 1
-      },
-      typeList: [
-        { value: 1, label: 'tanktrac' },
-        { value: 2, label: 'smartflank' },
-        { value: 3, label: 'fleettrac' },
-        { value: 4, label: 'cargotrac' },
-        { value: 5, label: 'heatingsystem' }
-      ]
+      deep: true
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.changeStatus >= 2) {
+      setTimeout(() => {
+        this.$confirm('检测到未保存的信息，是否保存修改？', '确认信息', {
+          closeOnClickModal: false,
+          confirmButtonText: '确认离开',
+          cancelButtonText: '留在此页',
+          type: 'warning'
+        }).then(() => {
+          next(true)
+        }).catch(() => {
+            next(false)
+          }
+        )
+      }, 100)
+    } else {
+      next(true)
     }
   },
   methods: {
-    addDevices () {
+    watchChange() {
+      this.changeStatus = this.changeStatus + 1
+      console.log(this.changeStatus)
+    },
+    addDevices() {
       this.$refs.ruleForm.validate((valid) => {
         if (!valid) {
           this.$message.error({
@@ -324,19 +334,6 @@ export default {
           return false
         }
       })
-    },
-    watchChange() {
-      this.changeStatus = this.changeStatus + 1
-      console.log(this.changeStatus)
-    }
-  },
-  name: 'AddDevices',
-  watch: {
-    addForm: {
-      handler(val) {
-        this.watchChange()
-      },
-      deep: true
     }
   }
 }

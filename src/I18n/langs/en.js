@@ -1,4 +1,5 @@
 import enLocale from 'element-ui/lib/locale/lang/en'
+import enUS from 'vxe-table/lib/locale/lang/en-US'
 const en = {
   login: {
     welcome: 'Sign In To Continue To Tankmiles',
@@ -24,7 +25,8 @@ const en = {
     selectAll: 'Select All',
     searchOoo: 'Search...'
   },
-  ...enLocale
+  ...enLocale,
+  ...enUS
 }
 
 export default en

@@ -16,7 +16,8 @@
     <!--    轮播组件-->
     <el-carousel :interval=5000 id="el-carousel" :height="carouselHeight+'px'">
       <el-carousel-item v-for="(item,index) in imageBox" :key="index">
-        <img :src="item.path" alt="未加载" :width="carouselHeight*2+'px'" :height="carouselHeight+'px'">
+        <img :src="item.path" alt="未加载" :width="carouselHeight*2+'px'" :height="carouselHeight+'px'"
+             style="object-fit: cover;">
       </el-carousel-item>
     </el-carousel>
     <!--    登录块-->
@@ -159,6 +160,7 @@ export default {
 
   },
   mounted () {
+    this.carouselHeight = window.innerHeight
     window.onresize = () => {
       return (() => {
         this.carouselHeight = window.innerHeight

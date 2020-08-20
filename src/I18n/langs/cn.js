@@ -1,4 +1,5 @@
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import zhCN from 'vxe-table/lib/locale/lang/zh-CN'
 const cn = {
   login: {
     welcome: '欢迎使用罐程平台',
@@ -20,14 +21,13 @@ const cn = {
     alert6: '账号或密码错误!'
 
   },
-  home: {
-
-  },
+  home: {},
   table: {
     selectAll: '全选',
     searchOoo: '搜索...'
   },
-  ...zhLocale
+  ...zhLocale,
+  ...zhCN
 }
 
 export default cn

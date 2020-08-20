@@ -45,7 +45,7 @@ import {
   TimePicker,
   Switch,
   Radio,
-  RadioGroup, CheckboxGroup, Tooltip, Cascader, RadioButton, Message, MessageBox, InputNumber
+  RadioGroup, CheckboxGroup, Tooltip, Cascader, RadioButton, Message, MessageBox, InputNumber, Badge, Tag, Upload
 } from 'element-ui'
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
 Vue.use(Button)
@@ -99,6 +99,10 @@ Vue.use(Tooltip)
 Vue.use(Cascader)
 Vue.use(RadioButton)
 Vue.use(InputNumber)
+Vue.use(Badge)
+Vue.use(Tag)
+Vue.use(Upload)
+Vue.use(Card)
 Vue.prototype.$message = Message
 Vue.prototype.$notify = Notification
 Vue.prototype.$confirm = MessageBox.confirm

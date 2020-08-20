@@ -1,8 +1,8 @@
 <template>
   <el-container class="home_container">
     <!--    侧边栏-->
-<!--    <el-aside :width="isCollapse?'64px':'208px'">-->
-      <el-aside :class="isCollapse?classa:classb">
+    <!--    <el-aside :width="isCollapse?'64px':'208px'">-->
+    <el-aside :class="isCollapse?classa:classb">
       <!--侧边菜单-->
       <el-menu
         :collapse-transition="false"
@@ -25,19 +25,47 @@
           ></el-image>
           <i v-show="isCollapse" class="el-icon-cpu" style="font-size: 35px;color: white"></i>
         </div>
+        <!--        首页看板一级菜单-->
         <el-menu-item index="/dashboard">
           <i class="el-icon-odometer" style="font-size: 25px"></i>
-          <span slot="title" style="padding: 0 20px 0 40px">首页看板</span>
+          <span slot="title" style="padding: 0 20px 0 30px">首页看板</span>
         </el-menu-item>
-        <!--        一级菜单-->
+        <!--        项目管理一级菜单-->
+        <el-menu-item index="/projectmanage">
+          <i class="el-icon-document" style="font-size: 25px"></i>
+          <span slot="title" style="padding: 0 20px 0 30px">项目管理</span>
+        </el-menu-item>
+        <!--        罐箱列表一级菜单-->
+        <el-menu-item index="/tanklist">
+          <i class="el-icon-s-marketing" style="font-size: 25px"></i>
+          <span slot="title" style="padding: 0 20px 0 30px">罐箱列表</span>
+        </el-menu-item>
+        <!--        监控设置一级菜单-->
+        <el-submenu index="/w">
+          <template slot="title">
+            <i class="el-icon-alarm-clock" style="font-size: 25px"></i>
+            <span style="padding: 0 20px 0 30px">监控设置</span>
+          </template>
+          <!--          监控二级菜单-->
+          <el-menu-item index="/devicemanage">
+            <i class="el-icon-notebook-2"></i><span style="padding: 0 20px 0 20px">监控列表</span>
+          </el-menu-item>
+          <el-menu-item index="/firmwaremanage">
+            <i class="el-icon-location-information"></i><span style="padding: 0 20px 0 20px">关注点设置</span>
+          </el-menu-item>
+        </el-submenu>
+        <!--        后台管理一级菜单-->
         <el-submenu index="/manage">
           <template slot="title">
             <i class="el-icon-set-up" style="font-size: 25px"></i>
-            <span style="padding: 0 20px 0 40px">后台管理</span>
+            <span style="padding: 0 20px 0 30px">后台管理</span>
           </template>
           <!--          二级菜单-->
           <el-menu-item index="/devicemanage">
-            <i class="el-icon-receiving"></i><span style="padding: 0 20px 0 40px">设备管理</span>
+            <i class="el-icon-receiving"></i><span style="padding: 0 20px 0 20px">设备管理</span>
+          </el-menu-item>
+          <el-menu-item index="/firmwaremanage">
+            <i class="el-icon-box"></i><span style="padding: 0 20px 0 20px">固件管理</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -50,7 +78,7 @@
     <el-container>
       <!--      页头-->
       <el-header class="home-header">
-<!--        顶部菜单栏-->
+        <!--        顶部菜单栏-->
         <!--        收起按钮-->
         <i :class="isCollapse?'el-icon-s-unfold open1':'el-icon-s-unfold close1'" @click="foldMenu"
            style="font-size: 25px;color: #2d3463;padding: 10px;cursor:pointer;display: inline-block;margin-right: auto;"></i>
@@ -68,11 +96,13 @@
           style="-webkit-user-select: none;">
           <!-- 消息-->
           <el-menu-item index="/message">
-            <i class="el-icon-message" style="color: #6c6e6f;font-size: 20px;"></i>
+            <i class="el-icon-message" style="color: #6c6e6f;font-size: 20px;margin: 0">
+              <el-badge :hidden="false" is-dot style="position: absolute"/>
+            </i>
           </el-menu-item>
           <!-- 基础设置-->
           <el-menu-item index="/basicsetting">
-            <i class="el-icon-s-tools" style="color: #6c6e6f;font-size: 20px;"></i>
+            <i class="el-icon-s-tools" style="color: #6c6e6f;font-size: 20px;margin: 0"></i>
           </el-menu-item>
         </el-menu>
         <!--                语言切换-->
@@ -81,21 +111,28 @@
             <p class="home_lang">{{currentLang}}</p>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="cn" style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;">
+            <el-dropdown-item command="cn"
+                              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;">
               <svg class="icon" aria-hidden="true">
-              <use xlink:href="#icon-weibiaoti-"></use>
-              </svg><span style="font-size: 15px;width: 10px">CN</span></el-dropdown-item>
-            <el-dropdown-item command="en" style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;">
+                <use xlink:href="#icon-weibiaoti-"></use>
+              </svg>
+              <span style="font-size: 15px;width: 10px">CN</span></el-dropdown-item>
+            <el-dropdown-item command="en"
+                              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-meiguoqi"></use>
-              </svg><span style="font-size: 15px;width: 10px">EN</span></el-dropdown-item>
-            <el-dropdown-item command="jp" style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;" disabled>
+              </svg>
+              <span style="font-size: 15px;width: 10px">EN</span></el-dropdown-item>
+            <el-dropdown-item command="jp"
+                              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;"
+                              disabled>
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-jp"></use>
-              </svg><span style="font-size: 15px;width: 10px">JP</span></el-dropdown-item>
+              </svg>
+              <span style="font-size: 15px;width: 10px">JP</span></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-<!--        个人信息菜单栏-->
+        <!--        个人信息菜单栏-->
         <el-menu
           :default-active="$route.path"
           @select="handleSelect"
@@ -126,11 +163,14 @@
       </el-header>
       <!--      主体区域-->
       <el-main>
-<router-view></router-view>
+        <router-view></router-view>
+        <!--        抽屉-->
         <el-drawer
+          title="关于"
+          :withHeader="false"
           :visible.sync="drawer"
           direction="rtl"
-          size="15%">
+          size="20%">
         </el-drawer>
       </el-main>
     </el-container>
@@ -150,8 +190,9 @@ export default {
       classa: 'classa',
       classb: 'classb',
       drawer: false,
-      isCollapse: true,
-      path: require('../assets/Image/user.jpg'),
+      isCollapse: false,
+      path: 'http://tankmiles-userimage.oss-cn-hangzhou.aliyuncs.com/默认头像.jpg',
+      // path: require('../assets/Image/user.jpg'),
       logoUrl: require('../assets/Image/homelogo.png')
     }
   },
@@ -217,24 +258,27 @@ export default {
 </script>
 
 <style lang="less">
-  .el-aside.classa{
-    width: 64px!important;
-    transition: width 110ms;
-  }
-  .el-aside.classb{
-    width: 208px!important;
-    transition: width 110ms;
-  }
-  .home_container {
-    height: 100%;
-    width: 100%;
-  }
+.el-aside.classa {
+  width: 64px !important;
+  transition: width 110ms;
+}
 
-  .el-main {
- padding-bottom: 0 !important;
-  }
+.el-aside.classb {
+  width: 208px !important;
+  transition: width 110ms;
+}
+
+.home_container {
+  height: 100%;
+  width: 100%;
+}
+
+.el-main {
+  padding-bottom: 0 !important;
+}
+
   .el-aside {
-    overflow-x: hidden!important;
+    overflow-x: hidden !important;
     background: #2d3463;
   }
 
@@ -246,29 +290,31 @@ export default {
     align-items: center;
     box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.1) !important;
 
-    .lang_change{
+    .lang_change {
       width: 69px;
       height: 60px;
-      cursor:pointer;
+      cursor: pointer;
       -webkit-user-select: none;
+
       .home_lang {
         font-family: "Microsoft YaHei", serif;
         font-size: 20px;
         color: #6c6e6f;
-       // font-weight:lighter;
+        // font-weight:lighter;
         margin: 0;
         padding: 0;
         position: absolute;
         left: 50%;
         top: 50%;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%, -50%);
       }
     }
-    .lang_change:hover{
+
+    .lang_change:hover {
       display: flex;
       width: 69px;
       height: 60px;
-      background-color: rgba(204, 204, 204,1);
+      background-color: rgba(204, 204, 204, 1);
 
     }
   }
@@ -330,5 +376,4 @@ export default {
     transform: rotate(-180deg);
     transition: all 0.5s;
   }
-
 </style>

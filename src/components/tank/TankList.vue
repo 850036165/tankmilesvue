@@ -2,17 +2,16 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item>设备管理</el-breadcrumb-item>
+      <el-breadcrumb-item>罐箱列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <h1 style="margin-bottom: 15px;margin-top: 15px">设备管理</h1>
+    <h1 style="margin-bottom: 15px;margin-top: 15px">罐箱列表</h1>
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <el-row :gutter="20">
           <el-col :span="6">
             <div style="display: flex;align-content: center; padding-top: 5px">
-              <i class="el-icon-circle-plus addButton" @click="addDevices"></i>
-              <p class="addText">新建设备</p>
+              <i class="el-icon-circle-plus addButton" @click="addTanks"></i>
+              <p class="addText">新建罐箱</p>
             </div>
           </el-col>
           <el-col :span="3" :push="15">
@@ -66,7 +65,7 @@ import XEUtils from 'xe-utils'
 import VXETable from 'vxe-table'
 
 export default {
-  name: 'DeviceManage',
+  name: 'TankList',
   data() {
     return {
       massChangeShow: true,
@@ -150,8 +149,8 @@ export default {
           {type: 'seq', width: 60},
           {
             field: 'name',
-            align: 'center',
             title: 'Name',
+            align: 'center',
             minWidth: 200,
             remoteSort: true,
             slots: {
@@ -204,14 +203,14 @@ export default {
       console.log(row)
       // 传递列参数至组件
       this.$router.push({
-        path: '/devicemanage/devicesinfo',
+        path: '/tanklist/tankdetail',
         query: {
           id: row.id
         }
       })
     },
-    addDevices() {
-      this.$router.push('/devicemanage/adddevices')
+    addTanks() {
+      this.$router.push('/tanklist/addtanks')
     },
     searchEvent() {
       this.$refs.xGrid.commitProxy('reload')
@@ -254,13 +253,13 @@ export default {
 .addButton:hover {
   font-size: 25px;
   color: #2F74EB;
-  }
+}
 
-  .addText {
-    text-align: center;
-    white-space: nowrap;
-    margin: 0 0 0 5px;
-    font-weight: bold;
-    line-height: 25px
-  }
+.addText {
+  text-align: center;
+  white-space: nowrap;
+  margin: 0 0 0 5px;
+  font-weight: bold;
+  line-height: 25px
+}
 </style>

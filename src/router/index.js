@@ -8,22 +8,37 @@ import PersonalSetting from '../components/Bar/PersonalSetting'
 import BasicSetting from '../components/Bar/BasicSetting'
 import DeviceManage from '../components/device/DeviceManage'
 import AddDevices from '../components/device/AddDevices'
+import Welcome from '../components/Welcome'
+import MassOperation from '../components/device/MassOperation'
+import DevicesInfo from '../components/device/DevicesInfo'
+import FirmwareManage from '../components/Firmware/FirmwareManage'
+import TankList from '../components/tank/TankList'
+import AddTanks from '../components/tank/AddTanks'
+import TankDetail from '@/components/tank/TankDetail'
+
 Vue.use(VueRouter)
 
 const routes = [
-  { path: '/', redirect: '/login' },
+  { path: '/', redirect: '/home' },
   { path: '/login', component: Login },
   {
     path: '/home',
     component: Home,
-    redirect: '/dashboard',
+    redirect: '/welcome',
     children: [
+      { path: '/welcome', component: Welcome },
       { path: '/message', component: Message },
       { path: '/personalsetting', component: PersonalSetting },
       { path: '/basicsetting', component: BasicSetting },
       { path: '/dashboard', component: DashBoard },
       { path: '/devicemanage', component: DeviceManage },
-      { path: '/adddevices', component: AddDevices }
+      { path: '/devicemanage/adddevices', component: AddDevices },
+      { path: '/devicemanage/massoperation', component: MassOperation },
+      { path: '/devicemanage/devicesinfo', component: DevicesInfo },
+      { path: '/firmwaremanage', component: FirmwareManage },
+      { path: '/tanklist', component: TankList },
+      { path: '/tanklist/addtanks', component: AddTanks },
+      { path: '/tanklist/tankdetail', component: TankDetail }
     ]
   }
 

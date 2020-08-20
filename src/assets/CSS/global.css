@@ -22,35 +22,11 @@ html, body, #app {
     margin: 0 5px 0 0;
 }
 
-.your-table .el-table__body-wrapper::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-}
-
-.your-table .el-table__body-wrapper::-webkit-scrollbar-thumb {
-    background-color: rgba(161, 163, 169, 0.12);
-    border-radius: 1px;
-}
-
 ::-webkit-scrollbar {
-    width: 8px;
-    /*height: 11px;*/
+    width: 0;
 }
-
-::-webkit-scrollbar-thumb {
-    background-color: rgba(161, 163, 169, 0.78);
-}
-
 .el-breadcrumb {
     margin-bottom: 15px;
-    font-size: 12px;
-}
-
-.el-card {
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !important;
-}
-
-.el-table {
     font-size: 12px;
 }
 
@@ -68,3 +44,6 @@ html, body, #app {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
 }
 
+.el-breadcrumb {
+    user-select: none;
+}
