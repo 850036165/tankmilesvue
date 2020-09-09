@@ -6,39 +6,46 @@ import DashBoard from '../components/DashBoard'
 import Message from '../components/Bar/Message'
 import PersonalSetting from '../components/Bar/PersonalSetting'
 import BasicSetting from '../components/Bar/BasicSetting'
-import DeviceManage from '../components/device/DeviceManage'
+import DeviceList from '../components/device/DeviceList'
 import AddDevices from '../components/device/AddDevices'
-import Welcome from '../components/Welcome'
+// import Welcome from '../components/Welcome'
 import MassOperation from '../components/device/MassOperation'
 import DevicesInfo from '../components/device/DevicesInfo'
 import FirmwareManage from '../components/Firmware/FirmwareManage'
 import TankList from '../components/tank/TankList'
 import AddTanks from '../components/tank/AddTanks'
 import TankDetail from '@/components/tank/TankDetail'
+import Loginbackup from '@/components/Loginbackup'
+import ProjectList from '@/components/Project/ProjectList'
+import AddProject from '@/components/Project/AddProject'
+import ProjectDetail from '@/components/Project/ProjectDetail'
 
 Vue.use(VueRouter)
 
 const routes = [
   { path: '/', redirect: '/home' },
-  { path: '/login', component: Login },
+  { path: '/login', component: Loginbackup },
   {
     path: '/home',
     component: Home,
-    redirect: '/welcome',
+    // redirect: '/welcome',
     children: [
-      { path: '/welcome', component: Welcome },
+      { path: '/welcome', component: Login },
       { path: '/message', component: Message },
-      { path: '/personalsetting', component: PersonalSetting },
-      { path: '/basicsetting', component: BasicSetting },
+      { path: '/personalSetting', component: PersonalSetting },
+      { path: '/basicSetting', component: BasicSetting },
       { path: '/dashboard', component: DashBoard },
-      { path: '/devicemanage', component: DeviceManage },
-      { path: '/devicemanage/adddevices', component: AddDevices },
-      { path: '/devicemanage/massoperation', component: MassOperation },
-      { path: '/devicemanage/devicesinfo', component: DevicesInfo },
-      { path: '/firmwaremanage', component: FirmwareManage },
-      { path: '/tanklist', component: TankList },
-      { path: '/tanklist/addtanks', component: AddTanks },
-      { path: '/tanklist/tankdetail', component: TankDetail }
+      { path: '/device', component: DeviceList },
+      { path: '/device/adddevices', component: AddDevices },
+      { path: '/device/massoperation', component: MassOperation },
+      { path: '/device/devicesinfo', component: DevicesInfo },
+      { path: '/firmware', component: FirmwareManage },
+      { path: '/tank', component: TankList },
+      { path: '/tank/addtanks', component: AddTanks },
+      { path: '/tank/tankdetail', component: TankDetail },
+      { path: '/project', component: ProjectList },
+      { path: '/project/addproject', component: AddProject },
+      { path: '/project/projectdetail', component: ProjectDetail }
     ]
   }
 

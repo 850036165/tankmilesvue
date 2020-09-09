@@ -20,10 +20,14 @@
               <span>tanktrac</span>
               <span><i class="el-icon-set-up cardIcon"></i>固件版本</span>
               <span>v1.0</span>
+              <span><i class="el-icon-time cardIcon"></i>更新日期</span>
+              <span>20200819</span>
               <span><i class="el-icon-time cardIcon"></i>激活日期</span>
               <span>20200819</span>
             </div>
             <div class="cardItem2">
+              <span><i class="el-icon-cpu cardIcon"></i>电池电量</span>
+              <span style="font-weight: bold">20<span style="padding-left: 2px;font-weight: normal">%</span></span>
               <span><i class="el-icon-cpu cardIcon"></i>电池型号</span>
               <span>SL100+SP100</span>
               <span><i class="el-icon-cpu cardIcon"></i>温度传感器</span>
@@ -34,25 +38,20 @@
               <span>Radar-1000</span>
             </div>
             <div class="cardItem3">
-              <span><i class="el-icon-monitor cardIcon"></i>电量</span>
-              <span style="font-weight: bold">20<span style="padding-left: 2px;font-weight: normal">%</span></span>
-              <span>2020.08.09 11.20</span>
+              <span><i class="el-icon-monitor cardIcon"></i>时间</span>
+              <span style="font-weight: bold">2020.08.25 16:01</span>
               <i class="el-icon-alarm-clock"></i>
               <span><i class="el-icon-odometer cardIcon"></i>温度</span>
               <span style="font-weight: bold">30<span style="padding-left: 2px;font-weight: normal">F°</span></span>
-              <span>2020.08.09 11.20</span>
               <i class="el-icon-alarm-clock"></i>
               <span><i class="el-icon-stopwatch cardIcon"></i>压力</span>
               <span style="font-weight: bold">20<span style="padding-left: 2px;font-weight: normal">Bar</span></span>
-              <span>2020.08.09 11.20</span>
               <i class="el-icon-alarm-clock"></i>
               <span><i class="el-icon-goblet-full cardIcon"></i>液位</span>
               <span style="font-weight: bold">31<span style="padding-left: 2px;font-weight: normal">mm</span></span>
-              <span>2020.08.09 11.20</span>
               <i class="el-icon-alarm-clock"></i>
               <span><i class="el-icon-map-location cardIcon"></i>位置</span>
               <span style="font-size: 13px">CN, 杨溪桥乡, 桃源县,G56<span></span></span>
-              <span>2020.08.09 11.20</span>
               <i class="el-icon-alarm-clock"></i>
             </div>
           </div>
@@ -83,7 +82,7 @@ export default {
 .dataCard {
   font: 15px Tahoma, Helvetica, Arial, '微软雅黑', sans-serif;
   display: grid;
-  grid-template-columns: 0.8fr 1fr 1.5fr;
+  grid-template-columns: 0.8fr 0.8fr 1fr;
   grid-template-rows: 160px
 }
 
@@ -91,7 +90,7 @@ export default {
   border-right: 2px solid #EBEEF5;
   display: grid;
   grid-template-columns:repeat(2, 1fr);
-  grid-template-rows:repeat(4, 1fr);
+  grid-template-rows:repeat(5, 1fr);
   justify-items: start;
   align-items: center;
 }
@@ -101,7 +100,7 @@ export default {
   border-right: 2px solid #EBEEF5;
   display: grid;
   grid-template-columns:repeat(2, 1fr);
-  grid-template-rows:repeat(4, 1fr);
+  grid-template-rows:repeat(5, 1fr);
   justify-items: start;
   align-items: center;
 }
@@ -109,7 +108,7 @@ export default {
 .cardItem3 {
   padding-left: 10px;
   display: grid;
-  grid-template-columns:1fr 2fr 1.5fr 20px;
+  grid-template-columns:1fr 2fr 20px;
   grid-template-rows:repeat(5, 1fr);
   justify-items: start;
   align-items: center;

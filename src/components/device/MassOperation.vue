@@ -20,7 +20,7 @@
             <el-button size="small" type="danger" icon="el-icon-edit-outline" @click="massDelete">批量删除</el-button>
           </el-col>
           <span
-            style="width:150px;font-weight: bold;line-height: 32px;float: right">当前选择：{{ this.selectedDevices }}台</span>
+            style="width:150px;font-weight: bold;line-height: 32px;float: right">当前选择：{{ selectedDevices }}台</span>
         </el-row>
       </div>
       <div>
@@ -46,7 +46,7 @@
           <!--自定义空数据模板-->
           <template v-slot:empty>
             <span style="color: black;">
-              <p>没有更多数据了！</p>
+              <span>没有更多数据了！</span>
             </span>
           </template>
         </vxe-grid>
@@ -63,7 +63,7 @@
         <span style="font-weight: bold;font-size: 20px;color: #2F74EB">批量分配</span>
       </div>
       <span style="display:inline-block;margin:15px 0;font-weight: bold;font-size: 15px">已选设备:</span>
-      <span style="display: inline-block;margin: 0 10px 0 10px">{{ this.allSelectedRecords.length }}台</span><br>
+      <span style="display: inline-block;margin: 0 10px 0 10px">{{ allSelectedRecords.length }}台</span><br>
       <div>
         <el-tag style="width: 15%;margin: 1px 1px" type="info" v-for="items in massAssignName" v-bind:key="items">
           {{ items }}
@@ -96,7 +96,7 @@
         <span style="font-weight: bold;font-size: 20px;color: orange">批量升级</span>
       </div>
       <span style="display:inline-block;margin:15px 0;font-weight: bold;font-size: 15px">已选设备:</span>
-      <span style="display: inline-block;margin: 0 10px 0 10px">{{ this.allSelectedRecords.length }}台</span><br>
+      <span style="display: inline-block;margin: 0 10px 0 10px">{{ allSelectedRecords.length }}台</span><br>
       <div>
         <el-tag style="width: 15%;margin: 1px 1px" type="info" v-for="items in massAssignName" v-bind:key="items">
           {{ items }}
@@ -128,7 +128,7 @@
         <span style="font-weight: bold;font-size: 20px;color: red">批量删除</span>
       </div>
       <span style="display:inline-block;margin:15px 0;font-weight: bold;font-size: 15px">已选设备:</span>
-      <span style="display: inline-block;margin: 0 10px 0 10px">{{ this.allSelectedRecords.length }}台</span><br>
+      <span style="display: inline-block;margin: 0 10px 0 10px">{{ allSelectedRecords.length }}台</span><br>
       <div>
         <el-tag style="width: 15%;margin: 1px 1px" type="info" v-for="items in massAssignName" v-bind:key="items">
           {{ items }}
@@ -203,7 +203,6 @@ export default {
       massChangeShow: true,
       allSelectedRecords: [],
       tableHeight: 0,
-      inputValue: '',
       formData: {
         name: ''
       },
@@ -231,7 +230,7 @@ export default {
           background: true,
           align: 'right',
           pageSize: 15,
-          pageSizes: [15, 50, 100, 200]
+          pageSizes: [5, 15, 50, 100, 200]
         },
         checkboxConfig: {
           labelField: 'id',

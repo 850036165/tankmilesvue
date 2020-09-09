@@ -2,7 +2,7 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/tanklist' }">罐箱列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/tank' }">罐箱列表</el-breadcrumb-item>
       <el-breadcrumb-item>添加罐箱</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>

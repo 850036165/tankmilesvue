@@ -1,6 +1,7 @@
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import zhCN from 'vxe-table/lib/locale/lang/zh-CN'
-const cn = {
+
+const zh = {
   login: {
     welcome: '欢迎使用罐程平台',
     username: '用户名',
@@ -30,4 +31,4 @@ const cn = {
   ...zhCN
 }
 
-export default cn
+export default zh

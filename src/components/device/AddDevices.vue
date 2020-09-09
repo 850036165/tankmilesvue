@@ -3,178 +3,154 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/devicemanage' }">设备管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/device' }">设备管理</el-breadcrumb-item>
       <el-breadcrumb-item>添加设备</el-breadcrumb-item>
     </el-breadcrumb>
-    <h1>添加设备</h1>
-    <el-card>
-      <el-tabs active-name="first">
-        <el-tab-pane label="基础信息" name="first">
-          <div style="width: 50%;float: left;height: 375px">
-            <el-form status-icon label-width="100px" style="width: 400px" :model="addForm" size="medium"
+    <el-card style="height: 550px">
+      <div slot="header">
+        <h1 style="margin: 0">添加设备</h1>
+      </div>
+      <p class="chooseDeviceType">
+        设备类型
+      </p>
+      <div style="height: 80px;display: flex;justify-content: start;align-items: center">
+        <div :class="deviceType1===1?'deviceType1':'deviceType2'" @click="chooseDeviceType1">
+          <p :class="deviceType1===1?'deviceTypeText1':'deviceTypeText2'">罐程设备</p>
+        </div>
+        <div :class="deviceType1===2?'deviceType1':'deviceType2'" @click="chooseDeviceType2">
+          <p :class="deviceType1===2?'deviceTypeText1':'deviceTypeText2'">第三方设备</p>
+        </div>
+      </div>
+      <!--      罐程设备显示-->
+      <div v-if="deviceType1===1">
+        <div style="display: grid;grid-template-columns: 1fr 1fr;grid-template-rows: 300px">
+          <!--          左侧详细信息显示-->
+          <div>
+            <p class="chooseDeviceType" style="margin-bottom: 10px">详细信息</p>
+            <el-form status-icon label-width="100px" style="width: 400px;margin-left: 30px" :model="addForm"
                      :rules="addRules" ref="ruleForm">
               <!--              选择设备类型-->
               <div>
-                <el-form-item label="设备类型:" label-width="100px" prop="deviceType">
-                  <el-select style="width: 300px" placeholder="请选择设备类型" v-model="addForm.deviceType">
-                    <el-option v-for="items in typeList" :label="items.label" :value="items.value"
-                               :key="items.value"></el-option>
+                <el-form-item label="设备型号:" label-width="100px" prop="category">
+                  <el-select style="width: 300px" placeholder="请选择设备型号" v-model="addForm.category">
+                    <el-option v-for="items in typeList" :label="items.name" :value="items.id"
+                               :key="items.id"></el-option>
                   </el-select>
                 </el-form-item>
               </div>
-              <!--              选择项目-->
-              <el-form-item label="所属项目:">
-                <el-cascader
-                  placeholder="请选择项目"
-                  v-model="addForm.deviceProject"
-                  filterable
-                  style="width: 300px"
-                  :options="options"
-                  :props="props"
-                  collapse-tags
-                  clearable></el-cascader>
-              </el-form-item>
-              <!--              设备名称-->
-              <el-form-item label="设备名称:" prop="deviceName">
-                <el-input placeholder="5-20位" :maxlength="20" v-model="addForm.deviceName"></el-input>
-              </el-form-item>
               <!--              设备SN-->
-              <el-form-item label="DeviceSN:" prop="deviceSN">
-                <el-input placeholder="12位数字" :maxlength="20" v-model.number="addForm.deviceSN"></el-input>
+              <el-form-item label="DeviceSN:" prop="sn">
+                <el-input placeholder="6位数字" :maxlength="6" v-model.number="addForm.sn"></el-input>
               </el-form-item>
               <!--              设备key-->
-              <el-form-item label="ProductKey:" prop="productKey">
-                <el-input placeholder="12位数字" :maxlength="20" v-model.number="addForm.productKey"></el-input>
+              <el-form-item label="ProductKey:" prop="key">
+                <el-input placeholder="6位数字" :maxlength="6" v-model.number="addForm.key"></el-input>
               </el-form-item>
               <!--              备注-->
               <el-form-item label="备注:">
                 <el-input
                   type="text"
                   placeholder="请输入内容"
-                  v-model="addForm.deviceTxt"
+                  v-model="addForm.remark"
                   :maxlength="30"
                   show-word-limit
                 >
                 </el-input>
-
               </el-form-item>
             </el-form>
           </div>
-          <div style="width: 50%;float: right;">
+          <!--              右侧开关显示-->
+          <div>
             <el-tooltip effect="dark" placement="bottom-end">
-              <div slot="content">*部分为必填<br/>SN/ProductKey为数字<br/>监控参数至少选择一项</div>
+              <div slot="content">*部分为必填<br/>SN/ProductKey为数字<br/>若不激活设备则无法获取最新数据</div>
               <i class="el-icon-warning-outline" style="font-size: 20px;float: right;margin: 10px;cursor: pointer"></i>
             </el-tooltip>
-            <el-form style="width: 300px" :model="addForm" size="medium" label-width="100px">
+            <p class="chooseDeviceType" style="margin-bottom: 10px">监控选项</p>
+            <el-form :model="addForm" label-width="100px">
               <!--              监控参数选择-->
+              <div style=""></div>
               <el-form-item label="监控参数:">
-                <el-checkbox-group :min="1" v-model="addForm.checkedFunction">
-                  <el-checkbox label="deviceTemp" checked>设备温度</el-checkbox>
-                  <el-checkbox label="level">液位</el-checkbox>
-                  <el-checkbox label="temp">介质温度</el-checkbox>
-                  <el-checkbox label="pressure">压力</el-checkbox>
-                </el-checkbox-group>
+                <el-switch active-color="#13ce66"
+                           style="margin-right: 5px;margin-left: 5px"
+                           inactive-color="#ff4949"
+                           v-model="addForm.deviceTemp"></el-switch>
+                温度
+                <el-switch active-color="#13ce66"
+                           style="margin-right: 5px;margin-left: 5px"
+                           inactive-color="#ff4949"
+                           v-model="addForm.devicePressure"></el-switch>
+                压力
+                <el-switch active-color="#13ce66"
+                           style="margin-right: 5px;margin-left: 5px"
+                           inactive-color="#ff4949"
+                           v-model="addForm.deviceLevel"></el-switch>
+                液位
               </el-form-item>
-              <!--              激活开关选择-->
               <el-form-item label="设备激活:">
                 <el-switch active-color="#13ce66"
+                           style="margin-right: 5px;margin-left: 5px"
                            inactive-color="#ff4949"
-                           v-model="addForm.deviceState"></el-switch>
+                           v-model="addForm.enabled"></el-switch>
               </el-form-item>
               <el-form-item label="设备日志:">
-                <el-switch
-                  v-model="addForm.deviceLog"
-                ></el-switch>
+                <el-switch v-model="addForm.logEnabled" style="margin-right: 5px;margin-left: 5px"></el-switch>
               </el-form-item>
             </el-form>
           </div>
-        </el-tab-pane>
-        <!--        分页2-->
-        <el-tab-pane label="设备调试" name="second">
-          <div style="width: 50%;float: left;height: 375px">
-            <div style="margin-left: 50px;display: flex;align-items: center">
-              <p style="margin-right: 5px;font-weight: bold;">设备调试</p>
-              <el-tooltip effect="dark" content="工作模式设置/数字格式" placement="right">
-                <i class="el-icon-warning-outline" style="font-size: 20px;cursor: pointer"></i>
-              </el-tooltip>
-            </div>
-            <el-form style="width: 300px" size="small" :model="addForm" :rules="addRules" ref="ruleForm"
-                     label-width="150px">
-              <el-form-item label="休眠时间(s):" prop="restTime">
-                <el-input-number :min="1" :max="99" v-model.number="addForm.restTime"></el-input-number>
-              </el-form-item>
-              <el-form-item label="GPS周期(s):" prop="gpsTime">
-                <el-input-number :min="1" :max="99" v-model.number="addForm.gpsTime"></el-input-number>
-              </el-form-item>
-              <el-form-item label="通讯基站周期(s):" prop="cellTime">
-                <el-input-number :min="1" :max="99" v-model.number="addForm.cellTime"></el-input-number>
-              </el-form-item>
-              <el-form-item label="最大工作时间(s):" prop="maxJobTime">
-                <el-input-number :min="1" :max="99" v-model.number="addForm.maxJobTime"></el-input-number>
-              </el-form-item>
-              <el-form-item label="低液位报警(mm):" prop="minLevelAlert">
-                <el-input-number controls-position="right" :min="1" :max="3000" :step="100"
-                                 v-model.number="addForm.minLevelAlert"></el-input-number>
-              </el-form-item>
-              <el-form-item label="高液位报警(mm):" prop="maxLevelAlert">
-                <el-input-number controls-position="right" :min="3001" :max="5000" :step="100"
-                                 v-model.number="addForm.maxLevelAlert"></el-input-number>
-              </el-form-item>
-            </el-form>
-          </div>
-          <div style="width: 50%;float: right;">
-            <div style="display: flex;align-items: center">
-              <p style="margin-right: 5px;font-weight: bold;">显示屏调试</p>
-              <el-tooltip effect="dark" content="屏幕显示设置" placement="right">
-                <i class="el-icon-warning-outline" style="font-size: 20px;cursor: pointer"></i>
-              </el-tooltip>
-            </div>
-            <el-form style="width: 400px" size="small" :model="addForm">
-              <el-form-item label="压力单位:">
-                <el-radio-group v-model="addForm.pressureUnit">
-                  <el-radio :label="1">PSI</el-radio>
-                  <el-radio :label="2">BAR</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="温度单位:" prop="checkEmpty">
-                <el-radio-group v-model="addForm.temperatureUnit">
-                  <el-radio :label=1>°C</el-radio>
-                  <el-radio :label=2>°F</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="液位单位:" prop="checkEmpty">
-                <el-radio-group v-model="addForm.levelUnit">
-                  <el-radio :label=1>%</el-radio>
-                  <el-radio :label=2>mm</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="屏幕常亮:" prop="checkEmpty">
-                <el-radio-group v-model="addForm.screenOn">
-                  <el-radio :label=1>常亮</el-radio>
-                  <el-radio :label=2>自动</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-tab-pane>
+        </div>
         <div style="width: 100%;float: left;">
           <el-form style="display: flex;justify-content: flex-end" v-model="addForm">
             <el-form-item>
               <el-button type="primary" @click="addDevices">添加设备</el-button>
-              <el-button>取消返回</el-button>
+              <el-button @click="leavePage">取消返回</el-button>
             </el-form-item>
           </el-form>
         </div>
-      </el-tabs>
+      </div>
+      <!--      第三方设备显示-->
+      <!--      todo：待实现-->
+      <div v-if="deviceType1===2">
+        <p class="chooseDeviceType" style="margin-bottom: 10px">详细信息</p>
+        <el-form status-icon label-width="100px" style="width: 400px;margin-left: 30px" :model="addForm2"
+                 size="small" ref="ruleForm">
+          <!--              选择设备类型-->
+          <div>
+            <el-form-item label="请求方式:" label-width="100px" prop="deviceType">
+              <el-select style="width: 300px" placeholder="请选择请求方式" v-model="addForm2.requestType">
+                <el-option v-for="items in requestType" :label="items.label" :value="items.value"
+                           :key="items.value"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <!--              设备名称-->
+          <el-form-item label="请求地址:">
+            <el-input :maxlength="20" v-model="addForm2.requestAddress"></el-input>
+          </el-form-item>
+          <!--              参数-->
+          <el-form-item label="参数:">
+            <el-input :maxlength="20" v-model.number="addForm2.requestParameter"></el-input>
+          </el-form-item>
+          <!--              备注-->
+          <el-form-item label="备注:">
+            <el-input
+              type="text"
+              placeholder="请输入内容"
+              v-model="addForm2.deviceTxt"
+              :maxlength="30"
+              show-word-limit
+            >
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-card>
-
   </div>
 </template>
 
 <script>
 export default {
   beforeRouteLeave(to, from, next) {
-    if (this.changeStatus >= 2) {
+    if (this.changeStatus >= 1) {
       setTimeout(() => {
         this.$confirm('检测到未保存的信息，是否保存修改？', '确认信息', {
           closeOnClickModal: false,
@@ -184,7 +160,7 @@ export default {
         }).then(() => {
           next(true)
         }).catch(() => {
-            next(false)
+          next(false)
           }
         )
       }, 100)
@@ -195,133 +171,93 @@ export default {
   computed: {
     addRules() {
       return {
-        deviceName: [
-          {required: true, message: '请输入设备名称', trigger: 'blur'},
-          {min: 5, max: 20, message: '设备名称为5到20字符', trigger: 'blur'}
-        ],
-        deviceType: [
+        category: [
           {required: true, message: '请选择设备类型', trigger: 'change'}
         ],
-        deviceSN: [
+        sn: [
           {required: true, message: '请输入设备SN', trigger: 'blur'},
           {type: 'number', message: 'SN为数字格式', trigger: 'blur'},
-          {pattern: /^\d{12}$/, message: '设备SN为12位数字', trigger: 'blur'}
+          {pattern: /^\d{6}$/, message: '设备SN为6位数字', trigger: 'blur'}
         ],
-        productKey: [
+        key: [
           {required: true, message: '请输入设备ProductKey', trigger: 'blur'},
           {type: 'number', message: 'ProductKey为数字格式', trigger: 'blur'},
-          {pattern: /^\d{12}$/, message: 'ProductKey为12位数字', trigger: 'blur'}
-        ],
-        restTime: [
-          {required: true, message: '此处不能为空', trigger: 'blur'}
-        ],
-        gpsTime: [
-          {required: true, message: '此处不能为空', trigger: 'blur'}
-        ],
-        cellTime: [
-          {required: true, message: '此处不能为空', trigger: 'blur'}
-        ],
-        maxJobTime: [
-          {required: true, message: '此处不能为空', trigger: 'blur'}
-        ],
-        minLevelAlert: [
-          {required: true, message: '此处不能为空', trigger: 'blur'}
-        ],
-        maxLevelAlert: [
-          {required: true, message: '此处不能为空', trigger: 'blur'}
+          {pattern: /^\d{6}$/, message: 'ProductKey为6位数字', trigger: 'blur'}
         ]
       }
     }
   },
   data() {
     return {
+      cardHeight: 0,
+      deviceType1: 1,
       changeStatus: 0,
       ruleForm: {
-        deviceName: '',
-        deviceType: '',
-        deviceSN: '',
-        restTime: '',
-        gpsTime: '',
-        cellTime: '',
-        maxJobTime: '',
-        minLevelAlert: '',
-        maxLevelAlert: ''
+        category: '',
+        sn: '',
+        key: ''
       },
-      props: {
-        checkStrictly: true,
-        multiple: true,
-        value: 'value',
-        label: 'label',
-        children: 'children'
-      },
-      options: [
-        {
-          value: 1,
-          label: '万华',
-          children:
-              [{ value: 2, label: '万华烟台' },
-                {
-                  value: 3,
-                  label: '万华宁波',
-                  children: [
-                    { value: 7, label: '万华宁波子用户1' },
-                    { value: 8, label: '万华宁波子用户2' },
-                    { value: 9, label: '万华宁波子用户3' },
-                    { value: 10, label: '万华宁波子用户4' },
-                    { value: 11, label: '万华宁波子用户5' }
-                  ]
-                }]
-        },
-        {
-          value: 4,
-          label: 'exsif',
-          children:
-              [{ value: 5, label: 'exsif国内' },
-                { value: 6, label: 'exsif国外' }]
-        }
-      ],
       addForm: {
-        deviceType: '',
-        deviceSN: '',
-        deviceName: '',
-        productKey: '',
-        deviceState: true,
-        deviceProject: '',
-        deviceTxt: '',
-        deviceLog: true,
-        checkedFunction: [],
-        restTime: 5,
-        gpsTime: 10,
-        cellTime: 15,
-        maxJobTime: 99,
-        minLevelAlert: 2000,
-        maxLevelAlert: 3000,
-        pressureUnit: 2,
-        temperatureUnit: 1,
-        levelUnit: 1,
-        screenOn: 1
+        category: undefined,
+        sn: '',
+        key: '',
+        remark: '',
+        enabled: true,
+        logEnabled: true,
+        deviceTemp: false,
+        deviceLevel: false,
+        devicePressure: false
       },
-      typeList: [
-        { value: 1, label: 'tanktrac' },
-        { value: 2, label: 'smartflank' },
-        { value: 3, label: 'fleettrac' },
-        { value: 4, label: 'cargotrac' },
-        { value: 5, label: 'heatingsystem' }
+      addForm2: {
+        requestType: 0,
+        requestAddress: '',
+        requestParameter: ''
+      },
+      typeList: [],
+      requestType: [
+        {value: 1, label: 'Get'},
+        {value: 2, label: 'Post'}
       ]
     }
   },
   methods: {
-    addDevices () {
+    leavePage() {
+      this.changeStatus = 0
+      this.$router.push('/device')
+    },
+    chooseDeviceType1() {
+      this.deviceType1 = 1
+    },
+    chooseDeviceType2() {
+      this.deviceType1 = 2
+      this.$XModal.message({message: '三方设备暂未开放', status: 'warning', id: 'unique1'})
+    },
+    async requestDevice() {
+      const response = await this.$http.post('/device/category/list').then(this.$XModal.message({
+        message: '设备类型请求成功',
+        status: 'success'
+      })).catch(error => {
+        this.$XModal.message({message: `设备类型请求失败@${error}`, status: 'warning'})
+      })
+      this.typeList = response.data.data
+      console.log('列表', this.typeList)
+    },
+    addDevices() {
       this.$refs.ruleForm.validate((valid) => {
         if (!valid) {
-          this.$message.error({
-            title: '错误',
-            message: '请检查所有必填项',
-            center: 'true'
-          })
+          this.$XModal.message({message: '检查所有必填项', status: 'warning'})
         } else {
-          console.log('error submit!!')
-          return false
+          console.log(this.addForm)
+          this.$http.post('/device/create', this.addForm).then(response => {
+            if (response.data.code === 0) {
+              this.$XModal.message({message: '设备创建成功', status: 'success'})
+              this.changeStatus = 0
+              this.$router.push('/device')
+            } else {
+              this.$XModal.message({message: `创建失败@${response.data.message}`, status: 'error'})
+            }
+          }).catch(error =>
+            this.$XModal.message({message: `遇到一个错误@${error}`, status: 'error'}))
         }
       })
     },
@@ -333,17 +269,70 @@ export default {
   name: 'AddDevices',
   watch: {
     addForm: {
-      handler(val) {
+      handler() {
         this.watchChange()
       },
       deep: true
     }
+  },
+  mounted() {
+    this.requestDevice()
   }
 }
 </script>
 
 <style scoped>
-/deep/ .el-card__body {
-  padding-bottom: 0;
+.chooseDeviceType {
+  margin: 0;
+  font-size: 18px;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold;
+  font-weight: 700;
+  text-align: left;
+  color: #58647a;
+}
+
+.deviceType1 {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3px;
+  outline: none;
+  width: 150px;
+  height: 40px;
+  background: #2f74eb;
+  border: 1px solid #d6daea;
+}
+
+.deviceType2 {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3px;
+  outline: none;
+  width: 150px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #d6daea;
+}
+
+.deviceTypeText1 {
+  margin: 0;
+  font-size: 14px;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold;
+  font-weight: 700;
+  text-align: center;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.deviceTypeText2 {
+  margin: 0;
+  font-size: 14px;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold;
+  font-weight: 700;
+  text-align: center;
+  color: #58647a;
 }
 </style>

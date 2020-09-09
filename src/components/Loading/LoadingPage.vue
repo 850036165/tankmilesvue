@@ -35,7 +35,6 @@ export default {
   }
 
   .circlebig {
-    margin-top: 15%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -60,7 +59,7 @@ export default {
 
   .background {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     position: fixed;
     left: 0;
@@ -69,7 +68,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: #2D3463;
-
+    z-index: 9999;
   }
 
   .loadingLogo {

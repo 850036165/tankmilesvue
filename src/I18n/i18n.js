@@ -6,7 +6,7 @@ import VXETable from 'vxe-table'
 
 Vue.use(VueI18n)
 const i18n = new VueI18n({
-  locale: localStorage.getItem('lang') || 'cn', // 本地化存储
+  locale: localStorage.getItem('lang') || 'zh', // 本地化存储
   messages
 })
 locale.i18n((key, value) => i18n.t(key, value))

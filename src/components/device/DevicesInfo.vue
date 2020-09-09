@@ -3,7 +3,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/devicemanage' }">设备管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/device' }">设备管理</el-breadcrumb-item>
       <el-breadcrumb-item>{{ this.$route.query.id }}</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
@@ -291,7 +291,7 @@ export default {
   },
   watch: {
     addForm: {
-      handler(val) {
+      handler() {
         this.watchChange()
       },
       deep: true

@@ -1,7 +1,7 @@
 <template>
   <el-container class="home_container">
     <!--    侧边栏-->
-    <!--    <el-aside :width="isCollapse?'64px':'208px'">-->
+    <!--        <el-aside :width="isCollapse?'64px':'208px'">-->
     <el-aside :class="isCollapse?classa:classb">
       <!--侧边菜单-->
       <el-menu
@@ -31,26 +31,26 @@
           <span slot="title" style="padding: 0 20px 0 30px">首页看板</span>
         </el-menu-item>
         <!--        项目管理一级菜单-->
-        <el-menu-item index="/projectmanage">
+        <el-menu-item index="/project">
           <i class="el-icon-document" style="font-size: 25px"></i>
           <span slot="title" style="padding: 0 20px 0 30px">项目管理</span>
         </el-menu-item>
         <!--        罐箱列表一级菜单-->
-        <el-menu-item index="/tanklist">
+        <el-menu-item index="/tank">
           <i class="el-icon-s-marketing" style="font-size: 25px"></i>
           <span slot="title" style="padding: 0 20px 0 30px">罐箱列表</span>
         </el-menu-item>
         <!--        监控设置一级菜单-->
-        <el-submenu index="/w">
+        <el-submenu index="/w" disabled>
           <template slot="title">
             <i class="el-icon-alarm-clock" style="font-size: 25px"></i>
             <span style="padding: 0 20px 0 30px">监控设置</span>
           </template>
           <!--          监控二级菜单-->
-          <el-menu-item index="/devicemanage">
+          <el-menu-item index="/device">
             <i class="el-icon-notebook-2"></i><span style="padding: 0 20px 0 20px">监控列表</span>
           </el-menu-item>
-          <el-menu-item index="/firmwaremanage">
+          <el-menu-item index="/firmware">
             <i class="el-icon-location-information"></i><span style="padding: 0 20px 0 20px">关注点设置</span>
           </el-menu-item>
         </el-submenu>
@@ -61,10 +61,10 @@
             <span style="padding: 0 20px 0 30px">后台管理</span>
           </template>
           <!--          二级菜单-->
-          <el-menu-item index="/devicemanage">
+          <el-menu-item index="/device">
             <i class="el-icon-receiving"></i><span style="padding: 0 20px 0 20px">设备管理</span>
           </el-menu-item>
-          <el-menu-item index="/firmwaremanage">
+          <el-menu-item index="/firmware">
             <i class="el-icon-box"></i><span style="padding: 0 20px 0 20px">固件管理</span>
           </el-menu-item>
         </el-submenu>
@@ -111,7 +111,7 @@
             <p class="home_lang">{{currentLang}}</p>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="cn"
+            <el-dropdown-item command="zh"
                               style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-weibiaoti-"></use>
@@ -178,12 +178,14 @@
 </template>
 
 <script>
+import {EventBus} from '@/assets/JS/eventBus'
+
 export default {
   // created () {
   //   this.getMenuList()
   // },
   name: 'Home',
-  data () {
+  data() {
     return {
       username: '朱正刚',
       currentLang: 'CN',
@@ -201,7 +203,7 @@ export default {
     // 判断菜单的折叠状态
     this.isCollapse = localStorage.getItem('isCollapse')
     this.isCollapse = this.isCollapse === 'true'
-    if (this.$i18n.locale === 'cn') {
+    if (this.$i18n.locale === 'zh') {
       this.currentLang = 'CN'
     } else if (this.$i18n.locale === 'en') {
       this.currentLang = 'EN'
@@ -233,9 +235,9 @@ export default {
     changeLang (index) {
       let menuLang = ''
       switch (index) {
-        case 'cn':
+        case 'zh':
           this.currentLang = 'CN'
-          menuLang = 'cn'
+          menuLang = 'zh'
           break
         case 'en':
           this.currentLang = 'EN'
@@ -252,6 +254,7 @@ export default {
     foldMenu () {
       this.isCollapse = !this.isCollapse
       localStorage.setItem('isCollapse', this.isCollapse)
+      EventBus.$emit('demo', this.isCollapse)
     }
   }
 }

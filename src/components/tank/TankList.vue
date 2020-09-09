@@ -35,14 +35,15 @@
           <!--自定义列插槽-->
           <template v-slot:name_default="{ row }">
             <span>
-              <button class="deviceDetail" @click="goDetail(row)">{{ row.name }}</button>
+              <button class="deviceDetail" @click="goDetail(row)">{{ row.deviceSn }}</button>
             </span>
           </template>
 
           <!--将表单放在工具栏中-->
           <template v-slot:toolbar_buttons>
             <vxe-form :data="formData" @submit="searchEvent" @reset="searchEvent">
-              <vxe-form-item field="name" :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"></vxe-form-item>
+              <vxe-form-item field="keywords"
+                             :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"></vxe-form-item>
               <vxe-form-item
                 :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"></vxe-form-item>
             </vxe-form>
@@ -50,7 +51,7 @@
           <!--自定义空数据模板-->
           <template v-slot:empty>
             <span style="color: black;">
-              <p>没有更多数据了！</p>
+              <span>没有更多数据了！</span>
             </span>
           </template>
         </vxe-grid>
@@ -68,12 +69,9 @@ export default {
   name: 'TankList',
   data() {
     return {
-      massChangeShow: true,
-      checkedDevices: [],
       tableHeight: 0,
-      inputValue: '',
       formData: {
-        name: ''
+        keywords: ''
       },
       gridOptions: {
         stripe: true,
@@ -87,7 +85,7 @@ export default {
         sortConfig: {
           trigger: 'default',
           defaultSort: {
-            field: 'name',
+            field: 'deviceSn',
             order: 'desc'
           }
         },
@@ -116,7 +114,8 @@ export default {
           ajax: {
             query: async ({page, sort, filters}) => {
               // 处理排序条件
-              const queryParams = Object.assign({
+              console.log('筛选值' + JSON.stringify(sort.property))
+              let queryParams = Object.assign({
                 sort: sort.property,
                 order: sort.order
               }, this.formData)
@@ -124,14 +123,23 @@ export default {
               filters.forEach(({field, values}) => {
                 queryParams[field] = values.join(',')
               })
-              // const queryParamsJson = JSON.stringify(queryParams)
-              // console.log(queryParamsJson)
-              console.log(queryParams)
-              const response = await this.$http.get(`https://api.xuliangzhan.com:10443/api/pub/page/list/${page.pageSize}/${page.currentPage}`, {params: queryParams}).catch((error) => {
+              console.log('请求值' + JSON.stringify(queryParams))
+              queryParams = Object.assign(queryParams, {currentPage: page.currentPage - 1, pageSize: page.pageSize})
+              console.log('请求值3' + JSON.stringify(queryParams))
+              const response = await this.$http.post('device/list', queryParams).catch((error) => {
                 VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
               })
-              console.log(response.data)
-              return response.data
+              console.log('返回值' + JSON.stringify(response.data))
+              const listData = {
+                page: {
+                  currentPage: response.data.data.currentPage + 1,
+                  pageSize: response.data.data.pageSize,
+                  total: response.data.data.total
+                },
+                result: response.data.data.data
+              }
+              console.log(listData)
+              return listData
             }
           }
         },
@@ -146,35 +154,30 @@ export default {
           }
         },
         columns: [
-          {type: 'seq', width: 60},
+          {type: 'seq', width: 50, align: 'center'},
           {
-            field: 'name',
-            title: 'Name',
+            field: 'deviceSn',
             align: 'center',
-            minWidth: 200,
+            title: '设备号',
+            minWidth: 150,
             remoteSort: true,
-            slots: {
-              default: 'name_default'
-            }
+            slots: {default: 'name_default'}
           },
-          {field: 'nickname', title: 'Nickname', remoteSort: true, minWidth: 200},
-          {field: 'age', title: 'Age', remoteSort: true, width: 100},
-          {
-            field: 'role',
-            title: 'Role',
-            remoteSort: true,
-            minWidth: 200,
-            filters: [
-              {label: '前端开发', value: '前端'},
-              {label: '后端开发', value: '后端'},
-              {label: '测试', value: '测试'},
-              {label: '程序员鼓励师', value: '程序员鼓励师'}
-            ],
-            filterMultiple: false
-          },
-          {field: 'amount', title: 'Amount', width: 100, formatter: this.formatAmount},
-          {field: 'updateDate', title: 'Update Date', width: 160, remoteSort: true, formatter: this.formatDate},
-          {field: 'createDate', title: 'Create Date', width: 160, remoteSort: true, formatter: this.formatDate}
+          {field: 'tankSn', title: '箱号', remoteSort: true, minWidth: 100},
+          {field: 'kind', title: '设备类型', remoteSort: true, width: 120},
+          {field: 'projectNames', title: '所属项目', remoteSort: true, minWidth: 150},
+          {field: 'firmwareVersion', title: '固件版本', width: 100, remoteSort: true},
+          {field: 'battery', title: '电量', width: 100, remoteSort: true},
+          {field: 'sleepInterval', title: '休眠周期', width: 100, remoteSort: true},
+          {field: 'gpsCycles', title: 'GPS周期', width: 100, remoteSort: true},
+          {field: 'cellCycles', title: '基站通讯周期', width: 120, remoteSort: true},
+          {field: 'maxWorkTime', title: '最大工作时间', width: 120, remoteSort: true},
+          {field: 'lastUpdateTime', title: '最近更新', width: 140, remoteSort: true, formatter: this.formatDate},
+          {field: 'lat', title: '经度', width: 100, remoteSort: true},
+          {field: 'lon', title: '纬度', width: 100, remoteSort: true},
+          {field: 'tankTemperature', title: '温度', width: 100, remoteSort: true},
+          {field: 'tankPressure', title: '压力', width: 100, remoteSort: true},
+          {field: 'tankLevel', title: '液位', width: 100, remoteSort: true}
         ]
       }
     }
@@ -191,7 +194,7 @@ export default {
   },
   methods: {
     massChange() {
-      this.$router.push('/devicemanage/massoperation')
+      this.$router.push('/device/massoperation')
     },
     headerCellStyle() {
       return {
@@ -203,14 +206,14 @@ export default {
       console.log(row)
       // 传递列参数至组件
       this.$router.push({
-        path: '/tanklist/tankdetail',
+        path: '/tank/tankdetail',
         query: {
           id: row.id
         }
       })
     },
     addTanks() {
-      this.$router.push('/tanklist/addtanks')
+      this.$router.push('/tank/addtanks')
     },
     searchEvent() {
       this.$refs.xGrid.commitProxy('reload')
