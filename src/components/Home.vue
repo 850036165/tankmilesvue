@@ -70,7 +70,7 @@
         </el-submenu>
       </el-menu>
       <!--      版权信息-->
-      <div class="homeBottomText" v-show="!isCollapse">
+      <div class="homeBottomText hidden-md-and-down" v-show="!isCollapse">
         <p style="margin-left: 10px">Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.</p>
       </div>
     </el-aside>
@@ -80,7 +80,8 @@
       <el-header class="home-header">
         <!--        顶部菜单栏-->
         <!--        收起按钮-->
-        <i :class="isCollapse?'el-icon-s-unfold open1':'el-icon-s-unfold close1'" @click="foldMenu"
+        <i :class="[isCollapse?'el-icon-s-unfold open1':'el-icon-s-unfold close1','hidden-md-and-down']"
+           @click="foldMenu"
            style="font-size: 25px;color: #2d3463;padding: 10px;cursor:pointer;display: inline-block;margin-right: auto;"></i>
         <!--        顶部菜单1-->
         <el-menu

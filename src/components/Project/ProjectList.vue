@@ -145,7 +145,7 @@ export default {
           }
         },
         treeConfig: {
-          expandAll: true,
+          // expandAll: true,
           reserve: true,
           // line: true,
           children: 'children'

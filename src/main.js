@@ -12,7 +12,12 @@ import '../src/assets/Iconfont/iconfont'
 
 import './vxetable/table.js'
 import './vxetable/utils.js'
+import VueRouter from 'vue-router'
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 // import 'ag-grid-community/dist/styles/ag-grid.css'
 // import 'ag-grid-community/dist/styles/ag-theme-balham.css'
 // import { LicenseManager } from 'ag-grid-enterprise'

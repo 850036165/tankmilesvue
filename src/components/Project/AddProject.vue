@@ -271,7 +271,7 @@ export default {
         }],
         field105: []
       },
-      parentProjectOptions: [],
+      parentProjectOptions: undefined,
       parentProjectProps: {
         multiple: false,
         label: 'name',
@@ -383,7 +383,7 @@ export default {
       this.$refs.addProjectForm.resetFields()
     },
     cleanParentProject() {
-      this.getParentProjectOptions()
+      if (this.parentProjectOptions === undefined) this.getParentProjectOptions()
       if (this.addProjectForm.isRoot === true) {
         this.chooseProjectHolder = '无所属项目'
         this.addProjectForm.parentProject = []

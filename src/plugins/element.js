@@ -58,6 +58,7 @@ import {
   Upload
 } from 'element-ui'
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
+import './index.css'
 
 Vue.use(Button)
 Vue.use(Form)

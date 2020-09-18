@@ -71,7 +71,6 @@
       element-loading-background="rgba(1, 1, 1, 0.9)">
       <p id="map" ref='mapDiv' class="mapDiv"></p>
     </el-card>
-    <loadingpage v-show="false"></loadingpage>
   </div>
 </template>
 
@@ -79,12 +78,10 @@
 import {EventBus} from '@/assets/JS/eventBus'
 import mapboxgl from 'mapbox-gl'
 import countTo from 'vue-count-to'
-import loadingpage from './Loading/LoadingPage'
 
 export default {
   name: 'Dashbord',
   components: {
-    loadingpage,
     countTo
   },
   data() {

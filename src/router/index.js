@@ -10,27 +10,26 @@ import DeviceList from '../components/device/DeviceList'
 import AddDevices from '../components/device/AddDevices'
 // import Welcome from '../components/Welcome'
 import MassOperation from '../components/device/MassOperation'
-import DevicesInfo from '../components/device/DevicesInfo'
+import DeviceDetail from '../components/device/DeviceDetail'
 import FirmwareManage from '../components/Firmware/FirmwareManage'
 import TankList from '../components/tank/TankList'
 import AddTanks from '../components/tank/AddTanks'
 import TankDetail from '@/components/tank/TankDetail'
-import Loginbackup from '@/components/Loginbackup'
 import ProjectList from '@/components/Project/ProjectList'
 import AddProject from '@/components/Project/AddProject'
 import ProjectDetail from '@/components/Project/ProjectDetail'
+import Welcome from '@/components/Welcome'
 
 Vue.use(VueRouter)
-
 const routes = [
   { path: '/', redirect: '/home' },
-  { path: '/login', component: Loginbackup },
+  { path: '/login', component: Login },
   {
     path: '/home',
     component: Home,
     // redirect: '/welcome',
     children: [
-      { path: '/welcome', component: Login },
+      { path: '/welcome', component: Welcome },
       { path: '/message', component: Message },
       { path: '/personalSetting', component: PersonalSetting },
       { path: '/basicSetting', component: BasicSetting },
@@ -38,7 +37,7 @@ const routes = [
       { path: '/device', component: DeviceList },
       { path: '/device/adddevices', component: AddDevices },
       { path: '/device/massoperation', component: MassOperation },
-      { path: '/device/devicesinfo', component: DevicesInfo },
+      { path: '/device/devicedetail', component: DeviceDetail },
       { path: '/firmware', component: FirmwareManage },
       { path: '/tank', component: TankList },
       { path: '/tank/addtanks', component: AddTanks },

@@ -71,6 +71,7 @@
 <script>
 import XEUtils from 'xe-utils'
 import VXETable from 'vxe-table'
+import 'vxe-table/styles/variable.scss'
 
 export default {
   name: 'DeviceList',
@@ -130,9 +131,9 @@ export default {
                   projectNames: 3,
                   firmwareVersion: 4,
                   lastUpdateTime: 5,
-                  sleepInterval: 6,
-                  gpsCycles: 7,
-                  cellCycles: 8,
+                  temperatureInterval: 6,
+                  gpsInterval: 7,
+                  commInterval: 8,
                   maxWorkTime: 9,
                   lastUpgradeTime: 10,
                   tankTemperature: 11,
@@ -215,9 +216,9 @@ export default {
           {field: 'projectNames', title: '所属项目', remoteSort: true, minWidth: 150},
           {field: 'firmwareVersion', title: '固件版本', width: 100, remoteSort: true},
           {field: 'lastUpgradeTime', title: '最近更新', width: 140, remoteSort: true, formatter: this.formatDate1},
-          {field: 'sleepInterval', title: '休眠周期', width: 100, remoteSort: true},
-          {field: 'gpsCycles', title: 'GPS周期', width: 100, remoteSort: true},
-          {field: 'cellCycles', title: '基站通讯周期', width: 120, remoteSort: true},
+          {field: 'temperatureInterval', title: '温度周期', width: 100, remoteSort: true},
+          {field: 'gpsInterval', title: 'GPS周期', width: 100, remoteSort: true},
+          {field: 'commInterval', title: '基站通讯周期', width: 120, remoteSort: true},
           {field: 'maxWorkTime', title: '最大工作时间', width: 120, remoteSort: true},
           {field: 'updateTime', title: '更新时间', width: 140, remoteSort: true, formatter: this.formatDate2},
           {field: 'lat', title: '经度', width: 100, remoteSort: true},
@@ -260,9 +261,9 @@ export default {
       console.log(row)
       // 传递列参数至组件
       this.$router.push({
-        path: '/device/devicesinfo',
+        path: '/device/devicedetail',
         query: {
-          id: row.deviceSn
+          sn: row.deviceSn
         }
       })
     },
