@@ -1,53 +1,110 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/project' }">项目管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        首页
+      </el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/project' }">
+        项目管理
+      </el-breadcrumb-item>
       <el-breadcrumb-item>新增项目</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
-          <h1 style="margin: 0">新增项目</h1>
-          <el-button style="height: 30px;" size="mini" type="primary" icon="el-icon-edit-outline" round>批量新增
+          <h1 style="margin: 0">
+            新增项目
+          </h1>
+          <el-button
+            style="height: 30px;"
+            size="mini"
+            type="primary"
+            icon="el-icon-edit-outline"
+            round
+          >
+            批量新增
           </el-button>
         </div>
       </div>
       <div>
-        <el-form ref="addProjectForm" :model="addProjectForm" :rules="rules" size="small" label-width="100px"
-                 style="margin-top: 10px">
-          <el-form-item label="项目名称" prop="projectName">
-            <el-input v-model="addProjectForm.projectName" placeholder="请输入项目名称" clearable
-                      prefix-icon='el-icon-document-copy' :style="{width: '30%'}"></el-input>
+        <el-form
+          ref="addProjectForm"
+          :model="addProjectForm"
+          :rules="rules"
+          size="small"
+          label-width="100px"
+          style="margin-top: 10px"
+        >
+          <el-form-item
+            label="项目名称"
+            prop="projectName"
+          >
+            <el-input
+              v-model="addProjectForm.projectName"
+              placeholder="请输入项目名称"
+              clearable
+              prefix-icon="el-icon-document-copy"
+              :style="{width: '30%'}"
+            />
           </el-form-item>
-          <el-form-item label="顶级项目" prop="isRoot">
-            <vxe-switch v-model="addProjectForm.isRoot" on-label="是" off-label="否"
-                        @change="cleanParentProject"></vxe-switch>
+          <el-form-item
+            label="顶级项目"
+            prop="isRoot"
+          >
+            <vxe-switch
+              v-model="addProjectForm.isRoot"
+              on-label="是"
+              off-label="否"
+              @change="cleanParentProject"
+            />
             <!--  <el-switch  active-color="#13ce66"
                           inactive-color="#ff4949" v-model="addProjectForm.isRoot" @change="cleanParentProject"></el-switch>-->
           </el-form-item>
-          <el-form-item label="所属项目" prop="parentProject">
-            <el-cascader ref="projectCascader" v-model="addProjectForm.parentProject" :options="parentProjectOptions"
-                         @change="chooseProject"
-                         collapse-tags :disabled="addProjectForm.isRoot"
-                         :show-all-levels="true"
-                         :props="parentProjectProps" :style="{width: '30%'}" :placeholder="chooseProjectHolder"
-                         separator=">"
-                         filterable
-                         clearable></el-cascader>
+          <el-form-item
+            label="所属项目"
+            prop="parentProject"
+          >
+            <el-cascader
+              ref="projectCascader"
+              v-model="addProjectForm.parentProject"
+              :options="parentProjectOptions"
+              @change="chooseProject"
+              collapse-tags
+              :disabled="addProjectForm.isRoot"
+              :show-all-levels="true"
+              :props="parentProjectProps"
+              :style="{width: '30%'}"
+              :placeholder="chooseProjectHolder"
+              separator=">"
+              filterable
+              clearable
+            />
           </el-form-item>
           <el-form-item label="备注">
-            <el-input v-model="addProjectForm.addProjectText" placeholder="请输入备注" :maxlength="20" show-word-limit
-                      clearable
-                      :style="{width: '30%'}"></el-input>
+            <el-input
+              v-model="addProjectForm.addProjectText"
+              placeholder="请输入备注"
+              :maxlength="20"
+              show-word-limit
+              clearable
+              :style="{width: '30%'}"
+            />
           </el-form-item>
           <el-form-item size="small">
-            <el-button type="primary" @click="submitForm" :loading="loadingStatus">提交</el-button>
-            <el-button @click="resetForm">重置</el-button>
+            <el-button
+              type="primary"
+              @click="submitForm"
+              :loading="loadingStatus"
+            >
+              提交
+            </el-button>
+            <el-button @click="resetForm">
+              重置
+            </el-button>
           </el-form-item>
         </el-form>
-        <el-divider></el-divider>
+        <el-divider/>
         <div class="chooseTanks">
           <!--          左侧表格-->
           <vxe-grid
@@ -62,27 +119,41 @@
             highlight-current-row
             highlight-hover-column
             highlight-current-column
-            size="mini">
+            size="mini"
+          >
             <!--            顶部模板-->
             <template v-slot:toolbar_buttons_left>
               <div style="background-color: #FA8532;line-height: 46px;border: 1px solid darkgrey">
                 <span class="addProjectText">已添加罐箱数:</span>
-                <span class="addProjectText" style="margin-left:10px;">{{ selectedTanksLeft.length }}</span>
+                <span
+                  class="addProjectText"
+                  style="margin-left:10px;"
+                >{{ selectedTanksLeft.length }}</span>
               </div>
             </template>
             <!--自定义空数据模板-->
             <template v-slot:empty>
-            <span style="color: black;">
-              <span>请添加设备或暂不添加</span>
-            </span>
+              <span style="color: black;">
+                <span>请添加设备或暂不添加</span>
+              </span>
             </template>
           </vxe-grid>
           <!--          转移按钮-->
           <div style="display: flex;flex-flow: column;align-items: center;justify-content:center;">
-            <el-button style="margin: 0 0 3px 0;background-color: #FA8532;border:none" type="primary"
-                       icon="el-icon-arrow-left" circle @click="transferToLeft"></el-button>
-            <el-button style="margin: 3px 0 0 0;background-color: #58647A;border:none" type="primary"
-                       icon="el-icon-arrow-right" circle @click="removeChecked"></el-button>
+            <el-button
+              style="margin: 0 0 3px 0;background-color: #FA8532;border:none"
+              type="primary"
+              icon="el-icon-arrow-left"
+              circle
+              @click="transferToLeft"
+            />
+            <el-button
+              style="margin: 3px 0 0 0;background-color: #58647A;border:none"
+              type="primary"
+              icon="el-icon-arrow-right"
+              circle
+              @click="removeChecked"
+            />
           </div>
           <!--          右侧表格-->
           <vxe-grid
@@ -96,22 +167,28 @@
             highlight-current-row
             highlight-hover-column
             highlight-current-column
-            size="mini">
+            size="mini"
+          >
             <!--            顶部模板-->
             <template v-slot:toolbar_buttons_right>
               <div style="background-color: #58647A;line-height: 46px;border: 1px solid #929090">
                 <span class="addProjectText">可添加罐箱数:</span>
-                <span class="addProjectText" style="margin-left:10px">{{ totalDevicesRight }}</span>
+                <span
+                  class="addProjectText"
+                  style="margin-left:10px"
+                >{{ totalDevicesRight }}</span>
                 <span class="addProjectText">当前选择:</span>
-                <span class="addProjectText"
-                      style="margin-left:10px;color:#FA8532 ">{{ currentSelectedDevicesRight.length }}</span>
+                <span
+                  class="addProjectText"
+                  style="margin-left:10px;color:#FA8532 "
+                >{{ currentSelectedDevicesRight.length }}</span>
               </div>
             </template>
             <!--自定义空数据模板-->
             <template v-slot:empty>
-            <span style="color: black;">
-              <span>请联系cimc后台咨询</span>
-            </span>
+              <span style="color: black;">
+                <span>请联系cimc后台咨询</span>
+              </span>
             </template>
           </vxe-grid>
         </div>

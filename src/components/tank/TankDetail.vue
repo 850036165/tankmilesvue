@@ -11,7 +11,7 @@
       <el-tab-pane label="数据监控" name="first">
         <!--        设备总览栏-->
         <el-card style="margin:5px">
-          <h3 style="margin-top: 0;margin-bottom: 10px;display: inline-block">监控信息总览</h3>
+          <h3 style="margin-top: 0;margin-bottom: 10px;font-weight:normal">监控信息总览</h3>
           <div class="dataCard">
             <div class="cardItem1">
               <span><i class="el-icon-connection cardIcon"></i>设备号</span>

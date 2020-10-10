@@ -10,56 +10,54 @@
       </el-breadcrumb-item>
       <el-breadcrumb-item>{{ this.$route.query.sn }}</el-breadcrumb-item>
     </el-breadcrumb>
+    <div style="display: flex;align-items: center;justify-content: flex-end">
+      <h1 style="margin-right: auto;margin-left: 10px">
+        设备详情&nbsp;<span
+        style="color: #2A68D3"
+      >{{ this.$route.query.sn }}</span>
+      </h1>
+      <el-button
+        style="height: 30px"
+        type="info"
+        plain
+        size="mini"
+        @click="editDevice"
+        v-show="canNotEdit&&this.activeTabs!=='third'"
+      >
+        编辑配置
+      </el-button>
+      <el-button
+        type="success"
+        size="mini"
+        @click="saveEdit"
+        v-show="!canNotEdit"
+      >
+        保存配置
+      </el-button>
+      <el-button
+        type="danger"
+        size="mini"
+        @click="quitEdit"
+        v-show="!canNotEdit"
+      >
+        放弃修改
+      </el-button>
+      <el-tooltip
+        effect="dark"
+        placement="bottom-end"
+      >
+        <div slot="content">
+          点击编辑可修改设置<br>否则仅能查看和复制
+        </div>
+        <i
+          class="el-icon-warning-outline"
+          v-show="canNotEdit&&this.activeTabs!=='third'"
+          style="font-size: 20px;height: 30px;cursor: pointer;line-height: 30px;margin-left: 10px"
+        />
+      </el-tooltip>
+    </div>
     <el-card>
-      <div slot="header">
-        <h1 style="margin: 0;display: inline-block">
-          设备详情&nbsp;<span
-          style="color: #2A68D3"
-        >{{ this.$route.query.sn }}</span>
-        </h1>
-        <el-tooltip
-          effect="dark"
-          placement="bottom-end"
-        >
-          <div slot="content">
-            点击编辑可修改设置<br>否则仅能查看和复制
-          </div>
-          <i
-            class="el-icon-warning-outline"
-            v-show="canNotEdit"
-            style="font-size: 20px;float: right;margin-bottom: 10px;cursor: pointer;line-height: 30px"
-          />
-        </el-tooltip>
-        <el-button
-          style="float: right;margin: 0 5px"
-          type="info"
-          plain
-          size="mini"
-          @click="editDevice"
-          v-show="canNotEdit"
-        >
-          编辑配置
-        </el-button>
-        <el-button
-          style="float: right;margin: 0 5px"
-          type="success"
-          size="mini"
-          @click="saveEdit"
-          v-show="!canNotEdit"
-        >
-          保存配置
-        </el-button>
-        <el-button
-          style="float: right;margin: 0 5px"
-          type="danger"
-          size="mini"
-          @click="quitEdit"
-          v-show="!canNotEdit"
-        >
-          放弃修改
-        </el-button>
-      </div>
-      <el-tabs active-name="first">
+      <el-tabs v-model="activeTabs">
         <!--        分页1-->
         <el-tab-pane
           label="基础信息"
@@ -188,7 +186,7 @@
                   <td>液位%</td>
                   <td>{{ addForm.tankLevel }}</td>
                   <td>电量%</td>
-                  <td>{{ addForm.battery }}</td>
+                  <td>{{ addForm.batteryLeft }}</td>
                 </tr>
                 <tr style="background-color: #F5F7FA">
                   <td>所属项目</td>
@@ -257,13 +255,12 @@
                   />
                   <span style="margin: 10px">日志等级</span>
                   <el-input-number
-                    v-model="addForm.logLevel"
+                    v-model.number="addForm.logLevel"
                     :readonly="canNotEdit"
                     size="mini"
                     :min="0"
                     :max="4"
-                    controls-position="right"
-                    style="width: 80px;margin-left: 12px"
+                    style="width: 100px;margin-left: 12px"
                   />
                 </el-form-item>
               </el-form>
@@ -636,42 +633,63 @@
         <el-tab-pane
           label="设备日志"
           name="third"
+          :disabled="!canNotEdit"
         >
-          <vxe-grid
-            :header-cell-style="headerCellStyle"
-            ref="xGrid"
-            :height="tableHeight+'px'"
-            v-bind="gridOptions"
-            highlight-hover-row
-            highlight-current-row
-            highlight-hover-column
-            highlight-current-column
-            size="mini"
+          <div
+            ref="tableDiv"
+            :style="{height: scrollerHeight}"
           >
-            <!--自定义列插槽-->
-            <template v-slot:tools>
-              <vxe-form
-                :data="formData"
-                @submit="searchEvent"
-                @reset="searchEvent"
-                style="padding: 0;margin-right: 10px"
-              >
-                <vxe-form-item
-                  field="keywords"
-                  :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"
+            <vxe-grid
+              :header-cell-style="headerCellStyle"
+              ref="xGrid"
+              auto-resize
+              v-bind="gridOptions"
+              highlight-hover-row
+              highlight-current-row
+              highlight-hover-column
+              highlight-current-column
+              size="mini"
+            >
+              <!--自定义列插槽-->
+              <template v-slot:toolbar_buttons>
+                <el-date-picker
+                  prefix-icon="el-icon-date"
+                  style="width: 300px"
+                  size="mini"
+                  v-model="selectDate"
+                  type="daterange"
+                  value-format="timestamp"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  @change="queryTime"
                 />
-                <vxe-form-item
-                  :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"
-                />
-              </vxe-form>
-            </template>
-            <!--自定义空数据模板-->
-            <template v-slot:empty>
-              <span style="color: black;">
-                <span>请联系cimc后台咨询</span>
-              </span>
-            </template>
-          </vxe-grid>
+              </template>
+              <template v-slot:tools>
+                <vxe-form
+                  size="mini"
+                  :data="formData"
+                  @submit="searchEvent"
+                  @reset="searchEvent"
+                  style="margin-left: auto;"
+                >
+                  <vxe-form-item
+                    field="keywords"
+                    :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"
+                  />
+                  <vxe-form-item
+                    :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"
+                  />
+                </vxe-form>
+              </template>
+              <!--自定义空数据模板-->
+              <template v-slot:empty>
+                <span style="color: black;">
+                  <span>暂无数据,请联系cimc后台咨询</span>
+                </span>
+              </template>
+            </vxe-grid>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -686,13 +704,15 @@ export default {
   name: 'DeviceDetail',
   data() {
     return {
-      tableHeight: 0,
+      activeTabs: 'first',
+      deviceRawId: undefined,
+      selectDate: [undefined, undefined],
       formData: {
         keywords: ''
       },
       gridOptions: {
+        height: 'auto',
         stripe: true,
-        resizable: true,
         showOverflow: true,
         exportConfig: {
           types: ['xlsx', 'csv', 'html', 'xml', 'txt']
@@ -731,22 +751,80 @@ export default {
           ajax: {
             query: async ({page, sort, filters}) => {
               // 处理排序条件
-              if (sort.property !== undefined) {
-                sort.property = {
-                  deviceSn: 0,
-                  sampledAt: 1,
-                  receivedAt: 2,
-                  tankLevel: 3,
-                  tankPressure: 4,
-                  tankTemperature: 5,
-                  battery: 6,
-                  gps_valid: 7
-                }[sort.property]
-              } else sort.property = 0
-              sort.order = {
-                desc: 'DESC',
-                asc: 'ASC'
-              }[sort.order]
+              if (sort.property) {
+                console.log('初始order非null1', sort.property)
+                switch (sort.property) {
+                  case 'deviceSn':
+                    sort.property = 0
+                    break
+                  case 'tankSn':
+                    sort.property = 1
+                    break
+                  case 'category':
+                    sort.property = 2
+                    break
+                  case 'projectNames':
+                    sort.property = 3
+                    break
+                  case 'firmwareVersion':
+                    sort.property = 4
+                    break
+                  case 'lastUpdateTime':
+                    sort.property = 5
+                    break
+                  case 'temperatureInterval':
+                    sort.property = 6
+                    break
+                  case 'gpsInterval':
+                    sort.property = 7
+                    break
+                  case 'commInterval':
+                    sort.property = 8
+                    break
+                  case 'maxWorkTime':
+                    sort.property = 9
+                    break
+                  case 'lastUpgradeTime':
+                    sort.property = 10
+                    break
+                  case 'tankTemperature':
+                    sort.property = 11
+                    break
+                  case 'tankPressure':
+                    sort.property = 12
+                    break
+                  case 'tankLevel':
+                    sort.property = 13
+                    break
+                  case 'batteryLeft':
+                    sort.property = 14
+                    break
+                  case 'connected':
+                    sort.property = 15
+                    break
+                  default:
+                    sort.property = 0
+                }
+                console.log('初始order非null2', sort.property)
+              }
+              if (sort.order) {
+                console.log('order值为1', sort.order)
+                switch (sort.order) {
+                  case 'desc':
+                    sort.order = 'DESC'
+                    break
+                  case 'asc':
+                    sort.order = 'ASC'
+                    break
+                  default:
+                    sort.order = 'DESC'
+                }
+                console.log('order值为2', sort.order)
+              } else {
+                console.log('order值为3', sort.order)
+                sort.order = 'DESC'
+                console.log('order值为4', sort.order)
+              }
               console.log('排序值' + JSON.stringify(sort.property))
               let queryParams = Object.assign({
                 orderColumnIndex: sort.property,
@@ -758,26 +836,21 @@ export default {
                 queryParams[field] = values.join(',')
               })
               console.log('请求值2' + JSON.stringify(queryParams))
+              console.log('时间值为', this.selectDate)
+              if (this.selectDate === null) this.selectDate = []
+              queryParams = Object.assign(queryParams, {
+                id: this.addForm.id,
+                startAt: `${this.selectDate[0] / 1000}`,
+                endAt: `${this.selectDate[1] / 1000}`
+              })
               queryParams = Object.assign(queryParams, {currentPage: page.currentPage - 1, pageSize: page.pageSize})
               console.log('请求值3', queryParams)
               // 请求数据
-              const response = await this.$http.post('device/message/list', queryParams).catch((error) => {
+              const response = await this.$http.post('device/operation/history/list', queryParams).catch((error) => {
                 VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
               })
               console.log('源数据', response)
               this.totalDevices = response.data.data.total
-              // 请求位置信息
-              // for (let i = 0; i < response.data.data.data.length; i++) {
-              //   console.log('行内', [response.data.data.data[i].lat, response.data.data.data[i].lon])
-              //   const myLat = response.data.data.data[i].lat
-              //   const myLon = response.data.data.data[i].lon
-              //   const response1 = await this.$http.get(`https://restapi.amap.com/v3/geocode/regeo?location=${myLon},${myLat}&key=19c0dfb39bb8f17869228303e7df7b5f`).catch((error) => {
-              //     VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
-              //   })
-              //   console.log('地址', response1)
-              //   response.data.data.data[i].position = response1.data.regeocode.formatted_address
-              // }
-              // 构造最终数据
               const listData = {
                 page: {
                   currentPage: response.data.data.currentPage + 1,
@@ -796,29 +869,19 @@ export default {
           zoom: true,
           export: true,
           print: true,
-          custom: true
+          custom: true,
+          slots: {
+            buttons: 'toolbar_buttons'
+          }
         },
         columns: [
           {type: 'seq', width: 50, align: 'center'},
-          {
-            field: 'deviceSn',
-            align: 'center',
-            title: '设备号',
-            minWidth: 80,
-            remoteSort: true
-          },
-          {field: 'sampledAt', title: '记录时间', remoteSort: true, minWidth: 180, align: 'center'},
-          {field: 'receivedAt', title: '接收时间', remoteSort: true, minWidth: 180, align: 'center'},
-          {field: 'tankLevel', title: '液位', remoteSort: true, minWidth: 100},
-          {field: 'tankPressure', title: '压力', remoteSort: true, minWidth: 100},
-          {field: 'tankTemperature', title: '温度', remoteSort: true, minWidth: 100},
-          {field: 'battery', title: '电量', remoteSort: true, minWidth: 100},
-          {field: 'lat', title: '经度', remoteSort: true, minWidth: 100},
-          {field: 'lon', title: '纬度', remoteSort: true, minWidth: 100},
-          {field: 'location', title: '位置', remoteSort: true, minWidth: 100},
-          {field: 'altitude', title: '海拔', remoteSort: true, minWidth: 100},
-          {field: 'speed', title: '速度', remoteSort: true, minWidth: 100},
-          {field: 'gps_valid', title: 'gps_valid', remoteSort: true, minWidth: 100}
+          {field: 'at', title: '更改时间', remoteSort: true, minWidth: 180, align: 'center', formatter: this.formatDate2},
+          {field: 'operationType', title: '操作类型', remoteSort: true, minWidth: 180, align: 'center'},
+          {field: 'operatedName', title: '操作参数', remoteSort: true, minWidth: 100},
+          {field: 'operatedValue', title: '修改数值', remoteSort: true, minWidth: 100},
+          {field: 'oldValue', title: '原数值', remoteSort: true, minWidth: 100},
+          {field: 'operator', title: '操作账户', remoteSort: true, minWidth: 100}
         ]
       },
       addFormTemp: {},
@@ -869,7 +932,7 @@ export default {
         tankTemperature: undefined,
         tankPressure: undefined,
         tankLevel: undefined,
-        battery: undefined,
+        batteryLeft: undefined,
         connected: undefined
       },
       typeList: undefined,
@@ -913,6 +976,9 @@ export default {
     }
   },
   computed: {
+    scrollerHeight: function () {
+      return (window.innerHeight - 250) + 'px'
+    },
     addRules() {
       return {
         deviceSn: [
@@ -971,8 +1037,15 @@ export default {
     }
   },
   methods: {
+    formatDate2({cellValue}) {
+      return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss')
+    },
+    queryTime() {
+      console.log(this.selectDate)
+      this.$refs.xGrid.commitProxy('query')
+    },
     searchEvent() {
-      this.$refs.xGrid.commitProxy('reload')
+      this.$refs.xGrid.commitProxy('query')
     },
     headerCellStyle() {
       return {
@@ -1002,14 +1075,14 @@ export default {
       ]).then(() => {
         this.canNotEdit = true
         this.$http.post('/device/edit', this.addForm).then(async response => {
-          console.log(response.data)
+          console.log('test', response.data)
           if (response.data.code !== 0) {
             this.$XModal.message({message: `修改错误@${response.data.message}`, status: 'warning', id: '2'})
             this.addForm = this.addFormTemp // 若修改错误，恢复初始数据
           } else {
             console.log('请求设备代码', this.$route.query.sn)
             await this.$router.push({query: {sn: this.addForm.deviceSn}})
-            this.$route.query.sn = this.addForm.deviceSn // 将query值修改为修改后的值
+            //    this.$route.query.sn = this.addForm.deviceSn // 将query值修改为修改后的值
             await this.getDeviceDetail(this.addForm.deviceSn)
             this.$XModal.message({message: '修改成功', status: 'success', id: '3'})
             console.log('提交内容为', this.addForm)
@@ -1028,6 +1101,7 @@ export default {
       this.canNotEdit = true
     },
     editDevice() {
+      this.activeTabs = 'second'
       if (this.typeList === undefined) this.requestDevice() // 请求设备类型
       this.canNotEdit = false // 取消不可编辑状态
       this.addFormTemp = JSON.parse(JSON.stringify(this.addForm)) // 点击编辑时暂存原始数据
@@ -1036,16 +1110,11 @@ export default {
     async getDeviceDetail(sn) {
       const deviceDetail = await this.$http.post('/device/detail', {sn: sn})
       this.addForm = deviceDetail.data.data
+      await this.$refs.xGrid.commitProxy('query')
       console.log('设备详情', this.addForm)
     }
   },
   mounted() {
-    this.tableHeight = window.innerHeight - 380
-    window.onresize = () => {
-      return (() => {
-        this.tableHeight = window.innerHeight - 380
-      })()
-    }
     this.getDeviceDetail(this.$route.query.sn)
   },
   filters: {
@@ -1064,6 +1133,10 @@ export default {
 </script>
 
 <style scoped>
+/deep/ .el-date-editor .el-range__icon {
+  color: blue;
+}
+
 /deep/ .el-card__body {
   padding-bottom: 0;
 }

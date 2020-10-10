@@ -2,46 +2,104 @@
   <div class="worldMap">
     <!--    切换语言按钮-->
     <div class="switchLang">
-      <el-dropdown trigger="click" @command="handleCommand" size="mini">
-        <svg class="iconchange" aria-hidden="true">
-          <use xlink:href="#icon-fanyix"></use>
+      <el-dropdown
+        trigger="click"
+        @command="handleCommand"
+        size="mini"
+      >
+        <svg
+          class="iconchange"
+          aria-hidden="true"
+        >
+          <use xlink:href="#icon-fanyix"/>
         </svg>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="zh">中文</el-dropdown-item>
-          <el-dropdown-item command="en">English</el-dropdown-item>
-          <el-dropdown-item disabled>こんにちは</el-dropdown-item>
+          <el-dropdown-item command="zh">
+            中文
+          </el-dropdown-item>
+          <el-dropdown-item command="en">
+            English
+          </el-dropdown-item>
+          <el-dropdown-item disabled>
+            こんにちは
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
     <!--      登录框-->
     <div class="loginBox">
       <div>
-        <el-form :model="loginForm" ref="loginFormRef" :rules="loginFormRules" class="form_group"
-                 hide-required-asterisk>
-          <el-image :src="url" fit="contain" class="homeLogo hidden-md-and-down" @click="goHomePage"></el-image>
-          <p class="welcomeText hidden-md-and-down">欢迎回来！请登录您的罐程账户。</p>
-          <p class="welcomeText1 hidden-md-and-down">如需帮助请联系
-            <a href="mailto:tankmiles@cimc.com?subject=Question%20For%20Tankmiles"
-               class="welcomeText1 hidden-md-and-down">tankmiles@cimc.com</a> 或
-            <a href="mailto:info@savvy-telematics.com"
-               class="welcomeText1 hidden-md-and-down">info@savvy-telematics.com</a></p>
+        <el-form
+          :model="loginForm"
+          ref="loginFormRef"
+          :rules="loginFormRules"
+          class="form_group"
+          hide-required-asterisk
+        >
+          <el-image
+            :src="url"
+            fit="contain"
+            class="homeLogo hidden-md-and-down"
+            @click="goHomePage"
+          />
+          <p class="welcomeText hidden-md-and-down">
+            欢迎回来！请登录您的罐程账户。
+          </p>
+          <p class="welcomeText1 hidden-md-and-down">
+            如需帮助请联系
+            <a
+              href="mailto:tankmiles@cimc.com?subject=Question%20For%20Tankmiles"
+              class="welcomeText1 hidden-md-and-down"
+            >tankmiles@cimc.com</a> 或
+            <a
+              href="mailto:info@savvy-telematics.com"
+              class="welcomeText1 hidden-md-and-down"
+            >info@savvy-telematics.com</a>
+          </p>
           <!--<label>用户名</label>-->
-          <el-form-item class="form_input" prop="name"><!--用户名-->
-            <el-input id="input1" v-model="loginForm.name" prefix-icon="el-icon-user"
-                      :placeholder="$t('login.username')"></el-input>
+          <el-form-item
+            class="form_input"
+            prop="name"
+            style="width: 21vw"
+          >
+            <!--用户名-->
+            <el-input
+              id="input1"
+              v-model="loginForm.name"
+              prefix-icon="el-icon-user"
+              :placeholder="$t('login.username')"
+            />
           </el-form-item>
           <!--<label>密码</label>-->
-          <el-form-item class="form_input" prop="password"><!--密码-->
-            <el-input id="input" type="password" v-model="loginForm.password" prefix-icon="el-icon-lock"
-                      :placeholder="$t('login.password')"></el-input>
+          <el-form-item
+            style="width: 21vw"
+            class="form_input"
+            prop="password"
+          >
+            <!--密码-->
+            <el-input
+              id="input"
+              type="password"
+              v-model="loginForm.password"
+              prefix-icon="el-icon-lock"
+              :placeholder="$t('login.password')"
+            />
           </el-form-item>
           <!--          <el-form-item>-->
           <!--            <el-checkbox class="form_checkbox">{{ $t('login.remember') }}</el-checkbox>&lt;!&ndash;记住密码&ndash;&gt;-->
           <!--          </el-form-item>-->
-          <el-form-item><!--登录按钮-->
+          <el-form-item
+            style="width: 21vw"
+          >
+            <!--登录按钮-->
             <div style="margin-top: 30px">
-              <el-button :loading="loadingStatus"
-                         @click="login()" type="primary" size="small" style="width: 100px">
+              <el-button
+                :loading="loadingStatus"
+                @click="login()"
+                type="primary"
+                size="small"
+                style="width: 100px"
+              >
                 {{ loadingText1.loadingText }}
               </el-button>
               <span class="forgetPassword hidden-sm-and-down">忘记密码</span>
@@ -49,18 +107,35 @@
           </el-form-item>
         </el-form>
       </div>
-      <p class="bottom_text hidden-md-and-down">Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.</p>
+      <p class="bottom_text hidden-md-and-down">
+        Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.
+      </p>
     </div>
     <!--    轮播背景-->
-    <el-carousel :interval=30000 id="el-carousel" height="100%" arrow="never" trigger="click"
-                 style="width: 70%;height: 100%;position: absolute;  -webkit-user-select: none;">
-      <el-carousel-item v-for="(item,index) in imageBox" :key="index">
-        <img :src="item.path" alt="未加载" style="object-fit: cover;width: 100%;height: 100%">
+    <el-carousel
+      :interval="30000"
+      id="el-carousel"
+      height="100%"
+      arrow="never"
+      trigger="click"
+      style="width: 70%;height: 100%;position: absolute;  -webkit-user-select: none;"
+    >
+      <el-carousel-item
+        v-for="(item,index) in imageBox"
+        :key="index"
+      >
+        <img
+          id="img"
+          :src="item.path"
+          alt="未加载"
+          style="object-fit: cover;width: 100%;height: 100%"
+        >
       </el-carousel-item>
     </el-carousel>
     <!--    遮罩背景-->
     <div
-      style="position:absolute;height: 100%;width: 100%;z-index: 2; background: linear-gradient(to  right,rgba(0, 0, 0, 0.05) 10%,rgba(0, 0, 0, 0.1) 15%,rgba(0, 0, 0, 0.1) 20%,rgba(0, 0, 0, 0.2) 25%,rgba(0, 0, 0, 0.3) 30%,rgba(0, 0, 0, 0.4) 35%,rgba(0, 0, 0, 0.5) 40%,rgba(0, 0, 0, 0.6) 45%,rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0.85) 55%,rgba(0, 0, 0, 0.88) 58%,rgba(0, 0, 0, 0.9) 60%,black 65%);"></div>
+      style="position:absolute;height: 100%;width: 100%;z-index: 2; background: linear-gradient(to  right,rgba(0, 0, 0, 0.05) 10%,rgba(0, 0, 0, 0.1) 15%,rgba(0, 0, 0, 0.1) 20%,rgba(0, 0, 0, 0.2) 25%,rgba(0, 0, 0, 0.3) 30%,rgba(0, 0, 0, 0.4) 35%,rgba(0, 0, 0, 0.5) 40%,rgba(0, 0, 0, 0.6) 45%,rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0.85) 55%,rgba(0, 0, 0, 0.88) 58%,rgba(0, 0, 0, 0.9) 60%,black 65%);"
+    />
   </div>
 </template>
 
@@ -134,9 +209,30 @@ export default {
             this.loadingText1.loadingText = `${this.$t('login.login')}`
             this.loadingStatus = false
           } else {
+            let text = '';
+            const time = new Date().getHours()
+            if ((time >= 0) && (time < 7)) {
+              text = '夜猫子，要注意身体哦！ '
+            }
+            if ((time >= 7) && (time < 12)) {
+              text = '上午好'
+            }
+            if ((time >= 12) && (time < 14)) {
+              text = '午休时间。您要保持睡眠哦！'
+            }
+            if ((time >= 14) && (time < 18)) {
+              text = '下午好！'
+            }
+            if ((time >= 18) && (time <= 22)) {
+              text = '还在加班吗？'
+            }
+            if ((time >= 22) && (time < 24)) {
+              text = '您应该休息了！'
+            }
+            console.log(text)
             this.$notify({
               title: `${this.$t('login.alert4')}`,
-              message: `${this.loginForm.name}!${this.$t('login.alert5')}`,
+              message: `${this.loginForm.name}!${text}`,
               type: 'success'
             })
             this.loadingText1.loadingText = `${this.$t('login.login')}`
@@ -164,6 +260,20 @@ export default {
       localStorage.setItem('lang', command)
     }
 
+  },
+  mounted() {
+    const userAgent = navigator.userAgent
+    const isOpera = userAgent.indexOf('Opera') > -1 // 判断是否Opera浏览器
+    const isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1 && !isOpera // 判断是否IE浏览器
+    const isEdge = userAgent.indexOf('Edge') > -1 // 判断是否IE的Edge浏览器
+    const isFF = userAgent.indexOf('Firefox') > -1 // 判断是否Firefox浏览器
+    const isSafari = userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1 // 判断是否Safari浏览器
+    const isChrome = userAgent.indexOf('Chrome') > -1 && userAgent.indexOf('Safari') > -1 // 判断Chrome浏览器
+    if (isOpera === true || isIE === true || isEdge === true || isFF === true || isSafari === true) {
+      alert('检测到非Chrome浏览器,可能会导致兼容性问题!\r\n是否继续?')
+    } else {
+      console.log(isChrome)
+    }
   }
 }
 

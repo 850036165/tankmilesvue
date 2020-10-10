@@ -10,68 +10,108 @@
         background-color="#2d3463"
         text-color="#fff"
         active-text-color="#ffd04b"
-        :unique-opened=true
+        :unique-opened="true"
         :default-active="$route.path"
         router
         style="border-right-width: 0;"
-        class="sideBarMenu">
-        <div class="homeLogo" :style="isCollapse?'background: #2F74EB':'background: #242A4F'">
+        class="sideBarMenu"
+      >
+        <div
+          class="homeLogo"
+          :style="isCollapse?'background: #2F74EB':'background: #242A4F'"
+        >
           <!--          logo图标-->
           <el-image
             v-show="!isCollapse"
             style="width: 121px;height: 55px"
             :src="logoUrl"
             fit="fit"
-          ></el-image>
-          <i v-show="isCollapse" class="el-icon-cpu" style="font-size: 35px;color: white"></i>
+          />
+          <i
+            v-show="isCollapse"
+            class="el-icon-cpu"
+            style="font-size: 35px;color: white"
+          />
         </div>
         <!--        首页看板一级菜单-->
         <el-menu-item index="/dashboard">
-          <i class="el-icon-odometer" style="font-size: 25px"></i>
-          <span slot="title" style="padding: 0 20px 0 30px">首页看板</span>
+          <i
+            class="el-icon-odometer"
+            style="font-size: 25px"
+          />
+          <span
+            slot="title"
+            style="padding: 0 20px 0 30px"
+          >首页看板</span>
         </el-menu-item>
         <!--        项目管理一级菜单-->
         <el-menu-item index="/project">
-          <i class="el-icon-document" style="font-size: 25px"></i>
-          <span slot="title" style="padding: 0 20px 0 30px">项目管理</span>
+          <i
+            class="el-icon-document"
+            style="font-size: 25px"
+          />
+          <span
+            slot="title"
+            style="padding: 0 20px 0 30px"
+          >项目管理</span>
         </el-menu-item>
         <!--        罐箱列表一级菜单-->
         <el-menu-item index="/tank">
-          <i class="el-icon-s-marketing" style="font-size: 25px"></i>
-          <span slot="title" style="padding: 0 20px 0 30px">罐箱列表</span>
+          <i
+            class="el-icon-s-marketing"
+            style="font-size: 25px"
+          />
+          <span
+            slot="title"
+            style="padding: 0 20px 0 30px"
+          >罐箱列表</span>
         </el-menu-item>
         <!--        监控设置一级菜单-->
-        <el-submenu index="/w" disabled>
+        <el-submenu
+          index="/w"
+          disabled
+        >
           <template slot="title">
-            <i class="el-icon-alarm-clock" style="font-size: 25px"></i>
+            <i
+              class="el-icon-alarm-clock"
+              style="font-size: 25px"
+            />
             <span style="padding: 0 20px 0 30px">监控设置</span>
           </template>
           <!--          监控二级菜单-->
           <el-menu-item index="/device">
-            <i class="el-icon-notebook-2"></i><span style="padding: 0 20px 0 20px">监控列表</span>
+            <i class="el-icon-notebook-2"/><span style="padding: 0 20px 0 20px">监控列表</span>
           </el-menu-item>
           <el-menu-item index="/firmware">
-            <i class="el-icon-location-information"></i><span style="padding: 0 20px 0 20px">关注点设置</span>
+            <i class="el-icon-location-information"/><span style="padding: 0 20px 0 20px">关注点设置</span>
           </el-menu-item>
         </el-submenu>
         <!--        后台管理一级菜单-->
         <el-submenu index="/manage">
           <template slot="title">
-            <i class="el-icon-set-up" style="font-size: 25px"></i>
+            <i
+              class="el-icon-set-up"
+              style="font-size: 25px"
+            />
             <span style="padding: 0 20px 0 30px">后台管理</span>
           </template>
           <!--          二级菜单-->
           <el-menu-item index="/device">
-            <i class="el-icon-receiving"></i><span style="padding: 0 20px 0 20px">设备管理</span>
+            <i class="el-icon-receiving"/><span style="padding: 0 20px 0 20px">设备管理</span>
           </el-menu-item>
           <el-menu-item index="/firmware">
-            <i class="el-icon-box"></i><span style="padding: 0 20px 0 20px">固件管理</span>
+            <i class="el-icon-box"/><span style="padding: 0 20px 0 20px">固件管理</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
       <!--      版权信息-->
-      <div class="homeBottomText hidden-md-and-down" v-show="!isCollapse">
-        <p style="margin-left: 10px">Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.</p>
+      <div
+        class="homeBottomText hidden-md-and-down"
+        v-show="!isCollapse"
+      >
+        <p style="margin-left: 10px">
+          Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.
+        </p>
       </div>
     </el-aside>
 
@@ -80,9 +120,11 @@
       <el-header class="home-header">
         <!--        顶部菜单栏-->
         <!--        收起按钮-->
-        <i :class="[isCollapse?'el-icon-s-unfold open1':'el-icon-s-unfold close1','hidden-md-and-down']"
-           @click="foldMenu"
-           style="font-size: 25px;color: #2d3463;padding: 10px;cursor:pointer;display: inline-block;margin-right: auto;"></i>
+        <i
+          :class="[isCollapse?'el-icon-s-unfold open1':'el-icon-s-unfold close1','hidden-md-and-down']"
+          @click="foldMenu"
+          style="font-size: 25px;color: #2d3463;padding: 10px;cursor:pointer;display: inline-block;margin-right: auto;"
+        />
         <!--        顶部菜单1-->
         <el-menu
           :default-active="$route.path"
@@ -93,44 +135,80 @@
           background-color="white"
           text-color="grey"
           active-text-color="#2d3463"
-          :unique-opened=true
-          style="-webkit-user-select: none;">
+          :unique-opened="true"
+          style="-webkit-user-select: none;"
+        >
           <!-- 消息-->
           <el-menu-item index="/message">
-            <i class="el-icon-message" style="color: #6c6e6f;font-size: 20px;margin: 0">
-              <el-badge :hidden="false" is-dot style="position: absolute"/>
+            <i
+              class="el-icon-message"
+              style="color: #6c6e6f;font-size: 20px;margin: 0"
+            >
+              <el-badge
+                :hidden="false"
+                is-dot
+                style="position: absolute"
+              />
             </i>
           </el-menu-item>
           <!-- 基础设置-->
           <el-menu-item index="/basicsetting">
-            <i class="el-icon-s-tools" style="color: #6c6e6f;font-size: 20px;margin: 0"></i>
+            <i
+              class="el-icon-s-tools"
+              style="color: #6c6e6f;font-size: 20px;margin: 0"
+            />
           </el-menu-item>
         </el-menu>
         <!--                语言切换-->
-        <el-dropdown @command="changeLang" trigger="click" size="medium" placement="bottom">
+        <el-dropdown
+          @command="changeLang"
+          trigger="click"
+          size="medium"
+          placement="bottom"
+        >
           <div class="lang_change">
-            <p class="home_lang">{{currentLang}}</p>
+            <p class="home_lang">
+              {{ currentLang }}
+            </p>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="zh"
-                              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-weibiaoti-"></use>
+            <el-dropdown-item
+              command="zh"
+              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;"
+            >
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-weibiaoti-"/>
               </svg>
-              <span style="font-size: 15px;width: 10px">CN</span></el-dropdown-item>
-            <el-dropdown-item command="en"
-                              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-meiguoqi"></use>
+              <span style="font-size: 15px;width: 10px">CN</span>
+            </el-dropdown-item>
+            <el-dropdown-item
+              command="en"
+              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;"
+            >
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-meiguoqi"/>
               </svg>
-              <span style="font-size: 15px;width: 10px">EN</span></el-dropdown-item>
-            <el-dropdown-item command="jp"
-                              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;"
-                              disabled>
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-jp"></use>
+              <span style="font-size: 15px;width: 10px">EN</span>
+            </el-dropdown-item>
+            <el-dropdown-item
+              command="jp"
+              style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;"
+              disabled
+            >
+              <svg
+                class="icon"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-jp"/>
               </svg>
-              <span style="font-size: 15px;width: 10px">JP</span></el-dropdown-item>
+              <span style="font-size: 15px;width: 10px">JP</span>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <!--        个人信息菜单栏-->
@@ -143,36 +221,52 @@
           background-color="white"
           text-color="grey"
           active-text-color="#2d3463"
-          :unique-opened=true
-          style="-webkit-user-select: none;">
+          :unique-opened="true"
+          style="-webkit-user-select: none;"
+        >
           <!--  分隔符 -->
-          <div style="float:left;width: 1px;height: 40px; background: grey;margin: 0 10px 0 10px"></div>
+          <div style="float:left;width: 1px;height: 40px; background: grey;margin: 0 10px 0 10px"/>
           <!-- 头像及个人设置-->
-          <el-submenu index="" style="border-bottom: none">
+          <el-submenu
+            index=""
+            style="border-bottom: none"
+          >
             <template slot="title">
               <div style="height: 100%;display: inline-block;margin-right: 10px">
                 <p style="margin: 0;color: #2F74EB;font-weight: bolder;padding: 0; height: 10px;line-height: 50px">
-                  Hello!</p>
-                <span style="margin:0;padding: 0;line-height: 10px">{{username}}</span></div>
-              <el-avatar size="large" :src="path" alt="fail"></el-avatar>
+                  Hello!
+                </p>
+                <span style="margin:0;padding: 0;line-height: 10px">{{ username }}</span>
+              </div>
+              <el-avatar
+                size="large"
+                :src="path"
+                alt="fail"
+              />
             </template>
-            <el-menu-item index="/personalsetting">个人设置</el-menu-item>
-            <el-menu-item index="about">关于</el-menu-item>
-            <el-menu-item index="logout">退出登录</el-menu-item>
+            <el-menu-item index="/personalsetting">
+              个人设置
+            </el-menu-item>
+            <el-menu-item index="about">
+              关于
+            </el-menu-item>
+            <el-menu-item index="logout">
+              退出登录
+            </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-header>
       <!--      主体区域-->
       <el-main>
-        <router-view></router-view>
+        <router-view/>
         <!--        抽屉-->
         <el-drawer
           title="关于"
-          :withHeader="false"
+          :with-header="false"
           :visible.sync="drawer"
           direction="rtl"
-          size="20%">
-        </el-drawer>
+          size="20%"
+        />
       </el-main>
     </el-container>
   </el-container>

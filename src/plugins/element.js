@@ -115,6 +115,7 @@ Vue.use(Badge)
 Vue.use(Tag)
 Vue.use(Upload)
 Vue.use(Card)
+Vue.use(DatePicker)
 Vue.prototype.$message = Message
 Vue.prototype.$notify = Notification
 Vue.prototype.$confirm = MessageBox.confirm

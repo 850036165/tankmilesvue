@@ -1,7 +1,9 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        首页
+      </el-breadcrumb-item>
       <el-breadcrumb-item>后台管理</el-breadcrumb-item>
       <el-breadcrumb-item>设备管理</el-breadcrumb-item>
     </el-breadcrumb>
@@ -9,9 +11,18 @@
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
-          <h1 style="margin: 0">设备管理</h1>
-          <el-button style="height: 30px;" size="mini" type="primary" icon="el-icon-edit-outline" round
-                     @click="massChange">批量操作
+          <h1 style="margin: 0">
+            设备管理
+          </h1>
+          <el-button
+            style="height: 30px;"
+            size="mini"
+            type="primary"
+            icon="el-icon-edit-outline"
+            round
+            @click="massChange"
+          >
+            批量操作
           </el-button>
         </div>
       </div>
@@ -25,35 +36,66 @@
           highlight-current-row
           highlight-hover-column
           highlight-current-column
-          size="mini">
+          size="mini"
+        >
           <!--自定义列插槽-->
           <template v-slot:operation="{row}">
-            <vxe-button class="operationButton" status="primary" round @click="clickOperation(row)">操作</vxe-button>
+            <vxe-button
+              class="operationButton"
+              status="primary"
+              round
+              @click="clickOperation(row)"
+            >
+              操作
+            </vxe-button>
           </template>
           <template v-slot:deviceSn_default="{ row }">
             <div>
-              <i :class="row.connected?'classB':'classA'"></i>
-              <button class="deviceDetail" @click="goDetail(row)">设备号:{{ row.deviceSn }}</button>
+              <i :class="row.connected?'classB':'classA'"/>
+              <button
+                class="deviceDetail"
+                @click="goDetail(row)"
+              >
+                设备号:{{ row.deviceSn }}
+              </button>
             </div>
           </template>
           <template v-slot:tools>
-            <vxe-form :data="formData" @submit="searchEvent" @reset="searchEvent" style="padding: 0;margin-right: 10px">
-              <vxe-form-item field="keywords"
-                             :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"></vxe-form-item>
+            <vxe-form
+              :data="formData"
+              @submit="searchEvent"
+              @reset="searchEvent"
+              style="padding: 0;margin-right: 10px"
+            >
               <vxe-form-item
-                :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"></vxe-form-item>
+                field="keywords"
+                :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"
+              />
+              <vxe-form-item
+                :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"
+              />
             </vxe-form>
           </template>
           <!--将表单放在工具栏中-->
           <template v-slot:toolbar_buttons>
             <div style="display: grid;grid-template-columns: 100px 120px;grid-template-rows: 40px">
               <div style="display: flex;justify-content:center;align-items:center;">
-                <i class="el-icon-circle-plus addButton" @click="addDevices"></i>
+                <i
+                  class="el-icon-circle-plus addButton"
+                  @click="addDevices"
+                />
                 <span class="addText">新增设备</span>
               </div>
               <div style="display: flex;justify-content:center;align-items:center;border-left: 1px solid #D8D8D8;">
-                <span class="addText" style="color: black;">设备总数</span>
-                <span class="addText" style="margin-left:10px;color: #2A68D3">{{ totalDevices }}</span></div>
+                <span
+                  class="addText"
+                  style="color: black;"
+                >设备总数</span>
+                <span
+                  class="addText"
+                  style="margin-left:10px;color: #2A68D3"
+                >{{ totalDevices }}</span>
+              </div>
             </div>
           </template>
           <!--自定义空数据模板-->
@@ -123,30 +165,80 @@ export default {
           ajax: {
             query: async ({page, sort, filters}) => {
               // 处理排序条件
-              if (sort.property !== undefined) {
-                sort.property = {
-                  deviceSn: 0,
-                  tankSn: 1,
-                  category: 2,
-                  projectNames: 3,
-                  firmwareVersion: 4,
-                  lastUpdateTime: 5,
-                  temperatureInterval: 6,
-                  gpsInterval: 7,
-                  commInterval: 8,
-                  maxWorkTime: 9,
-                  lastUpgradeTime: 10,
-                  tankTemperature: 11,
-                  tankPressure: 12,
-                  tankLevel: 13,
-                  battery: 14,
-                  connected: 15
-                }[sort.property]
-              } else sort.property = 0
-              sort.order = {
-                desc: 'DESC',
-                asc: 'ASC'
-              }[sort.order]
+              if (sort.property) {
+                console.log('初始order非null1', sort.property)
+                switch (sort.property) {
+                  case 'deviceSn':
+                    sort.property = 0
+                    break
+                  case 'tankSn':
+                    sort.property = 1
+                    break
+                  case 'category':
+                    sort.property = 2
+                    break
+                  case 'projectNames':
+                    sort.property = 3
+                    break
+                  case 'firmwareVersion':
+                    sort.property = 4
+                    break
+                  case 'lastUpdateTime':
+                    sort.property = 5
+                    break
+                  case 'temperatureInterval':
+                    sort.property = 6
+                    break
+                  case 'gpsInterval':
+                    sort.property = 7
+                    break
+                  case 'commInterval':
+                    sort.property = 8
+                    break
+                  case 'maxWorkTime':
+                    sort.property = 9
+                    break
+                  case 'lastUpgradeTime':
+                    sort.property = 10
+                    break
+                  case 'tankTemperature':
+                    sort.property = 11
+                    break
+                  case 'tankPressure':
+                    sort.property = 12
+                    break
+                  case 'tankLevel':
+                    sort.property = 13
+                    break
+                  case 'batteryLeft':
+                    sort.property = 14
+                    break
+                  case 'connected':
+                    sort.property = 15
+                    break
+                  default:
+                    sort.property = 0
+                }
+                console.log('初始order非null2', sort.property)
+              }
+              if (sort.order) {
+                console.log('order值为1', sort.order)
+                switch (sort.order) {
+                  case 'desc':
+                    sort.order = 'DESC'
+                    break
+                  case 'asc':
+                    sort.order = 'ASC'
+                    break
+                  default:
+                    sort.order = 'DESC'
+                }
+                console.log('order值为2', sort.order)
+              } else {
+                console.log('order值为3', sort.order)
+                sort.order = 'DESC'
+                console.log('order值为4', sort.order)
+              }
               console.log('排序值' + JSON.stringify(sort.property))
               let queryParams = Object.assign({
                 orderColumnIndex: sort.property,
@@ -227,7 +319,7 @@ export default {
           {field: 'tankTemperature', title: '温度', minWidth: 70, remoteSort: true},
           {field: 'tankPressure', title: '压力', minWidth: 70, remoteSort: true},
           {field: 'tankLevel', title: '液位', minWidth: 70, remoteSort: true},
-          {field: 'battery', title: '电量', minWidth: 70, remoteSort: true},
+          {field: 'batteryLeft', title: '电量', minWidth: 70, remoteSort: true},
           {field: 'connected', title: '在线', align: 'center', width: 80, remoteSort: true},
           {title: '操作', align: 'center', width: 80, slots: {default: 'operation'}}
         ]
@@ -271,13 +363,13 @@ export default {
       this.$router.push('/device/adddevices')
     },
     searchEvent() {
-      this.$refs.xGrid.commitProxy('reload')
+      this.$refs.xGrid.commitProxy('query')
     },
     formatDate1({cellValue}) {
       return new Date(parseInt(cellValue) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ')
     },
     formatDate2({cellValue}) {
-      return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:ss:mm')
+      return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss')
     }
   }
 }

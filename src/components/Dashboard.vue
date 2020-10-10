@@ -1,64 +1,113 @@
 <template>
   <div>
-    <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-bottom:0;">
-      <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-s-home"></i>首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/dashboard' }">看板</el-breadcrumb-item>
+    <el-breadcrumb
+      separator-class="el-icon-arrow-right"
+      style="margin-bottom:0;"
+    >
+      <el-breadcrumb-item :to="{ path: '/welcome' }">
+        <i class="el-icon-s-home"/>首页
+      </el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        看板
+      </el-breadcrumb-item>
     </el-breadcrumb>
-    <h1 class="dashboardText">首页看板</h1>
+    <h1 class="dashboardText">
+      首页看板
+    </h1>
     <div class="dashboardCard">
       <el-card class="card1">
         <div class="card1Content">
           <div class="Text">
-            <p class="cardText">总箱量</p>
+            <p class="cardText">
+              总箱量
+            </p>
           </div>
           <div class="Number">
-            <count-to class="cardNumber" :start-val='startVal' :end-val='totalTanks' :duration='4000'
-                      separator=','></count-to>
+            <count-to
+              class="cardNumber"
+              :start-val="startVal"
+              :end-val="totalTanks"
+              :duration="4000"
+              separator=","
+            />
           </div>
           <div class="Image">
-            <img src="../assets/Image/cardChart.svg" class="cardImage">
+            <img
+              src="../assets/Image/cardChart.svg"
+              class="cardImage"
+            >
           </div>
         </div>
       </el-card>
       <el-card class="card2">
         <div class="card2Content">
           <div class="Text">
-            <p class="cardText">待机量</p>
+            <p class="cardText">
+              待机量
+            </p>
           </div>
           <div class="Number">
-            <count-to class="cardNumber" :start-val='startVal' :end-val='stayTanks' :duration='4000'
-                      separator=','></count-to>
+            <count-to
+              class="cardNumber"
+              :start-val="startVal"
+              :end-val="stayTanks"
+              :duration="4000"
+              separator=","
+            />
           </div>
           <div class="Image">
-            <img src="../assets/Image/cardChart.svg" class="cardImage">
+            <img
+              src="../assets/Image/cardChart.svg"
+              class="cardImage"
+            >
           </div>
         </div>
       </el-card>
       <el-card class="card3">
         <div class="card3Content">
           <div class="Text">
-            <p class="cardText">项目数量</p>
+            <p class="cardText">
+              项目数量
+            </p>
           </div>
           <div class="Number">
-            <count-to class="cardNumber" :start-val='startVal' :end-val='projectNumbers' :duration='3000'
-                      separator=','></count-to>
+            <count-to
+              class="cardNumber"
+              :start-val="startVal"
+              :end-val="projectNumbers"
+              :duration="3000"
+              separator=","
+            />
           </div>
           <div class="Image">
-            <img src="../assets/Image/cardChart3.svg" class="cardImage">
+            <img
+              src="../assets/Image/cardChart3.svg"
+              class="cardImage"
+            >
           </div>
         </div>
       </el-card>
       <el-card class="card4">
         <div class="card4Content">
           <div class="Text">
-            <p class="cardText">报警数量</p>
+            <p class="cardText">
+              报警数量
+            </p>
           </div>
           <div class="Number">
-            <count-to class="cardNumber" :start-val='startVal' :end-val='alertNumbers' :duration='2000'
-                      separator=','></count-to>
+            <count-to
+              class="cardNumber"
+              :start-val="startVal"
+              :end-val="alertNumbers"
+              :duration="2000"
+              separator=","
+            />
           </div>
           <div class="Image">
-            <img src="../assets/Image/cardChart4.svg" class="cardImage">
+            <img
+              src="../assets/Image/cardChart4.svg"
+              class="cardImage"
+            >
           </div>
         </div>
       </el-card>
@@ -68,8 +117,13 @@
       v-loading="loading1"
       element-loading-text="加载中"
       element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(1, 1, 1, 0.9)">
-      <p id="map" ref='mapDiv' class="mapDiv"></p>
+      element-loading-background="rgba(1, 1, 1, 0.9)"
+    >
+      <p
+        id="map"
+        ref="mapDiv"
+        class="mapDiv"
+      />
     </el-card>
   </div>
 </template>

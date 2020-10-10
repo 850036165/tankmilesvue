@@ -1,237 +1,347 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/tank' }">罐箱列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        首页
+      </el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/tank' }">
+        罐箱列表
+      </el-breadcrumb-item>
       <el-breadcrumb-item>添加罐箱</el-breadcrumb-item>
     </el-breadcrumb>
+    <div style="display: flex;align-items: center;justify-content: flex-end">
+      <h1 style="margin-right: auto;margin-left: 10px">
+        添加罐箱
+      </h1>
+      <el-button
+        size="mini"
+        @click="backToList"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        size="mini"
+        @click="AddTanks"
+      >
+        新建
+      </el-button>
+    </div>
     <el-card>
-      <div slot="header">
-        <h1 style="margin: 0;display: inline-block">添加罐箱</h1>
-        <el-button style="float: right;" size="mini">返回</el-button>
-        <el-button style="float: right;margin: 0 5px" type="primary" size="mini">保存</el-button>
-      </div>
-      <el-tabs value="first">
-        <el-tab-pane label="基础信息" name="first">
-          <!--          顶部区域-->
-          <div class="addTanksTop">
-            <el-row :gutter="0">
-              <el-form ref="addTankForm" :model="addTankForm" :rules="rules" label-width="100px">
-                <el-col :span="10" :offset="2">
-                  <el-form-item label="箱号:" prop="tankNumber">
-                    <el-input v-model="addTankForm.tankNumber" placeholder="请输入箱号" clearable
-                              :maxlength="10" prefix-icon='el-icon-document-copy' style="width: 200px"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="认证船级社:" prop="ClassificationName">
-                    <el-input v-model="addTankForm.ClassificationName" placeholder="请输入认证船级社" clearable
-                              :maxlength="10" style="width: 200px"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10" :offset="2">
-                  <el-form-item label="日期选择:" prop="buildDate">
-                    <el-date-picker v-model="addTankForm.buildDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-                                    style="width: 200px" placeholder="请选择日期选择" clearable></el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="介质:" prop="tankCargo">
-                    <el-select v-model="addTankForm.tankCargo" placeholder="请选择介质" filterable clearable
-                               style="width: 200px">
-                      <el-option v-for="(item, index) in tankCargoOptions" :key="index" :label="item.label"
-                                 :value="item.value" :disabled="item.disabled"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10" :offset="2">
-                  <el-form-item label="关联设备:" prop="linkedDevices">
-                    <el-select v-model="addTankForm.linkedDevices" placeholder="请选择关联设备" filterable clearable
-                               style="width: 200px">
-                      <el-option v-for="(item, index) in linkedDevicesOptions" :key="index" :label="item.label"
-                                 :value="item.value" :disabled="item.disabled"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="备注:" prop="tankText">
-                    <el-input v-model="addTankForm.tankText" placeholder="请输入备注" :maxlength="20" show-word-limit
-                              clearable
-                              prefix-icon='el-icon-document-copy' style="width: 200px"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10" :offset="2">
-                  <el-form-item label="罐箱模型:" prop="Tankmodel">
-                    <el-select v-model="addTankForm.Tankmodel" placeholder="请选择罐箱模型" filterable clearable
-                               style="width: 200px">
-                      <el-option v-for="(item, index) in TankmodelOptions" :key="index" :label="item.label"
-                                 :value="item.value" :disabled="item.disabled"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-form>
-            </el-row>
+      <el-tabs
+        v-model="activeName"
+      >
+        <el-tab-pane
+          label="基础信息"
+          name="first"
+        >
+          <el-form
+            ref="addTankForm"
+            :model="addTankForm"
+            :rules="ruleForm"
+            size="small"
+            label-width="150px"
+          >
+            <div style="display: grid;grid-template-columns: 1fr 1fr">
+              <div>
+                <el-form-item
+                  label-width="100px"
+                  label="箱号"
+                  prop="tankSn"
+                >
+                  <el-input
+                    v-model="addTankForm.tankSn"
+                    placeholder="请输入箱号"
+                    clearable
+                    :maxlength="13"
+                    show-word-limit
+                    :style="{width: '100%'}"
+                  />
+                </el-form-item>
+                <el-form-item
+                  label-width="100px"
+                  label="制造日期"
+                  prop="buildAt"
+                >
+                  <el-date-picker
+                    v-model="addTankForm.buildAt"
+                    format="yyyy/MM/dd"
+                    value-format="yyyy-MM-dd"
+                    :style="{width: '100%'}"
+                    placeholder="请选择制造日期"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item
+                  label-width="100px"
+                  label="关联设备"
+                  prop="device"
+                >
+                  <el-select
+                    :loading="loadingMedia"
+                    v-model="addTankForm.device"
+                    placeholder="请输入关联设备"
+                    remote
+                    :remote-method="remoteMethod1"
+                    filterable
+                    clearable
+                    :style="{width: '100%'}"
+                  >
+                    <el-option
+                      v-for="item in options1"
+                      :key="item.deviceSn"
+                      :label="item.deviceSn"
+                      :value="item.deviceSn"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  label-width="100px"
+                  label="介质"
+                  prop="medium"
+                >
+                  <el-select
+                    :loading="loadingMedia"
+                    remote
+                    :remote-method="remoteMethod"
+                    v-model="addTankForm.medium"
+                    placeholder="请选择介质"
+                    filterable
+                    clearable
+                    default-first-option
+                    :style="{width: '100%'}"
+                  >
+                    <el-option
+                      v-for="item in options"
+                      :key="item.name"
+                      :label="item.name"
+                      :value="item.name"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  label-width="100px"
+                  label="认证船级社"
+                  prop="classificationSociety"
+                >
+                  <el-input
+                    v-model="addTankForm.classificationSociety"
+                    placeholder="请输入认证船级社"
+                    clearable
+                    :maxlength="10"
+                    show-word-limit
+                    :style="{width: '100%'}"
+                  />
+                </el-form-item>
+              </div>
+              <div>
+                <el-form-item
+                  label-width="100px"
+                  label="备注"
+                  prop="remark"
+                >
+                  <el-input
+                    v-model="addTankForm.remark"
+                    type="textarea"
+                    placeholder="请输入备注"
+                    :maxlength="200"
+                    show-word-limit
+                    :autosize="{minRows: 4, maxRows: 4}"
+                    :style="{width: '100%'}"
+                  />
+                </el-form-item>
+              </div>
+            </div>
+          </el-form>
+        </el-tab-pane>
 
-          </div>
-          <!--          底部区域-->
-          <el-divider></el-divider>
-          <div class="addTanksBottom" style="background-color: #b0c2e3">
-            <!--            第一列-->
-            <div class="item" style="border-left: none;border-top: none">
-              <p class="title">基本信息</p>
-              <el-tooltip effect="dark" content="提示" placement="right">
-                <i class="el-icon-info" style="padding: 5px"></i>
-              </el-tooltip>
-            </div>
-            <!--            第二列-->
-            <div class="item" style="border-top: none">
-              <p class="title">集装箱尺寸</p>
-              <el-tooltip effect="dark" content="提示" placement="right">
-                <i class="el-icon-info" style="padding: 5px"></i>
-              </el-tooltip>
-            </div>
-            <!--            第三列-->
-            <div class="item" style="border-top: none">
-              <p class="title">重量参数</p>
-              <el-tooltip effect="dark" content="提示" placement="right">
-                <i class="el-icon-info" style="padding: 5px"></i>
-              </el-tooltip>
-            </div>
-            <!--            第四列-->
-            <div class="item" style="border-top: none;border-right: none">
-              <p class="title">材料</p>
-              <el-tooltip effect="dark" content="提示" placement="right">
-                <i class="el-icon-info" style="padding: 5px"></i>
-              </el-tooltip>
-            </div>
-            <div class="itemContent" style="border-bottom: none;border-left: none">
-              <p class="content">箱号:{{ addTankForm.tankNumber }}</p>
-              <p class="content">容积:{{ addTankForm.Tankmodel | capitalize }}m³</p>
-              <p class="content">制造日期:{{ addTankForm.buildDate }}</p>
-              <p class="content">装载介质:{{ addTankForm.tankCargo }}</p>
-              <p class="content">认证船级社:{{ addTankForm.ClassificationName }}</p>
-              <p class="content">备注:{{ addTankForm.tankText }}</p>
-            </div>
-            <div class="item6">
-              <div class="itemContent" style="border-top: none;border-right: none;border-left: none;padding: 10px 0">
-                <p class="content1">长&nbsp;宽&nbsp;高</p>
-                <p class="content1">2333x2333x2333</p>
-              </div>
-              <div class="itemContent" style="border-bottom: none;border-right: none;border-left: none;padding: 10px 0">
-                <p class="content1">内径 长</p>
-                <p class="content1">2333x2333</p>
+        <el-tab-pane
+          label="罐箱模型"
+          name="second"
+        >
+          <div
+            class="tanModelTab"
+            :style="{minHeight:pageHeight}"
+          >
+            <div>
+              <p class="title">
+                罐箱模型
+              </p>
+              <div style="margin: 0 auto;padding:0 20px 0;">
+                <el-tag
+                  :hit="false"
+                  class="addTagClass"
+                >
+                  <i class="el-icon-circle-plus addTag"/><span class="addTagText">自定义</span>
+                </el-tag>
+                <el-tag
+                  :id="item.name"
+                  style="margin: 3px;width: 80px;cursor:pointer;user-select: none"
+                  v-for="item in tankModelList"
+                  :key="item.name"
+                  :effect="item.name===selectedTag?'dark':'plain'"
+                  @click="selectTag(item)"
+                >
+                  {{ item.name }}
+                </el-tag>
               </div>
             </div>
-            <div class="item7">
-              <div class="itemContent">
-                <p class="content1">最大许可载重</p>
-                <p class="content1">36000kg</p>
-              </div>
-              <div class="itemContent">
-                <p class="content1">自重</p>
-                <p class="content1">3910kg</p>
-              </div>
-              <div class="itemContent">
-                <p class="content1">载重</p>
-                <p class="content1">32360kg</p>
-              </div>
-
-            </div>
-            <div class="itemContent" style="border-right: none;padding: 20px 0">
-              <p class="content1">罐体材料</p>
-              <p style="font-size: 20px;font-weight: bolder;text-align: center;margin: 0">
-                ASMESA240 304</p>
-            </div>
-            <div class="item" style="border-bottom: none;border-top: none;border-left: none"></div>
-            <!--            第五列-->
-            <div class="item">
-              <p class="title">温度参数</p>
-              <el-tooltip effect="dark" content="提示" placement="right">
-                <i class="el-icon-info" style="padding: 5px"></i>
-              </el-tooltip>
-            </div>
-            <!--            第六列-->
-            <div class="item">
-              <p class="title">压力参数</p>
-              <el-tooltip effect="dark" content="提示" placement="right">
-                <i class="el-icon-info" style="padding: 5px"></i>
-              </el-tooltip>
-            </div>
-            <!--            第七列-->
-            <div class="item" style="border-right: none">
-              <p class="title">保温</p>
-              <el-tooltip effect="dark" content="提示" placement="right">
-                <i class="el-icon-info" style="padding: 5px"></i>
-              </el-tooltip>
-            </div>
-            <div class="item" style="border-top: none;border-left: none;border-bottom: none"></div>
-            <div class="itemContent" style="border-bottom: none;padding: 25px 0">
-              <p class="content1">筒体设计温度</p>
-              <p style="font-size: 20px;font-weight: bolder;text-align: center;margin: 0">-40-130℃</p>
-            </div>
-            <div class="item15" style="border-bottom: none">
-              <div class="item1" style="padding: 2px">
-                <p class="content1">最大工作压力</p>
-              </div>
-              <div class="item1" style="padding: 2px">
-                <p class="content1">实验压力</p>
-              </div>
-              <div class="item1" style="padding: 2px">
-                <p class="content1">最大外部压力</p></div>
-              <div class="item1" style="padding: 2px">
-                <p class="content2">罐体2.5Bar</p>
-              </div>
-              <div class="item1" style="padding: 2px">
-                <p class="content2">罐体4Bar</p>
-              </div>
-              <div class="item1" style="padding: 2px">
-                <p class="content2">0.6Bar</p>
-              </div>
-              <div class="item1" style="border-bottom: none;padding: 2px">
-                <p class="content2">加热管3.6Bar</p>
-              </div>
-              <div class="item1" style="border-bottom: none;padding: 2px">
-                <p class="content2">加热管6Bar</p>
-              </div>
-              <div class="item1" style="border-bottom: none"></div>
-            </div>
-            <div class="item16" style="border-right: none">
-              <div style="border-bottom:1px solid rgba(45, 52, 99, 0.97);padding: 10px">
-                <p class="content1">保温厚度:50mm</p>
-              </div>
-              <div style="border-top:1px solid rgba(45, 52, 99, 0.97);padding: 10px">
-                <p class="content1">保温材料:岩棉</p>
-              </div>
+            <div>
+              <span class="tableTitle">{{ selectedTag }}</span>
+              <span
+                style="float:right;width: 100px;height: 18px;font-size: 14px;font-weight: 400;color: #58647a;line-height: 24px;">罐箱容积:{{
+                  selectedTagTable.volume
+                }}L</span>
+              <table class="tankModelTable">
+                <tr>
+                  <th colspan="3">
+                    集装箱尺寸 mm
+                  </th>
+                  <th colspan="3">
+                    重量参数 kg
+                  </th>
+                  <th>材质信息</th>
+                </tr>
+                <tr>
+                  <td class="tableBackground">
+                    长
+                  </td>
+                  <td class="tableBackground">
+                    宽
+                  </td>
+                  <td class="tableBackground">
+                    高
+                  </td>
+                  <td class="tableBackground">
+                    最大许可总重
+                  </td>
+                  <td class="tableBackground">
+                    自重
+                  </td>
+                  <td class="tableBackground">
+                    载重
+                  </td>
+                  <td class="tableBackground">
+                    罐体材料
+                  </td>
+                </tr>
+                <tr>
+                  <td class="tableContent">
+                    {{ selectedTagTable.length }}
+                  </td>
+                  <td class="tableContent">
+                    {{ selectedTagTable.width }}
+                  </td>
+                  <td class="tableContent">
+                    {{ selectedTagTable.height }}
+                  </td>
+                  <td class="tableContent">
+                    36000
+                  </td>
+                  <td class="tableContent">
+                    3910
+                  </td>
+                  <td class="tableContent">
+                    32360
+                  </td>
+                  <td class="tableContent">
+                    ASME SA240 304或同等材料
+                  </td>
+                </tr>
+              </table>
+              <table class="tankModelTable">
+                <tr>
+                  <th colspan="2">
+                    筒体尺寸 mm
+                  </th>
+                  <th colspan="4">
+                    压力参数 Bar
+                  </th>
+                  <th>保温</th>
+                </tr>
+                <tr>
+                  <td class="tableBackground">
+                    内直径
+                  </td>
+                  <td class="tableBackground">
+                    长
+                  </td>
+                  <td
+                    style="width: 10%"
+                    class="tableBackground"
+                  >
+                    -
+                  </td>
+                  <td class="tableBackground">
+                    最大许可压力
+                  </td>
+                  <td class="tableBackground">
+                    试验压力
+                  </td>
+                  <td class="tableBackground">
+                    最大外部压力
+                  </td>
+                  <td class="tableBackground">
+                    保温厚度 mm
+                  </td>
+                </tr>
+                <tr>
+                  <td class="tableContent">
+                    2333
+                  </td>
+                  <td class="tableContent">
+                    5988
+                  </td>
+                  <td>罐体</td>
+                  <td class="tableContent">
+                    2.67
+                  </td>
+                  <td class="tableContent">
+                    4
+                  </td>
+                  <td class="tableContent">
+                    0.21
+                  </td>
+                  <td class="tableContent">
+                    30
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="2">
+                    温度参数 °C
+                  </th>
+                  <td>加热管</td>
+                  <td class="tableContent">
+                    4
+                  </td>
+                  <td class="tableContent">
+                    6
+                  </td>
+                  <td>-</td>
+                  <td>保温材料</td>
+                </tr>
+                <tr>
+                  <td>筒体设计温度</td>
+                  <td
+                    colspan="2"
+                    class="tableContent"
+                  >
+                    -40-130
+                  </td>
+                  <td colspan="3"/>
+                  <td class="tableContent">
+                    岩棉
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="附件上传" name="second">
-          <!--          左侧区域-->
-          <el-card class="card1">
-            <p style="font-size: 20px;font-weight: bold;margin-top: 0">上传图片</p>
-            <el-upload
-              list-type="picture"
-              drag
-              action="https://jsonplaceholder.typicode.com/posts/"
-              multiple>
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
-              <!--              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
-            </el-upload>
-          </el-card>
-          <!--            右侧区域-->
-          <el-card class="card2">
-            <p style="font-size: 20px;font-weight: bold;margin-top: 0;">上传附件</p>
-            <el-upload
-              class="upload-file"
-              drag
-              action="https://jsonplaceholder.typicode.com/posts/"
-              multiple>
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <!--              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
-            </el-upload>
-          </el-card>
+        <el-tab-pane
+          label="附件上传"
+          name="third"
+        >
+          附件上传
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -241,173 +351,271 @@
 <script>
 export default {
   name: 'AddTanks',
-  filters: {
-    capitalize: function (value) {
-      switch (value) {
-        case 1:
-          return 24
-        case 2:
-          return 20
-      }
-    }
-  },
   data() {
     return {
+      selectedTagTable: {name: undefined, length: undefined, width: undefined, height: undefined, volume: undefined},
+      selectedTag: undefined,
+      tankModelList: [
+        {name: '11m³Tank', length: 6058, width: 2438, height: 1591, volume: 1100},
+        {name: '12m³Tank', length: 6218, width: 2438, height: 2591, volume: 1200},
+        {name: '13m³Tank', length: 6318, width: 2438, height: 3591, volume: 3000},
+        {name: '14m³Tank', length: 1118, width: 2438, height: 4591, volume: 4000},
+        {name: '15m³Tank', length: 2582, width: 2438, height: 5591, volume: 5000},
+        {name: '16m³Tank', length: 3058, width: 2438, height: 6591, volume: 6000},
+        {name: '17m³Tank', length: 5058, width: 2738, height: 7591, volume: 7000},
+        {name: '18m³Tank', length: 6058, width: 2458, height: 8591, volume: 8000},
+        {name: '19m³Tank', length: 7058, width: 2478, height: 9591, volume: 9000},
+        {name: '20m³Tank', length: 2058, width: 2438, height: 2591, volume: 1300},
+        {name: '21m³Tank', length: 2258, width: 2421, height: 2591, volume: 1400},
+        {name: '22m³Tank', length: 1111, width: 2438, height: 2591, volume: 1600},
+        {name: '23m³Tank', length: 3333, width: 2238, height: 2591, volume: 1700},
+        {name: '24m³Tank', length: 4048, width: 2328, height: 2591, volume: 1090}
+      ],
+      deviceList: [],
+      loadingMedia: false,
+      options: [],
+      options1: [],
+      mediaList: [],
+      activeName: 'first',
       addTankForm: {
-        tankNumber: undefined,
-        ClassificationName: '',
-        buildDate: '',
-        tankCargo: undefined,
-        linkedDevices: undefined,
-        tankText: undefined,
-        Tankmodel: undefined
+        tankSn: undefined,
+        buildAt: null,
+        device: undefined,
+        classificationSociety: undefined,
+        medium: undefined,
+        remark: undefined
       },
-      rules: {
-        tankNumber: [{
+      ruleForm: {
+        tankSn: [{
           required: true,
           message: '请输入箱号',
           trigger: 'blur'
+        },
+          {min: 13, max: 13, message: '长度为13个字符', trigger: 'blur'}],
+        buildAt: [{
+          required: true,
+          message: '请选择制造日期',
+          trigger: 'change'
         }],
-        ClassificationName: [{
+        device: [{
+          required: true,
+          message: '请输入关联设备',
+          trigger: 'change'
+        }],
+        classificationSociety: [{
           required: true,
           message: '请输入认证船级社',
           trigger: 'blur'
         }],
-        buildDate: [{
+        medium: [{
           required: true,
-          message: '请选择日期选择',
-          trigger: 'change'
-        }],
-        tankCargo: [],
-        linkedDevices: [{
-          required: true,
-          message: '请选择关联设备',
-          trigger: 'change'
-        }],
-        tankText: [],
-        Tankmodel: [{
-          required: true,
-          message: '请选择罐箱模型',
+          message: '请选择介质',
           trigger: 'change'
         }]
-      },
-      tankCargoOptions: [{
-        label: '选项一',
-        value: 1
-      }, {
-        label: '选项二',
-        value: 2
-      }],
-      linkedDevicesOptions: [{
-        label: '23123',
-        value: 2
-      }, {
-        label: '12312',
-        value: 1
-      }],
-      TankmodelOptions: [{
-        label: '24寸',
-        value: 1
-      }, {
-        label: '20寸',
-        value: 2
-      }]
+      }
+    }
+  },
+  mounted() {
+    this.getMedia()
+    this.getDevice()
+    // this.getTankModel()
+    this.selectedTagTable = this.tankModelList[0]
+    this.selectedTag = this.tankModelList[0].name
+  },
+  methods: {
+    backToList() {
+      this.$router.push('/tank')
+    },
+    selectTag(x) {
+      this.selectedTag = x.name
+      this.selectedTagTable = x
+      console.log(this.selectedTag)
+    },
+    async getTankModel() {
+      const response = await this.$http.post('/tank/model/list').catch(error => {
+        this.$XModal.message({message: `罐箱请求失败@${error}`, status: 'warning'})
+      })
+      this.tankModelList = response.data.data.data
+      console.log('罐箱模型列表', this.tankModelList)
+    },
+    remoteMethod1(query) {
+      if (query !== '') {
+        this.loadingMedia = true
+        setTimeout(() => {
+          this.loadingMedia = false
+          this.options1 = this.deviceList.filter(item => {
+            return item.deviceSn.toLowerCase().indexOf(query.toLowerCase()) > -1
+          })
+        }, 200)
+      } else {
+        this.options1 = []
+      }
+    },
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loadingMedia = true
+        setTimeout(() => {
+          this.loadingMedia = false
+          this.options = this.mediaList.filter(item => {
+            return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+          })
+        }, 200)
+      } else {
+        this.options = []
+      }
+    },
+    async getDevice() {
+      const request = {
+        currentPage: 0,
+        keywords: '',
+        order: 'DESC',
+        orderColumnIndex: 0,
+        pageSize: 999999
+      }
+      const response = await this.$http.post('/device/list', request).catch(error => {
+        this.$XModal.message({message: `设备列表请求失败@${error}`, status: 'warning'})
+      })
+      console.log(response)
+      this.deviceList = response.data.data.data.map(item => {
+        return {deviceSn: item.deviceSn}
+      })
+      console.log('设备列表', this.deviceList)
+    },
+    async getMedia() {
+      const response = await this.$http.post('/tank/media/list').catch(error => {
+        this.$XModal.message({message: `介质列表请求失败@${error}`, status: 'warning'})
+      })
+      this.mediaList = response.data.data.data
+      console.log(this.mediaList)
+    },
+    AddTanks() {
+      this.$refs.addTankForm.validate(valid => {
+        if (valid) {
+          this.addTankForm.tankModel = this.selectedTag
+          console.log(this.addTankForm)
+          this.$http.post('/tank/create', this.addTankForm).then(response => {
+            console.log(response.data.code)
+            if (response.data.code === 0) {
+              this.$XModal.message({message: '创建成功', status: 'success', id: '1'})
+              this.backToList()
+            } else {
+              this.$XModal.message({message: `创建失败@${response.data.message}`, status: 'warning', id: '1'})
+            }
+          }).catch(error => {
+            this.$XModal.message({message: `创建失败@${error}`, status: 'warning'})
+          })
+        } else this.$XModal.message({message: '请检查必填项', status: 'warning', id: '1'})
+      })
+    }
+  },
+  computed: {
+    pageHeight() {
+      return (window.innerHeight - 280) + 'px'
     }
   }
 }
 </script>
 
-<style scoped>
-.addTanksTop {
+<style scoped lang="less">
+.tableBackground {
+  background-color: #F5F7FA;
 }
 
-.addTanksBottom {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr 1fr;
-  grid-template-rows: 50px 150px 50px 100px;
-  border: 2px solid rgba(45, 52, 99, 0.97);
+.tableContent {
+  width: 35px;
+  height: 18px;
+  font-size: 14px;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold;
+  font-weight: 700;
+  color: #58647a;
 }
 
-.item {
-  width: auto;
-  border: 1px solid rgba(45, 52, 99, 0.97);
+.tableTitle {
+  width: 97px;
+  height: 23px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+  color: #58647a;
+}
+
+.tankModelTable {
+  text-align: center;
+  white-space: nowrap;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 auto;
+  border-spacing: 0;
+}
+
+.tankModelTable1 tr {
+  border: 1px solid gainsboro;
+}
+
+.tankModelTable td {
+  height: 30px;
+  padding: 1px;
+  border: 1px solid gainsboro;
+}
+
+.tankModelTable th {
+  height: 30px;
+  text-align: center;
+  background-color: #2A68D3;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  border: 1px solid gainsboro;
+}
+
+.addTagClass {
+  user-select: none;
+  margin: 3px;
+  width: 80px;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #2f74eb;
 }
 
-.item1 {
-  border: 1px solid rgba(45, 52, 99, 0.97);
+.addTagText {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  letter-spacing: 1px;
 }
 
-.item15 {
-  width: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+.addTagClass:hover {
+  color: #8cc5ff;
+}
+
+@media only screen  and (max-width: 900px) {
+
+}
+
+@media only screen  and (min-width: 900px) and (max-width: 1400px) {
+  .tanModelTab {
+    display: grid;
+    grid-template-columns: 300px auto;
+  }
+}
+
+@media only screen  and (min-width: 1400px) {
+  .tanModelTab {
+    display: grid;
+    grid-template-columns: 300px auto;
+    grid-gap: 100px;
+  }
 }
 
 .title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #2D3463;
-}
-
-.content {
-  font-size: 15px;
-  font-weight: bold;
-}
-
-.itemContent {
-  padding-left: 3px;
-  width: auto;
-  border: 1px solid rgba(45, 52, 99, 0.97);
-}
-
-.item6 {
-  display: grid;
-  grid-template-rows:1fr 1fr;
-  border: 1px solid rgba(45, 52, 99, 0.97);
-}
-
-.content1 {
-  text-align: center;
-  font-size: 15px;
-  font-weight: bolder;
-  margin: 0;
-}
-
-.content2 {
-  text-align: center;
-  font-size: 15px;
-  margin: 0;
-}
-
-.item7 {
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-}
-
-.item16 {
-  border: #2D3463 1px solid;
-  border-right: none;
-  border-bottom: none;
-  display: grid;
-  grid-template-rows:1fr 1fr;
-}
-
-.card1 {
-  float: left;
-  display: flex;
-  justify-content: center;
-  width: 49%;
-}
-
-.card2 {
-  float: right;
-  width: 49%;
-  display: flex;
-  justify-content: center;
+  margin: 0 0 30px 0;
+  font-size: 18px;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold;
+  font-weight: 700;
+  text-align: left;
+  color: #58647a;
 }
 
 /deep/ ::-webkit-scrollbar {

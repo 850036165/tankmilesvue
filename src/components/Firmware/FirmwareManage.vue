@@ -1,87 +1,216 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        首页
+      </el-breadcrumb-item>
       <el-breadcrumb-item>后台管理</el-breadcrumb-item>
       <el-breadcrumb-item>固件管理</el-breadcrumb-item>
     </el-breadcrumb>
-    <h1 style="margin-bottom: 15px;margin-top: 15px">固件管理</h1>
+    <h1 style="margin-bottom: 15px;margin-top: 15px">
+      固件管理
+    </h1>
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <el-row :gutter="20">
           <el-col :span="6">
             <div style="display: flex;align-content: center; padding-top: 5px;">
-              <i class="el-icon-upload uploadButton" @click="uploadButton"></i>
-              <p class="uploadText">上传固件</p>
+              <i
+                class="el-icon-upload uploadButton"
+                @click="uploadButton"
+              />
+              <p class="uploadText">
+                上传固件
+              </p>
             </div>
           </el-col>
-          <el-col :span="3" :push="15">
+          <el-col
+            :span="3"
+            :push="15"
+          >
             <div>
-              <el-button size="small" type="primary" icon="el-icon-edit-outline" @click="massChange">批量操作</el-button>
+              <el-button
+                size="small"
+                type="primary"
+                icon="el-icon-edit-outline"
+                @click="massChange"
+              >
+                批量操作
+              </el-button>
             </div>
           </el-col>
         </el-row>
       </div>
       <div>
-        <el-table></el-table>
+        <el-table/>
       </div>
     </el-card>
     <el-dialog
       title="添加固件"
       :visible.sync="uploadDialogVisible"
       width="400px"
-      :before-close="handleClose">
-      <div slot="title" style="font-weight: bold;font-size: 20px;color: #2F74EB">
-        <i class="el-icon-s-promotion" style="margin: 3px"></i>
+      :before-close="handleClose"
+    >
+      <div
+        slot="title"
+        style="font-weight: bold;font-size: 20px;color: #2F74EB"
+      >
+        <i
+          class="el-icon-s-promotion"
+          style="margin: 3px"
+        />
         <span>添加固件</span>
       </div>
-      <el-form ref="addTankForm" :model="addTankForm" :rules="rules" size="small" label-width="100px">
-        <el-form-item label="固件名称:" prop="field101">
-          <el-input v-model="addTankForm.field101" placeholder="请输入固件名称" clearable :style="{width: '80%'}">
-          </el-input>
+      <el-form
+        ref="addTankForm"
+        :model="addTankForm"
+        :rules="rules"
+        size="small"
+        label-width="100px"
+      >
+        <el-form-item
+          label="固件名称:"
+          prop="field101"
+        >
+          <el-input
+            v-model="addTankForm.field101"
+            placeholder="请输入固件名称"
+            clearable
+            :style="{width: '80%'}"
+          />
         </el-form-item>
-        <el-form-item label="固件版本号:" prop="field105">
-          <el-input v-model="addTankForm.field105" placeholder="请输入固件版本号" clearable :style="{width: '80%'}">
-          </el-input>
+        <el-form-item
+          label="固件版本号:"
+          prop="field105"
+        >
+          <el-input
+            v-model="addTankForm.field105"
+            placeholder="请输入固件版本号"
+            clearable
+            :style="{width: '80%'}"
+          />
         </el-form-item>
-        <el-form-item label="所属设备:" prop="field103">
-          <el-select v-model="addTankForm.field103" placeholder="请选择所属设备" clearable :style="{width: '80%'}">
-            <el-option v-for="(item, index) in field103Options" :key="index" :label="item.label"
-                       :value="item.value" :disabled="item.disabled"></el-option>
+        <el-form-item
+          label="所属设备:"
+          prop="field103"
+        >
+          <el-select
+            v-model="addTankForm.field103"
+            placeholder="请选择所属设备"
+            clearable
+            :style="{width: '80%'}"
+          >
+            <el-option
+              v-for="(item, index) in field103Options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="固件模块:" prop="field104">
-          <el-select v-model="addTankForm.field104" placeholder="请选择固件模块" clearable :style="{width: '80%'}">
-            <el-option v-for="(item, index) in field104Options" :key="index" :label="item.label"
-                       :value="item.value" :disabled="item.disabled"></el-option>
+        <el-form-item
+          label="固件模块:"
+          prop="field104"
+        >
+          <el-select
+            v-model="addTankForm.field104"
+            placeholder="请选择固件模块"
+            clearable
+            :style="{width: '80%'}"
+          >
+            <el-option
+              v-for="(item, index) in field104Options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="签名算法:" prop="field107">
-          <el-select v-model="addTankForm.field107" placeholder="请选择签名算法" clearable :style="{width: '80%'}">
-            <el-option v-for="(item, index) in field107Options" :key="index" :label="item.label"
-                       :value="item.value" :disabled="item.disabled"></el-option>
+        <el-form-item
+          label="签名算法:"
+          prop="field107"
+        >
+          <el-select
+            v-model="addTankForm.field107"
+            placeholder="请选择签名算法"
+            clearable
+            :style="{width: '80%'}"
+          >
+            <el-option
+              v-for="(item, index) in field107Options"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="备注:" prop="field109">
-          <el-input v-model="addTankForm.field109" placeholder="请输入备注" :maxlength="20" show-word-limit clearable
-                    prefix-icon='el-icon-document-copy' :style="{width: '80%'}"></el-input>
+        <el-form-item
+          label="备注:"
+          prop="field109"
+        >
+          <el-input
+            v-model="addTankForm.field109"
+            placeholder="请输入备注"
+            :maxlength="20"
+            show-word-limit
+            clearable
+            prefix-icon="el-icon-document-copy"
+            :style="{width: '80%'}"
+          />
         </el-form-item>
-        <el-form-item label="选择固件:" prop="field108" required>
-          <el-upload ref="field108" style="height: 50px" :file-list="field108fileList" :action="field108Action"
-                     :auto-upload="false"
-                     :before-upload="beforeUpload" :limit="1" accept="application/zip">
-            <el-button size="small" type="primary" icon="el-icon-upload">点击上传</el-button>
-            <el-tooltip effect="dark" content="请上传zip格式且文件小于1MB" placement="right">
-              <i class="el-icon-question"
-                 style="font-weight:normal;color: rgba(0,0,0,0.7);font-size: small;margin:0 10px"></i>
+        <el-form-item
+          label="选择固件:"
+          prop="field108"
+          required
+        >
+          <el-upload
+            ref="field108"
+            style="height: 50px"
+            :file-list="field108fileList"
+            :action="field108Action"
+            :auto-upload="false"
+            :before-upload="beforeUpload"
+            :limit="1"
+            accept="application/zip"
+          >
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-upload"
+            >
+              点击上传
+            </el-button>
+            <el-tooltip
+              effect="dark"
+              content="请上传zip格式且文件小于1MB"
+              placement="right"
+            >
+              <i
+                class="el-icon-question"
+                style="font-weight:normal;color: rgba(0,0,0,0.7);font-size: small;margin:0 10px"
+              />
             </el-tooltip>
           </el-upload>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer" style="display:flex;justify-content: center">
-    <el-button style="width: 100px" type="primary" @click="$refs.upload.submit()">确 定</el-button>
-    <el-button style="width: 100px" @click="uploadDialogVisible = false">取 消</el-button>
-  </span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+        style="display:flex;justify-content: center"
+      >
+        <el-button
+          style="width: 100px"
+          type="primary"
+          @click="$refs.upload.submit()"
+        >确 定</el-button>
+        <el-button
+          style="width: 100px"
+          @click="uploadDialogVisible = false"
+        >取 消</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>

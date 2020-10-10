@@ -1,7 +1,7 @@
 <template>
   <div>
     wellcome
-    <loadingpage v-show="true"></loadingpage>
+    <loadingpage v-show="true"/>
   </div>
 </template>
 

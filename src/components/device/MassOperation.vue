@@ -1,26 +1,57 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        首页
+      </el-breadcrumb-item>
       <el-breadcrumb-item>后台管理</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/devicemanage' }">设备管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/devicemanage' }">
+        设备管理
+      </el-breadcrumb-item>
       <el-breadcrumb-item>批量操作</el-breadcrumb-item>
     </el-breadcrumb>
-    <h1 style="margin-bottom: 15px;margin-top: 15px">批量操作</h1>
+    <h1 style="margin-bottom: 15px;margin-top: 15px">
+      批量操作
+    </h1>
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
-        <el-row :gutter="20" style="height: 32px">
+        <el-row
+          :gutter="20"
+          style="height: 32px"
+        >
           <el-col :span="3">
-            <el-button size="small" type="primary" icon="el-icon-edit-outline" @click="massAssign">批量分配</el-button>
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-edit-outline"
+              @click="massAssign"
+            >
+              批量分配
+            </el-button>
           </el-col>
           <el-col :span="3">
-            <el-button size="small" type="warning" icon="el-icon-edit-outline" @click="massUpgrade">批量升级</el-button>
+            <el-button
+              size="small"
+              type="warning"
+              icon="el-icon-edit-outline"
+              @click="massUpgrade"
+            >
+              批量升级
+            </el-button>
           </el-col>
           <el-col :span="3">
-            <el-button size="small" type="danger" icon="el-icon-edit-outline" @click="massDelete">批量删除</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              icon="el-icon-edit-outline"
+              @click="massDelete"
+            >
+              批量删除
+            </el-button>
           </el-col>
           <span
-            style="width:150px;font-weight: bold;line-height: 32px;float: right">当前选择：{{ selectedDevices }}台</span>
+            style="width:150px;font-weight: bold;line-height: 32px;float: right"
+          >当前选择：{{ selectedDevices }}台</span>
         </el-row>
       </div>
       <div>
@@ -34,13 +65,22 @@
           highlight-current-row
           highlight-hover-column
           highlight-current-column
-          size="mini">
+          size="mini"
+        >
           <!--将表单放在工具栏中-->
           <template v-slot:toolbar_buttons>
-            <vxe-form :data="formData" @submit="searchEvent" @reset="searchEvent">
-              <vxe-form-item field="name" :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"></vxe-form-item>
+            <vxe-form
+              :data="formData"
+              @submit="searchEvent"
+              @reset="searchEvent"
+            >
               <vxe-form-item
-                :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"></vxe-form-item>
+                field="name"
+                :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"
+              />
+              <vxe-form-item
+                :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"
+              />
             </vxe-form>
           </template>
           <!--自定义空数据模板-->
@@ -54,22 +94,33 @@
     </el-card>
     <!--   分配弹窗-->
     <el-dialog
-      :close-on-click-modal=false
+      :close-on-click-modal="false"
       title="批量分配"
       :visible.sync="massAssignDialogVisible"
-      width="50%">
+      width="50%"
+    >
       <div slot="title">
-        <i class="el-icon-warning" style="font-size: 20px;color: #2F74EB;padding-right: 5px"></i>
+        <i
+          class="el-icon-warning"
+          style="font-size: 20px;color: #2F74EB;padding-right: 5px"
+        />
         <span style="font-weight: bold;font-size: 20px;color: #2F74EB">批量分配</span>
       </div>
       <span style="display:inline-block;margin:15px 0;font-weight: bold;font-size: 15px">已选设备:</span>
       <span style="display: inline-block;margin: 0 10px 0 10px">{{ allSelectedRecords.length }}台</span><br>
       <div>
-        <el-tag style="width: 15%;margin: 1px 1px" type="info" v-for="items in massAssignName" v-bind:key="items">
+        <el-tag
+          style="width: 15%;margin: 1px 1px"
+          type="info"
+          v-for="items in massAssignName"
+          :key="items"
+        >
           {{ items }}
         </el-tag>
       </div>
-      <p style="font-weight: bold;font-size: 15px">选择项目:</p>
+      <p style="font-weight: bold;font-size: 15px">
+        选择项目:
+      </p>
       <!--              选择项目-->
       <el-cascader
         placeholder="请选择项目"
@@ -79,68 +130,116 @@
         :options="options"
         :props="props"
         collapse-tags
-        clearable></el-cascader>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="massAssignDialogClose">取 消</el-button>
-    <el-button type="primary" @click="massAssignConfirm">确 定</el-button>
-  </span>
+        clearable
+      />
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="massAssignDialogClose">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="massAssignConfirm"
+        >确 定</el-button>
+      </span>
     </el-dialog>
     <!--    升级弹窗-->
     <el-dialog
-      :close-on-click-modal=false
+      :close-on-click-modal="false"
       title="批量升级"
       :visible.sync="massUpgradeDialogVisible"
-      width="50%">
+      width="50%"
+    >
       <div slot="title">
-        <i class="el-icon-warning" style="font-size: 20px;color: orange;padding-right: 5px"></i>
+        <i
+          class="el-icon-warning"
+          style="font-size: 20px;color: orange;padding-right: 5px"
+        />
         <span style="font-weight: bold;font-size: 20px;color: orange">批量升级</span>
       </div>
       <span style="display:inline-block;margin:15px 0;font-weight: bold;font-size: 15px">已选设备:</span>
       <span style="display: inline-block;margin: 0 10px 0 10px">{{ allSelectedRecords.length }}台</span><br>
       <div>
-        <el-tag style="width: 15%;margin: 1px 1px" type="info" v-for="items in massAssignName" v-bind:key="items">
+        <el-tag
+          style="width: 15%;margin: 1px 1px"
+          type="info"
+          v-for="items in massAssignName"
+          :key="items"
+        >
           {{ items }}
         </el-tag>
       </div>
-      <p style="font-weight: bold;font-size: 15px">选择固件:</p>
-      <el-select v-model="firmware" placeholder="请选择">
+      <p style="font-weight: bold;font-size: 15px">
+        选择固件:
+      </p>
+      <el-select
+        v-model="firmware"
+        placeholder="请选择"
+      >
         <el-option
           v-for="item in options1"
           :key="item.value"
           :label="item.label"
-          :value="item.value">
-        </el-option>
+          :value="item.value"
+        />
       </el-select>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="massUpgradeDialogClose">取 消</el-button>
-    <el-button type="warning" @click="massUpgradeConfirm">升 级</el-button>
-  </span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="massUpgradeDialogClose">取 消</el-button>
+        <el-button
+          type="warning"
+          @click="massUpgradeConfirm"
+        >升 级</el-button>
+      </span>
     </el-dialog>
     <!--    删除弹窗-->
     <el-dialog
-      :close-on-click-modal=false
+      :close-on-click-modal="false"
       custom-class="dialogDelete"
       title="批量删除"
       :visible.sync="massDeleteDialogVisible"
-      width="50%">
+      width="50%"
+    >
       <div slot="title">
-        <i class="el-icon-warning" style="font-size: 20px;color: red;padding-right: 5px"></i>
+        <i
+          class="el-icon-warning"
+          style="font-size: 20px;color: red;padding-right: 5px"
+        />
         <span style="font-weight: bold;font-size: 20px;color: red">批量删除</span>
       </div>
       <span style="display:inline-block;margin:15px 0;font-weight: bold;font-size: 15px">已选设备:</span>
       <span style="display: inline-block;margin: 0 10px 0 10px">{{ allSelectedRecords.length }}台</span><br>
       <div>
-        <el-tag style="width: 15%;margin: 1px 1px" type="info" v-for="items in massAssignName" v-bind:key="items">
+        <el-tag
+          style="width: 15%;margin: 1px 1px"
+          type="info"
+          v-for="items in massAssignName"
+          :key="items"
+        >
           {{ items }}
         </el-tag>
       </div>
       <!--      <p style="font-size: 20px;font-weight: bold;color: red">选择的设备将会被删除，请确认后操作！</p>-->
-      <p style="font-weight: bold;color: red">请输入确认后点击删除</p>
-      <el-input style="width: 100px" v-model="confirmText" placeholder="YES"></el-input>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="massDeleteDialogClose">取 消</el-button>
-    <el-button type="danger" @click="massDeleteConfirm">删除</el-button>
-  </span>
+      <p style="font-weight: bold;color: red">
+        请输入确认后点击删除
+      </p>
+      <el-input
+        style="width: 100px"
+        v-model="confirmText"
+        placeholder="YES"
+      />
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="massDeleteDialogClose">取 消</el-button>
+        <el-button
+          type="danger"
+          @click="massDeleteConfirm"
+        >删除</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>

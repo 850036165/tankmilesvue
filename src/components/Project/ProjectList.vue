@@ -1,20 +1,32 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        首页
+      </el-breadcrumb-item>
       <el-breadcrumb-item>项目管理</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
-          <h1 style="margin: 0">项目管理</h1>
-          <el-button style="height: 30px;" size="mini" type="primary" icon="el-icon-edit-outline" round>Button
+          <h1 style="margin: 0">
+            项目管理
+          </h1>
+          <el-button
+            style="height: 30px;"
+            size="mini"
+            type="primary"
+            icon="el-icon-edit-outline"
+            round
+          >
+            Button
           </el-button>
         </div>
       </div>
       <div>
         <vxe-grid
+          row-id="name"
           :header-cell-style="headerCellStyle"
           ref="xGrid"
           :height="tableHeight+'px'"
@@ -23,23 +35,37 @@
           highlight-current-row
           highlight-hover-column
           highlight-current-column
-          size="mini">
+          size="mini"
+        >
           <!--自定义列插槽-->
           <template v-slot:projectName="{row}">
             <span :class="row.level===0?'projectName':''">{{ row.name }}</span>
           </template>
           <template v-slot:projectOperation="{row}">
             <div class="operationButton">
-              <i class="el-icon-edit-outline deleteIcon" @click="goProjectDetail(row)"></i>
-              <i class="el-icon-circle-plus-outline deleteIcon" @click="openCreateDialog(row)"></i>
-              <i class="el-icon-delete deleteIcon" @click="openDeleteDialog(row)" title="删除"></i>
+              <i
+                class="el-icon-edit-outline deleteIcon"
+                @click="goProjectDetail(row)"
+              />
+              <i
+                class="el-icon-circle-plus-outline deleteIcon"
+                @click="openCreateDialog(row)"
+              />
+              <i
+                class="el-icon-delete deleteIcon"
+                @click="openDeleteDialog(row)"
+                title="删除"
+              />
             </div>
           </template>
           <!--将表单放在工具栏中-->
           <template v-slot:toolbar_buttons>
             <div style="display: grid;grid-template-columns: 100px 120px;grid-template-rows: 40px">
               <div style="display: flex;justify-content:center;align-items:center;">
-                <i class="el-icon-circle-plus addButton" @click="addProject"></i>
+                <i
+                  class="el-icon-circle-plus addButton"
+                  @click="addProject"
+                />
                 <span class="addText">新增项目</span>
               </div>
             </div>
@@ -58,20 +84,36 @@
       top="40vh"
       custom-class="deleteDialog"
       :visible.sync="deleteDialogVisible"
-      width="20%">
+      width="20%"
+    >
       <div slot="title">
         <span class="deleteTitle">即将删除</span>
-        <p class="deleteTitle" style="color: #2f74eb;display: inline-block">{{ toBeDeletedProject.name }}</p>
+        <p
+          class="deleteTitle"
+          style="color: #2f74eb;display: inline-block"
+        >
+          {{ toBeDeletedProject.name }}
+        </p>
       </div>
       <span class="deleteContent">项目删除后，此项目下的管理账户将自动注销，是否确认删除该项目?</span>
       <div slot="footer">
         <div style="display: grid;grid-template-columns: 1fr 1fr;grid-template-rows: 50px;border-radius:0 0 3px 3px ">
           <!--        <div style="display: flex;justify-content: center;align-items: flex-end;">-->
-          <div @click="deleteDialogVisible = false" class="deleteConfirm">
-            <p class="deleteText">取消</p>
+          <div
+            @click="deleteDialogVisible = false"
+            class="deleteConfirm"
+          >
+            <p class="deleteText">
+              取消
+            </p>
           </div>
-          <div @click="deleteProject ()" class="deleteCancel">
-            <p class="deleteText">确认</p>
+          <div
+            @click="deleteProject ()"
+            class="deleteCancel"
+          >
+            <p class="deleteText">
+              确认
+            </p>
           </div>
         </div>
       </div>
@@ -81,22 +123,45 @@
       top="40vh"
       custom-class="deleteDialog"
       :visible.sync="createDialogVisible"
-      width="30%">
+      width="30%"
+    >
       <div slot="title">
         <span class="deleteTitle">快速创建项目于</span>
-        <p class="deleteTitle" style="color: #2f74eb;display: inline-block">{{ toBeCreateProject.name }}</p>
+        <p
+          class="deleteTitle"
+          style="color: #2f74eb;display: inline-block"
+        >
+          {{ toBeCreateProject.name }}
+        </p>
       </div>
-      <el-input v-model="toBeCreateProjectName" style="margin: 20px 5px" placeholder="输入项目名称" required>
-        <template slot="prepend">{{ toBeCreateProject.name }}-></template>
+      <el-input
+        v-model="toBeCreateProjectName"
+        style="margin: 20px 5px"
+        placeholder="输入项目名称"
+        required
+      >
+        <template slot="prepend">
+          {{ toBeCreateProject.name }}->
+        </template>
       </el-input>
       <div slot="footer">
         <div style="display: grid;grid-template-columns: 1fr 1fr;grid-template-rows: 50px;border-radius:0 0 3px 3px ">
           <!--        <div style="display: flex;justify-content: center;align-items: flex-end;">-->
-          <div @click="createDialogVisible = false" class="deleteConfirm">
-            <p class="deleteText">取消</p>
+          <div
+            @click="createDialogVisible = false"
+            class="deleteConfirm"
+          >
+            <p class="deleteText">
+              取消
+            </p>
           </div>
-          <div @click="quickCreateProject ()" class="deleteCancel">
-            <p class="deleteText">确认</p>
+          <div
+            @click="quickCreateProject ()"
+            class="deleteCancel"
+          >
+            <p class="deleteText">
+              确认
+            </p>
           </div>
         </div>
       </div>
@@ -117,7 +182,6 @@ export default {
       createDialogVisible: false,
       tableHeight: 0,
       gridOptions: {
-        rowId: 'id',
         resizable: true,
         showOverflow: true,
         exportConfig: {
@@ -145,7 +209,6 @@ export default {
           }
         },
         treeConfig: {
-          // expandAll: true,
           reserve: true,
           // line: true,
           children: 'children'
@@ -205,7 +268,7 @@ export default {
         response => {
           console.log(response)
           if (response.data.code === 0) {
-            this.$refs.xGrid.commitProxy('reload')
+            this.$refs.xGrid.commitProxy('query')
             VXETable.modal.message({message: '创建成功', status: 'success', size: 'medium', id: 'unique1'})
           } else {
             VXETable.modal.message({
@@ -233,7 +296,7 @@ export default {
         response => {
           console.log(response)
           if (response.data.code === 0) {
-            this.$refs.xGrid.commitProxy('reload')
+            this.$refs.xGrid.commitProxy('query')
             VXETable.modal.message({message: '删除成功', status: 'success', size: 'medium', id: 'unique1'})
           } else {
             VXETable.modal.message({
