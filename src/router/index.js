@@ -8,7 +8,7 @@ import PersonalSetting from '../components/Bar/PersonalSetting'
 import BasicSetting from '../components/Bar/BasicSetting'
 import DeviceList from '../components/device/DeviceList'
 import AddDevices from '../components/device/AddDevices'
-// import Welcome from '../components/Welcome'
+import TankModel from '@/components/Model/TankModel'
 import MassOperation from '../components/device/MassOperation'
 import DeviceDetail from '../components/device/DeviceDetail'
 import FirmwareManage from '../components/Firmware/FirmwareManage'
@@ -19,6 +19,15 @@ import ProjectList from '@/components/Project/ProjectList'
 import AddProject from '@/components/Project/AddProject'
 import ProjectDetail from '@/components/Project/ProjectDetail'
 import Welcome from '@/components/Welcome'
+import MediaModel from '@/components/Model/MediaModel'
+import PermissionModel from '@/components/Model/PermissionModel'
+import UserManage from '@/components/UserManage/UserManage'
+import Monitoring from '@/components/monitoring/Monitoring'
+import POI from '@/components/monitoring/POI'
+import Product from '@/components/support/Product'
+import Contact from '@/components/support/Contact'
+import Bill from '@/components/Bill/Bill'
+import Record from '@/components/Record'
 
 Vue.use(VueRouter)
 const routes = [
@@ -44,14 +53,26 @@ const routes = [
       { path: '/tank/tankdetail', component: TankDetail },
       { path: '/project', component: ProjectList },
       { path: '/project/addproject', component: AddProject },
-      { path: '/project/projectdetail', component: ProjectDetail }
+      { path: '/project/projectdetail', component: ProjectDetail },
+      { path: '/tankmodel', component: TankModel },
+      { path: '/mediamodel', component: MediaModel },
+      { path: '/permissionmodel', component: PermissionModel },
+      { path: '/usermanage', component: UserManage },
+      { path: '/monitoring', component: Monitoring },
+      { path: '/POI', component: POI },
+      { path: '/product', component: Product },
+      { path: '/contact', component: Contact },
+      { path: '/bill', component: Bill },
+      { path: '/record', component: Record }
+
     ]
   }
 
 ]
 
 const router = new VueRouter({
-  routes
+  mode: 'hash',
+  routes: routes
 })
 // 挂载路由守卫
 router.beforeEach((to, from, next) => {

@@ -2,11 +2,11 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-bottom:0;">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/tanklist' }">罐箱列表</el-breadcrumb-item>
-      <el-breadcrumb-item>TCDU 100007-9{{ this.$route.query.id }}</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/tank' }">罐箱列表</el-breadcrumb-item>
+      <el-breadcrumb-item>TCDU 100007-9----{{ $route.query.sn }}</el-breadcrumb-item>
     </el-breadcrumb>
     <h2 style="display: inline-block">罐箱详情</h2>
-    <h4 style="display: inline-block;margin-left: 10px">TCDU 100007-9{{ this.$route.query.id }}</h4>
+    <h4 style="display: inline-block;margin-left: 10px;color:#006af1 ">TCDU 100007-9-----{{ $route.query.sn }}</h4>
     <el-tabs value="first">
       <el-tab-pane label="数据监控" name="first">
         <!--        设备总览栏-->

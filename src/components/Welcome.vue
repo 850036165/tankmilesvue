@@ -1,7 +1,7 @@
 <template>
   <div>
     wellcome
-    <loadingpage v-show="true"/>
+    <loadingpage v-show="true" />
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import Loadingpage from '@/components/Loading/LoadingPage'
 
 export default {
   name: 'Welcome',
-  components: {Loadingpage}
+  components: { Loadingpage }
 }
 </script>
 

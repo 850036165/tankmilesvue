@@ -11,7 +11,7 @@
           class="iconchange"
           aria-hidden="true"
         >
-          <use xlink:href="#icon-fanyix"/>
+          <use xlink:href="#icon-fanyix" />
         </svg>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="zh">
@@ -144,7 +144,7 @@ import 'element-ui/lib/theme-chalk/display.css'
 
 export default {
   name: 'Login',
-  data() {
+  data () {
     return {
       welcomeLoading: true,
       loadingStatus: false,
@@ -153,42 +153,42 @@ export default {
         password: '111111'
       },
       imageBox: [
-        {path: require('../assets/Image/Imagebox/1.jpg')},
-        {path: require('../assets/Image/Imagebox/2.jpg')},
-        {path: require('../assets/Image/Imagebox/3.jpg')},
-        {path: require('../assets/Image/Imagebox/4.jpg')}
+        { path: require('../assets/Image/Imagebox/1.jpg') },
+        { path: require('../assets/Image/Imagebox/2.jpg') },
+        { path: require('../assets/Image/Imagebox/3.jpg') },
+        { path: require('../assets/Image/Imagebox/4.jpg') }
       ],
       url: require('../assets/Image/Login_logo.png'),
       href: 'https://www.baidu.com'
     }
   },
   computed: {
-    loadingText1() {
+    loadingText1 () {
       return {
         loadingStatus: false,
         loadingText: `${this.$t('login.login')}`
       }
     },
-    loginFormRules() {
+    loginFormRules () {
       // 验证规则
       return {
         name: [
-          {required: true, message: `${this.$t('login.alert1')}`, trigger: 'blur'},
-          {min: 4, max: 10, message: `${this.$t('login.alert11')}`, trigger: 'blur'}
+          { required: true, message: `${this.$t('login.alert1')}`, trigger: 'blur' },
+          { min: 4, max: 10, message: `${this.$t('login.alert11')}`, trigger: 'blur' }
         ],
         password: [
-          {required: true, message: `${this.$t('login.alert2')}`, trigger: 'blur'},
-          {min: 6, max: 20, message: `${this.$t('login.alert21')}`, trigger: 'blur'}
+          { required: true, message: `${this.$t('login.alert2')}`, trigger: 'blur' },
+          { min: 6, max: 20, message: `${this.$t('login.alert21')}`, trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
-    goHomePage() {
+    goHomePage () {
       window.open('https://www.baidu.com', '_blank')
     },
     // 登录请求
-    login() {
+    login () {
       this.loadingStatus = true
       this.loadingText1.loadingText = `${this.$t('login.loading')}`
       this.$refs.loginFormRef.validate(async valid => {
@@ -209,7 +209,7 @@ export default {
             this.loadingText1.loadingText = `${this.$t('login.login')}`
             this.loadingStatus = false
           } else {
-            let text = '';
+            let text = ''
             const time = new Date().getHours()
             if ((time >= 0) && (time < 7)) {
               text = '夜猫子，要注意身体哦！ '
@@ -254,14 +254,14 @@ export default {
       })
     },
     // 切换语言
-    handleCommand(command) {
+    handleCommand (command) {
       this.$i18n.locale = command
       // console.log(command)
       localStorage.setItem('lang', command)
     }
 
   },
-  mounted() {
+  mounted () {
     const userAgent = navigator.userAgent
     const isOpera = userAgent.indexOf('Opera') > -1 // 判断是否Opera浏览器
     const isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1 && !isOpera // 判断是否IE浏览器

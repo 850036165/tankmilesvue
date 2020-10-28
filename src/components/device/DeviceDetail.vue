@@ -13,8 +13,8 @@
     <div style="display: flex;align-items: center;justify-content: flex-end">
       <h1 style="margin-right: auto;margin-left: 10px">
         设备详情&nbsp;<span
-        style="color: #2A68D3"
-      >{{ this.$route.query.sn }}</span>
+          style="color: #2A68D3"
+        >{{ this.$route.query.sn }}</span>
       </h1>
       <el-button
         style="height: 30px"
@@ -214,7 +214,7 @@
                 style="width: 400px;margin: 0 auto"
               >
                 <!--              监控参数选择-->
-                <div style=""/>
+                <div style="" />
                 <el-form-item label="监控参数:">
                   <el-switch
                     active-color="#13ce66"
@@ -435,8 +435,8 @@
                 <el-form-item label="固件版本">
                   <p style="margin: 0;color: #FA675C;font-size: 14px;font-weight: 400;">
                     当前版本&nbsp;<span
-                    style="font-weight: bold;"
-                  >{{ addForm.firmwareVersion|filters1 }}</span>
+                      style="font-weight: bold;"
+                    >{{ addForm.firmwareVersion|filters1 }}</span>
                   </p>
                 </el-form-item>
                 <el-form-item
@@ -702,7 +702,7 @@ import VXETable from 'vxe-table'
 
 export default {
   name: 'DeviceDetail',
-  data() {
+  data () {
     return {
       activeTabs: 'first',
       deviceRawId: undefined,
@@ -749,63 +749,35 @@ export default {
           sort: true, // 启用排序代理
           filter: false, // 启用筛选代理
           ajax: {
-            query: async ({page, sort, filters}) => {
+            query: async ({ page, sort, filters }) => {
               // 处理排序条件
               if (sort.property) {
                 console.log('初始order非null1', sort.property)
-                switch (sort.property) {
-                  case 'deviceSn':
-                    sort.property = 0
-                    break
-                  case 'tankSn':
-                    sort.property = 1
-                    break
-                  case 'category':
-                    sort.property = 2
-                    break
-                  case 'projectNames':
-                    sort.property = 3
-                    break
-                  case 'firmwareVersion':
-                    sort.property = 4
-                    break
-                  case 'lastUpdateTime':
-                    sort.property = 5
-                    break
-                  case 'temperatureInterval':
-                    sort.property = 6
-                    break
-                  case 'gpsInterval':
-                    sort.property = 7
-                    break
-                  case 'commInterval':
-                    sort.property = 8
-                    break
-                  case 'maxWorkTime':
-                    sort.property = 9
-                    break
-                  case 'lastUpgradeTime':
-                    sort.property = 10
-                    break
-                  case 'tankTemperature':
-                    sort.property = 11
-                    break
-                  case 'tankPressure':
-                    sort.property = 12
-                    break
-                  case 'tankLevel':
-                    sort.property = 13
-                    break
-                  case 'batteryLeft':
-                    sort.property = 14
-                    break
-                  case 'connected':
-                    sort.property = 15
-                    break
-                  default:
-                    sort.property = 0
+                if (typeof sort.property === 'number') { console.log('当前sort为number', sort.property) } else {
+                  switch (sort.property) {
+                    case 'at':
+                      sort.property = 0
+                      break
+                    case 'operationType':
+                      sort.property = 1
+                      break
+                    case 'operatedName':
+                      sort.property = 2
+                      break
+                    case 'operatedValue':
+                      sort.property = 3
+                      break
+                    case 'oldValue':
+                      sort.property = 4
+                      break
+                    case 'operator':
+                      sort.property = 5
+                      break
+                    default:
+                      sort.property = 0
+                  }
+                  console.log('初始order非null2', sort.property)
                 }
-                console.log('初始order非null2', sort.property)
               }
               if (sort.order) {
                 console.log('order值为1', sort.order)
@@ -814,6 +786,12 @@ export default {
                     sort.order = 'DESC'
                     break
                   case 'asc':
+                    sort.order = 'ASC'
+                    break
+                  case 'DESC':
+                    sort.order = 'DESC'
+                    break
+                  case 'ASC':
                     sort.order = 'ASC'
                     break
                   default:
@@ -832,7 +810,7 @@ export default {
               }, this.formData)
               // 处理筛选条件
               console.log('请求值1', queryParams)
-              filters.forEach(({field, values}) => {
+              filters.forEach(({ field, values }) => {
                 queryParams[field] = values.join(',')
               })
               console.log('请求值2' + JSON.stringify(queryParams))
@@ -843,11 +821,11 @@ export default {
                 startAt: `${this.selectDate[0] / 1000}`,
                 endAt: `${this.selectDate[1] / 1000}`
               })
-              queryParams = Object.assign(queryParams, {currentPage: page.currentPage - 1, pageSize: page.pageSize})
+              queryParams = Object.assign(queryParams, { currentPage: page.currentPage - 1, pageSize: page.pageSize })
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('device/operation/history/list', queryParams).catch((error) => {
-                VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
+                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevices = response.data.data.total
@@ -875,13 +853,13 @@ export default {
           }
         },
         columns: [
-          {type: 'seq', width: 50, align: 'center'},
-          {field: 'at', title: '更改时间', remoteSort: true, minWidth: 180, align: 'center', formatter: this.formatDate2},
-          {field: 'operationType', title: '操作类型', remoteSort: true, minWidth: 180, align: 'center'},
-          {field: 'operatedName', title: '操作参数', remoteSort: true, minWidth: 100},
-          {field: 'operatedValue', title: '修改数值', remoteSort: true, minWidth: 100},
-          {field: 'oldValue', title: '原数值', remoteSort: true, minWidth: 100},
-          {field: 'operator', title: '操作账户', remoteSort: true, minWidth: 100}
+          { type: 'seq', width: 50, align: 'center' },
+          { field: 'at', title: '更改时间', remoteSort: true, minWidth: 180, align: 'center', formatter: this.formatDate2 },
+          { field: 'operationType', title: '操作类型', remoteSort: true, minWidth: 180, align: 'center' },
+          { field: 'operatedName', title: '操作参数', remoteSort: true, minWidth: 100 },
+          { field: 'operatedValue', title: '修改数值', remoteSort: true, minWidth: 100 },
+          { field: 'oldValue', title: '原数值', remoteSort: true, minWidth: 100 },
+          { field: 'operator', title: '操作账户', remoteSort: true, minWidth: 100 }
         ]
       },
       addFormTemp: {},
@@ -937,10 +915,10 @@ export default {
       },
       typeList: undefined,
       logLevelOptions: [
-        {label: 1},
-        {label: 2},
-        {label: 3},
-        {label: 4}
+        { label: 1 },
+        { label: 2 },
+        { label: 3 },
+        { label: 4 }
       ],
       temperatureUnitOptions: [{
         label: '℃',
@@ -979,92 +957,92 @@ export default {
     scrollerHeight: function () {
       return (window.innerHeight - 250) + 'px'
     },
-    addRules() {
+    addRules () {
       return {
         deviceSn: [
-          {required: true, message: '请输入设备SN', trigger: 'change'},
-          {pattern: /^\d{6}|0$/, message: '设备SN为6位数字', trigger: 'change'}],
+          { required: true, message: '请输入设备SN', trigger: 'change' },
+          { pattern: /^\d{6}|0$/, message: '设备SN为6位数字', trigger: 'change' }],
         key: [
-          {required: true, message: '请输入设备ProductKey', trigger: 'change'},
-          {pattern: /^\d{6}|0$/, message: 'ProductKey为6位数字', trigger: 'change'}],
-        pt1000BalanceResistor: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        pt1000A: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        pt1000B: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        temperatureInterval: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        levelInterval: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        pressureInterval: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        gpsInterval: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        commInterval: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        maxWorkTime: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        recordSaveInterval: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        acceleratorWakeupThreshold: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        lowAlarm: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        highAlarm: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        autoLevelConvert: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        tankDiameter: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        tankLength: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        tankCrownRadius: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        tankKnuckleRadius: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        tankEndsEdpth: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        temperatureUnit: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        levelUnit: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        pressureUnit: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}],
-        backlight: [{required: true, message: '不能为空', trigger: 'change'},
-          {pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change'}]
+          { required: true, message: '请输入设备ProductKey', trigger: 'change' },
+          { pattern: /^\d{6}|0$/, message: 'ProductKey为6位数字', trigger: 'change' }],
+        pt1000BalanceResistor: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        pt1000A: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        pt1000B: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        temperatureInterval: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        levelInterval: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        pressureInterval: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        gpsInterval: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        commInterval: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        maxWorkTime: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        recordSaveInterval: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        acceleratorWakeupThreshold: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        lowAlarm: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        highAlarm: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        autoLevelConvert: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        tankDiameter: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        tankLength: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        tankCrownRadius: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        tankKnuckleRadius: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        tankEndsEdpth: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        temperatureUnit: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        levelUnit: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        pressureUnit: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }],
+        backlight: [{ required: true, message: '不能为空', trigger: 'change' },
+          { pattern: /^[1-9]\d*|0$/, message: '此处为数字', trigger: 'change' }]
       }
     }
   },
   methods: {
-    formatDate2({cellValue}) {
+    formatDate2 ({ cellValue }) {
       return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss')
     },
-    queryTime() {
+    queryTime () {
       console.log(this.selectDate)
       this.$refs.xGrid.commitProxy('query')
     },
-    searchEvent() {
+    searchEvent () {
       this.$refs.xGrid.commitProxy('query')
     },
-    headerCellStyle() {
+    headerCellStyle () {
       return {
         backgroundColor: '#2A68D3',
         color: '#ffffff'
       }
     },
-    async requestDevice() {
+    async requestDevice () {
       const response = await this.$http.post('/device/category/list').then(this.$XModal.message({
         message: '设备类型请求成功',
         status: 'success'
       })).catch(error => {
-        this.$XModal.message({message: `设备类型请求失败@${error}`, status: 'warning'})
+        this.$XModal.message({ message: `设备类型请求失败@${error}`, status: 'warning' })
       })
       this.typeList = response.data.data
       console.log('列表', this.typeList)
     },
     // 验证所有表单
-    async saveEdit() {
+    async saveEdit () {
       console.log('当前表单内容', this.addForm)
       console.log('原始表单内容', this.addFormTemp)
       await Promise.all([
@@ -1077,22 +1055,22 @@ export default {
         this.$http.post('/device/edit', this.addForm).then(async response => {
           console.log('test', response.data)
           if (response.data.code !== 0) {
-            this.$XModal.message({message: `修改错误@${response.data.message}`, status: 'warning', id: '2'})
+            this.$XModal.message({ message: `修改错误@${response.data.message}`, status: 'warning', id: '2' })
             this.addForm = this.addFormTemp // 若修改错误，恢复初始数据
           } else {
             console.log('请求设备代码', this.$route.query.sn)
-            await this.$router.push({query: {sn: this.addForm.deviceSn}})
+            await this.$router.push({ query: { sn: this.addForm.deviceSn } })
             //    this.$route.query.sn = this.addForm.deviceSn // 将query值修改为修改后的值
             await this.getDeviceDetail(this.addForm.deviceSn)
-            this.$XModal.message({message: '修改成功', status: 'success', id: '3'})
+            this.$XModal.message({ message: '修改成功', status: 'success', id: '3' })
             console.log('提交内容为', this.addForm)
           }
         }).catch(error => console.log(error))
       }).catch(() => {
-        this.$XModal.message({message: '配置错误,检查后重试', status: 'warning', id: '1'})
+        this.$XModal.message({ message: '配置错误,检查后重试', status: 'warning', id: '1' })
       })
     },
-    quitEdit() {
+    quitEdit () {
       this.addForm = this.addFormTemp // 若放弃修改，将原始表单恢复
       this.$refs.ruleForm1.resetFields()
       this.$refs.ruleForm2.resetFields()
@@ -1100,30 +1078,30 @@ export default {
       this.$refs.ruleForm4.resetFields()
       this.canNotEdit = true
     },
-    editDevice() {
+    editDevice () {
       this.activeTabs = 'second'
       if (this.typeList === undefined) this.requestDevice() // 请求设备类型
       this.canNotEdit = false // 取消不可编辑状态
       this.addFormTemp = JSON.parse(JSON.stringify(this.addForm)) // 点击编辑时暂存原始数据
     },
     // 请求设备详情
-    async getDeviceDetail(sn) {
-      const deviceDetail = await this.$http.post('/device/detail', {sn: sn})
+    async getDeviceDetail (sn) {
+      const deviceDetail = await this.$http.post('/device/detail', { sn: sn })
       this.addForm = deviceDetail.data.data
       await this.$refs.xGrid.commitProxy('query')
       console.log('设备详情', this.addForm)
     }
   },
-  mounted() {
+  mounted () {
     this.getDeviceDetail(this.$route.query.sn)
   },
   filters: {
-    filters1(value) {
+    filters1 (value) {
       if (value) {
         return value
       } else return '无数据'
     },
-    formatDate(value) {
+    formatDate (value) {
       if (value) {
         return XEUtils.toDateString(value, 'yyyy/MM/dd/ HH:mm:ss')
       }

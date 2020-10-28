@@ -173,7 +173,8 @@
 import VXETable from 'vxe-table'
 
 export default {
-  data() {
+  name: 'ProjectList',
+  data () {
     return {
       toBeCreateProjectName: '',
       toBeDeletedProject: {},
@@ -222,7 +223,7 @@ export default {
           ajax: {
             query: async () => {
               const response = await this.$http.post('project/list').catch((error) => {
-                VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1'})
+                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
               })
               console.log('源数据', response)
               const projectData = response.data.data
@@ -233,18 +234,19 @@ export default {
           }
         },
         columns: [
-          {field: 'name', title: '项目名称', minWidth: 150, treeNode: true, slots: {default: 'projectName'}},
-          {field: 'tankNum', title: '箱量', minWidth: 60},
-          {field: 'accountNum', title: '账户数量', minWidth: 60},
-          {field: 'createDate', title: '创建时间', minWidth: 60},
-          {field: 'changeDate', title: '最近修改时间', minWidth: 60},
-          {title: '操作', align: 'center', maxWidth: 80, slots: {default: 'projectOperation'}}
+          { type: 'seq', width: 50, align: 'center' },
+          { field: 'name', title: '项目名称', minWidth: 150, treeNode: true, slots: { default: 'projectName' } },
+          { field: 'tankNum', title: '箱量', minWidth: 60 },
+          { field: 'accountNum', title: '账户数量', minWidth: 60 },
+          { field: 'createDate', title: '创建时间', minWidth: 60 },
+          { field: 'changeDate', title: '最近修改时间', minWidth: 60 },
+          { title: '操作', align: 'center', maxWidth: 80, slots: { default: 'projectOperation' } }
         ]
       }
     }
   },
   methods: {
-    goProjectDetail(row) {
+    goProjectDetail (row) {
       this.$router.push({
         path: 'project/projectdetail',
         query: {
@@ -253,12 +255,12 @@ export default {
       })
       console.log(row)
     },
-    openCreateDialog(row) {
+    openCreateDialog (row) {
       this.toBeCreateProjectName = ''
       this.createDialogVisible = true
       this.toBeCreateProject = row
     },
-    async quickCreateProject() {
+    async quickCreateProject () {
       const data = {
         isRoot: false,
         parentProjectId: this.toBeCreateProject.id,
@@ -269,7 +271,7 @@ export default {
           console.log(response)
           if (response.data.code === 0) {
             this.$refs.xGrid.commitProxy('query')
-            VXETable.modal.message({message: '创建成功', status: 'success', size: 'medium', id: 'unique1'})
+            VXETable.modal.message({ message: '创建成功', status: 'success', size: 'medium', id: 'unique1' })
           } else {
             VXETable.modal.message({
               message: `创建失败@${response.data.message}`,
@@ -280,24 +282,24 @@ export default {
           }
         }
       ).catch(error => {
-        VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1'})
+        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
       })
       this.createDialogVisible = false
       this.toBeCreateProjectName = ''
     },
-    openDeleteDialog(row) {
+    openDeleteDialog (row) {
       this.deleteDialogVisible = true
       this.toBeDeletedProject = row
     },
-    async deleteProject() {
+    async deleteProject () {
       console.log('删除行数据', this.toBeDeletedProject.id)
-      const deleteData = {id: this.toBeDeletedProject.id}
+      const deleteData = { id: this.toBeDeletedProject.id }
       await this.$http.post('project/delete', deleteData).then(
         response => {
           console.log(response)
           if (response.data.code === 0) {
             this.$refs.xGrid.commitProxy('query')
-            VXETable.modal.message({message: '删除成功', status: 'success', size: 'medium', id: 'unique1'})
+            VXETable.modal.message({ message: '删除成功', status: 'success', size: 'medium', id: 'unique1' })
           } else {
             VXETable.modal.message({
               message: `删除失败@${response.data.message}`,
@@ -308,36 +310,35 @@ export default {
           }
         }
       ).catch(error => {
-        VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1'})
+        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
       })
       this.deleteDialogVisible = false
     },
-    addLevel(array) {
+    addLevel (array) {
       if (array.length) {
         for (let i = 0; i < array.length; i++) {
           array[i].level = 0
         }
       }
     },
-    headerCellStyle() {
+    headerCellStyle () {
       return {
         backgroundColor: '#2A68D3',
         color: '#ffffff'
       }
     },
-    addProject() {
+    addProject () {
       this.$router.push('/project/addproject')
     }
   },
-  mounted() {
+  mounted () {
     this.tableHeight = window.innerHeight - 185
     window.onresize = () => {
       return (() => {
         this.tableHeight = window.innerHeight - 185
       })()
     }
-  },
-  name: 'ProjectList'
+  }
 }
 </script>
 
@@ -417,7 +418,7 @@ export default {
 
 /deep/ .el-card__body {
   padding-top: 0;
-  padding-bottom: 0;
+  padding-bottom: 5px;
 }
 
 .addButton {

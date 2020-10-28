@@ -250,14 +250,14 @@ import VXETable from 'vxe-table'
 
 export default {
   name: 'DeviceManage',
-  data() {
+  data () {
     return {
       firmware: '',
       options1: [
-        {label: 'V1.0.1', value: 1},
-        {label: 'V1.0.2test', value: 2},
-        {label: 'V2.0.1', value: 3},
-        {label: 'V3.0.1beta', value: 4}
+        { label: 'V1.0.1', value: 1 },
+        { label: 'V1.0.2test', value: 2 },
+        { label: 'V2.0.1', value: 3 },
+        { label: 'V3.0.1beta', value: 4 }
       ],
       selectedDevices: 0,
       confirmText: '',
@@ -274,16 +274,16 @@ export default {
           value: 1,
           label: '万华',
           children:
-            [{value: 2, label: '万华烟台'},
+            [{ value: 2, label: '万华烟台' },
               {
                 value: 3,
                 label: '万华宁波',
                 children: [
-                  {value: 7, label: '万华宁波子用户1'},
-                  {value: 8, label: '万华宁波子用户2'},
-                  {value: 9, label: '万华宁波子用户3'},
-                  {value: 10, label: '万华宁波子用户4'},
-                  {value: 11, label: '万华宁波子用户5'}
+                  { value: 7, label: '万华宁波子用户1' },
+                  { value: 8, label: '万华宁波子用户2' },
+                  { value: 9, label: '万华宁波子用户3' },
+                  { value: 10, label: '万华宁波子用户4' },
+                  { value: 11, label: '万华宁波子用户5' }
                 ]
               }]
         },
@@ -291,8 +291,8 @@ export default {
           value: 4,
           label: 'exsif',
           children:
-            [{value: 5, label: 'exsif国内'},
-              {value: 6, label: 'exsif国外'}]
+            [{ value: 5, label: 'exsif国内' },
+              { value: 6, label: 'exsif国外' }]
         }
       ],
       massAssignName: [],
@@ -340,21 +340,21 @@ export default {
           sort: true, // 启用排序代理
           filter: true, // 启用筛选代理
           ajax: {
-            query: async ({page, sort, filters}) => {
+            query: async ({ page, sort, filters }) => {
               // 处理排序条件
               const queryParams = Object.assign({
                 sort: sort.property,
                 order: sort.order
               }, this.formData)
               // 处理筛选条件
-              filters.forEach(({field, values}) => {
+              filters.forEach(({ field, values }) => {
                 queryParams[field] = values.join(',')
               })
               // const queryParamsJson = JSON.stringify(queryParams)
               // console.log(queryParamsJson)
               console.log(queryParams)
-              const response = await this.$http.get(`https://api.xuliangzhan.com:10443/api/pub/page/list/${page.pageSize}/${page.currentPage}`, {params: queryParams}).catch((error) => {
-                VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
+              const response = await this.$http.get(`https://api.xuliangzhan.com:10443/api/pub/page/list/${page.pageSize}/${page.currentPage}`, { params: queryParams }).catch((error) => {
+                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
               })
               console.log(response.data)
               return response.data
@@ -369,38 +369,38 @@ export default {
           }
         },
         columns: [
-          {type: 'checkbox', title: 'ID', width: 60},
+          { type: 'checkbox', title: 'ID', width: 60 },
           {
             field: 'name',
             title: 'Name',
             minWidth: 200,
             remoteSort: true
           },
-          {field: 'nickname', title: 'Nickname', remoteSort: true, minWidth: 200},
-          {field: 'age', title: 'Age', remoteSort: true, width: 100},
+          { field: 'nickname', title: 'Nickname', remoteSort: true, minWidth: 200 },
+          { field: 'age', title: 'Age', remoteSort: true, width: 100 },
           {
             field: 'role',
             title: 'Role',
             remoteSort: true,
             minWidth: 200,
             filters: [
-              {label: '前端开发', value: '前端'},
-              {label: '后端开发', value: '后端'},
-              {label: '测试', value: '测试'},
-              {label: '程序员鼓励师', value: '程序员鼓励师'}
+              { label: '前端开发', value: '前端' },
+              { label: '后端开发', value: '后端' },
+              { label: '测试', value: '测试' },
+              { label: '程序员鼓励师', value: '程序员鼓励师' }
             ],
             filterMultiple: false
           },
-          {field: 'amount', title: 'Amount', width: 100, formatter: this.formatAmount},
-          {field: 'updateDate', title: 'Update Date', width: 160, remoteSort: true, formatter: this.formatDate},
-          {field: 'createDate', title: 'Create Date', width: 160, remoteSort: true, formatter: this.formatDate}
+          { field: 'amount', title: 'Amount', width: 100, formatter: this.formatAmount },
+          { field: 'updateDate', title: 'Update Date', width: 160, remoteSort: true, formatter: this.formatDate },
+          { field: 'createDate', title: 'Create Date', width: 160, remoteSort: true, formatter: this.formatDate }
         ]
       }
     }
   },
-  created() {
+  created () {
   },
-  mounted() {
+  mounted () {
     this.tableHeight = window.innerHeight - 230
     window.onresize = () => {
       return (() => {
@@ -409,41 +409,41 @@ export default {
     }
   },
   methods: {
-    selectAllEvent() {
+    selectAllEvent () {
       this.selectedDevices = [...this.$refs.xGrid.getCheckboxRecords(), ...this.$refs.xGrid.getCheckboxReserveRecords()].length
     },
-    selectChangeEvent() {
+    selectChangeEvent () {
       this.selectedDevices = [...this.$refs.xGrid.getCheckboxRecords(), ...this.$refs.xGrid.getCheckboxReserveRecords()].length
     },
-    massAssignDialogClose() {
+    massAssignDialogClose () {
       this.massAssignDialogVisible = false
       this.deviceProject = ''
     },
-    massUpgradeDialogClose() {
+    massUpgradeDialogClose () {
       this.massUpgradeDialogVisible = false
     },
-    massDeleteDialogClose() {
+    massDeleteDialogClose () {
       this.massDeleteDialogVisible = false
       this.confirmText = ''
     },
-    massAssignConfirm() {
+    massAssignConfirm () {
       this.massAssignDialogVisible = false
-      VXETable.modal.message({message: '分配成功', status: 'success'})
+      VXETable.modal.message({ message: '分配成功', status: 'success' })
     },
-    massUpgradeConfirm() {
+    massUpgradeConfirm () {
       this.massUpgradeDialogVisible = false
-      VXETable.modal.message({message: '升级指令已发送', status: 'success'})
+      VXETable.modal.message({ message: '升级指令已发送', status: 'success' })
     },
-    massDeleteConfirm() {
+    massDeleteConfirm () {
       if (this.confirmText === '确认') {
         this.massDeleteDialogVisible = false
-        VXETable.modal.message({message: '删除成功', status: 'error'})
+        VXETable.modal.message({ message: '删除成功', status: 'error' })
         this.confirmText = ''
       } else {
         this.$message.error('请确认后再试')
       }
     },
-    massAssign() {
+    massAssign () {
       const checkedRecords = this.$refs.xGrid.getCheckboxRecords()
       const reserveRecords = this.$refs.xGrid.getCheckboxReserveRecords()
       this.allSelectedRecords = [...checkedRecords, ...reserveRecords]
@@ -451,10 +451,10 @@ export default {
         this.massAssignDialogVisible = !this.massAssignDialogVisible
         this.massAssignName = this.allSelectedRecords.map(item => item.name)
       } else {
-        VXETable.modal.message({message: '请先选择设备', status: 'warning'})
+        VXETable.modal.message({ message: '请先选择设备', status: 'warning' })
       }
     },
-    massUpgrade() {
+    massUpgrade () {
       const checkedRecords = this.$refs.xGrid.getCheckboxRecords()
       const reserveRecords = this.$refs.xGrid.getCheckboxReserveRecords()
       this.allSelectedRecords = [...checkedRecords, ...reserveRecords]
@@ -462,10 +462,10 @@ export default {
         this.massUpgradeDialogVisible = !this.massUpgradeDialogVisible
         this.massAssignName = this.allSelectedRecords.map(item => item.name)
       } else {
-        VXETable.modal.message({message: '请先选择设备', status: 'warning'})
+        VXETable.modal.message({ message: '请先选择设备', status: 'warning' })
       }
     },
-    massDelete() {
+    massDelete () {
       const checkedRecords = this.$refs.xGrid.getCheckboxRecords()
       const reserveRecords = this.$refs.xGrid.getCheckboxReserveRecords()
       this.allSelectedRecords = [...checkedRecords, ...reserveRecords]
@@ -473,16 +473,16 @@ export default {
         this.massDeleteDialogVisible = !this.massDeleteDialogVisible
         this.massAssignName = this.allSelectedRecords.map(item => item.name)
       } else {
-        VXETable.modal.message({message: '请先选择设备', status: 'warning'})
+        VXETable.modal.message({ message: '请先选择设备', status: 'warning' })
       }
     },
-    searchEvent() {
+    searchEvent () {
       this.$refs.xGrid.commitProxy('reload')
     },
-    formatAmount({cellValue}) {
+    formatAmount ({ cellValue }) {
       return cellValue ? `$${XEUtils.commafy(XEUtils.toFixedString(cellValue, 2))}` : ''
     },
-    formatDate({cellValue}) {
+    formatDate ({ cellValue }) {
       return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:ss:mm')
     }
   }

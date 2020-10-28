@@ -42,7 +42,7 @@
         </el-row>
       </div>
       <div>
-        <el-table/>
+        <el-table />
       </div>
     </el-card>
     <el-dialog
@@ -218,7 +218,7 @@
 <script>
 export default {
   name: 'FirmwareManage',
-  data() {
+  data () {
     return {
       uploadDialogVisible: false,
       addTankForm: {
@@ -288,13 +288,13 @@ export default {
     }
   },
   methods: {
-    uploadButton() {
+    uploadButton () {
       this.uploadDialogVisible = true
     },
-    massChange() {
+    massChange () {
       this.$router.push('/devicemanage/massoperation')
     },
-    beforeUpload(file) {
+    beforeUpload (file) {
       const isZip = file.name.endsWith('.zip')
       const isLt1M = file.size / 1024 / 1024 < 1
 

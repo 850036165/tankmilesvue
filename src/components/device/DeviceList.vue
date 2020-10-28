@@ -51,7 +51,7 @@
           </template>
           <template v-slot:deviceSn_default="{ row }">
             <div>
-              <i :class="row.connected?'classB':'classA'"/>
+              <i :class="row.connected?'classB':'classA'" />
               <button
                 class="deviceDetail"
                 @click="goDetail(row)"
@@ -117,7 +117,7 @@ import 'vxe-table/styles/variable.scss'
 
 export default {
   name: 'DeviceList',
-  data() {
+  data () {
     return {
       totalDevices: null,
       tableHeight: 0,
@@ -163,63 +163,65 @@ export default {
           sort: true, // 启用排序代理
           filter: false, // 启用筛选代理
           ajax: {
-            query: async ({page, sort, filters}) => {
+            query: async ({ page, sort, filters }) => {
               // 处理排序条件
               if (sort.property) {
                 console.log('初始order非null1', sort.property)
-                switch (sort.property) {
-                  case 'deviceSn':
-                    sort.property = 0
-                    break
-                  case 'tankSn':
-                    sort.property = 1
-                    break
-                  case 'category':
-                    sort.property = 2
-                    break
-                  case 'projectNames':
-                    sort.property = 3
-                    break
-                  case 'firmwareVersion':
-                    sort.property = 4
-                    break
-                  case 'lastUpdateTime':
-                    sort.property = 5
-                    break
-                  case 'temperatureInterval':
-                    sort.property = 6
-                    break
-                  case 'gpsInterval':
-                    sort.property = 7
-                    break
-                  case 'commInterval':
-                    sort.property = 8
-                    break
-                  case 'maxWorkTime':
-                    sort.property = 9
-                    break
-                  case 'lastUpgradeTime':
-                    sort.property = 10
-                    break
-                  case 'tankTemperature':
-                    sort.property = 11
-                    break
-                  case 'tankPressure':
-                    sort.property = 12
-                    break
-                  case 'tankLevel':
-                    sort.property = 13
-                    break
-                  case 'batteryLeft':
-                    sort.property = 14
-                    break
-                  case 'connected':
-                    sort.property = 15
-                    break
-                  default:
-                    sort.property = 0
+                if (typeof sort.property === 'number') { console.log('当前sort为number', sort.property) } else {
+                  switch (sort.property) {
+                    case 'deviceSn':
+                      sort.property = 0
+                      break
+                    case 'tankSn':
+                      sort.property = 1
+                      break
+                    case 'category':
+                      sort.property = 2
+                      break
+                    case 'projectNames':
+                      sort.property = 3
+                      break
+                    case 'firmwareVersion':
+                      sort.property = 4
+                      break
+                    case 'lastUpdateTime':
+                      sort.property = 5
+                      break
+                    case 'temperatureInterval':
+                      sort.property = 6
+                      break
+                    case 'gpsInterval':
+                      sort.property = 7
+                      break
+                    case 'commInterval':
+                      sort.property = 8
+                      break
+                    case 'maxWorkTime':
+                      sort.property = 9
+                      break
+                    case 'lastUpgradeTime':
+                      sort.property = 10
+                      break
+                    case 'tankTemperature':
+                      sort.property = 11
+                      break
+                    case 'tankPressure':
+                      sort.property = 12
+                      break
+                    case 'tankLevel':
+                      sort.property = 13
+                      break
+                    case 'batteryLeft':
+                      sort.property = 14
+                      break
+                    case 'connected':
+                      sort.property = 15
+                      break
+                    default:
+                      sort.property = 0
+                  }
+                  console.log('初始order非null2', sort.property)
                 }
-                console.log('初始order非null2', sort.property)
               }
               if (sort.order) {
                 console.log('order值为1', sort.order)
@@ -228,6 +230,12 @@ export default {
                     sort.order = 'DESC'
                     break
                   case 'asc':
+                    sort.order = 'ASC'
+                    break
+                  case 'DESC':
+                    sort.order = 'DESC'
+                    break
+                  case 'ASC':
                     sort.order = 'ASC'
                     break
                   default:
@@ -246,15 +254,15 @@ export default {
               }, this.formData)
               // 处理筛选条件
               console.log('请求值1', queryParams)
-              filters.forEach(({field, values}) => {
+              filters.forEach(({ field, values }) => {
                 queryParams[field] = values.join(',')
               })
               console.log('请求值2' + JSON.stringify(queryParams))
-              queryParams = Object.assign(queryParams, {currentPage: page.currentPage - 1, pageSize: page.pageSize})
+              queryParams = Object.assign(queryParams, { currentPage: page.currentPage - 1, pageSize: page.pageSize })
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('device/list', queryParams).catch((error) => {
-                VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
+                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevices = response.data.data.total
@@ -294,41 +302,41 @@ export default {
           }
         },
         columns: [
-          {type: 'seq', width: 50, align: 'center'},
+          { type: 'seq', width: 50, align: 'center' },
           {
             field: 'deviceSn',
             align: 'center',
             title: '设备号',
             minWidth: 150,
             remoteSort: true,
-            slots: {default: 'deviceSn_default'}
+            slots: { default: 'deviceSn_default' }
           },
-          {field: 'tankSn', title: '箱号', remoteSort: true, minWidth: 100},
-          {field: 'category', title: '设备类型', remoteSort: true, width: 120},
-          {field: 'projectNames', title: '所属项目', remoteSort: true, minWidth: 150},
-          {field: 'firmwareVersion', title: '固件版本', width: 100, remoteSort: true},
-          {field: 'lastUpgradeTime', title: '最近更新', width: 140, remoteSort: true, formatter: this.formatDate1},
-          {field: 'temperatureInterval', title: '温度周期', width: 100, remoteSort: true},
-          {field: 'gpsInterval', title: 'GPS周期', width: 100, remoteSort: true},
-          {field: 'commInterval', title: '基站通讯周期', width: 120, remoteSort: true},
-          {field: 'maxWorkTime', title: '最大工作时间', width: 120, remoteSort: true},
-          {field: 'updateTime', title: '更新时间', width: 140, remoteSort: true, formatter: this.formatDate2},
-          {field: 'lat', title: '经度', width: 100, remoteSort: true},
-          {field: 'lon', title: '纬度', width: 100, remoteSort: true},
-          {field: 'location', title: '地址', width: 100},
-          {field: 'tankTemperature', title: '温度', minWidth: 70, remoteSort: true},
-          {field: 'tankPressure', title: '压力', minWidth: 70, remoteSort: true},
-          {field: 'tankLevel', title: '液位', minWidth: 70, remoteSort: true},
-          {field: 'batteryLeft', title: '电量', minWidth: 70, remoteSort: true},
-          {field: 'connected', title: '在线', align: 'center', width: 80, remoteSort: true},
-          {title: '操作', align: 'center', width: 80, slots: {default: 'operation'}}
+          { field: 'tankSn', title: '箱号', remoteSort: true, minWidth: 100 },
+          { field: 'category', title: '设备类型', remoteSort: true, width: 120 },
+          { field: 'projectNames', title: '所属项目', remoteSort: true, minWidth: 150 },
+          { field: 'firmwareVersion', title: '固件版本', width: 100, remoteSort: true },
+          { field: 'lastUpgradeTime', title: '最近更新', width: 140, remoteSort: true, formatter: this.formatDate1 },
+          { field: 'temperatureInterval', title: '温度周期', width: 100, remoteSort: true },
+          { field: 'gpsInterval', title: 'GPS周期', width: 100, remoteSort: true },
+          { field: 'commInterval', title: '基站通讯周期', width: 120, remoteSort: true },
+          { field: 'maxWorkTime', title: '最大工作时间', width: 120, remoteSort: true },
+          { field: 'updateTime', title: '更新时间', width: 140, remoteSort: true, formatter: this.formatDate2 },
+          { field: 'lat', title: '经度', width: 100, remoteSort: true },
+          { field: 'lon', title: '纬度', width: 100, remoteSort: true },
+          { field: 'location', title: '地址', width: 100 },
+          { field: 'tankTemperature', title: '温度', minWidth: 70, remoteSort: true },
+          { field: 'tankPressure', title: '压力', minWidth: 70, remoteSort: true },
+          { field: 'tankLevel', title: '液位', minWidth: 70, remoteSort: true },
+          { field: 'batteryLeft', title: '电量', minWidth: 70, remoteSort: true },
+          { field: 'connected', title: '在线', align: 'center', width: 80, remoteSort: true },
+          { title: '操作', align: 'center', width: 80, slots: { default: 'operation' } }
         ]
       }
     }
   },
-  created() {
+  created () {
   },
-  mounted() {
+  mounted () {
     this.tableHeight = window.innerHeight - 185
     window.onresize = () => {
       return (() => {
@@ -337,19 +345,19 @@ export default {
     }
   },
   methods: {
-    clickOperation(row) {
+    clickOperation (row) {
       console.log(row)
     },
-    massChange() {
+    massChange () {
       this.$router.push('/device/massoperation')
     },
-    headerCellStyle() {
+    headerCellStyle () {
       return {
         backgroundColor: '#2A68D3',
         color: '#ffffff'
       }
     },
-    goDetail(row) {
+    goDetail (row) {
       console.log(row)
       // 传递列参数至组件
       this.$router.push({
@@ -359,16 +367,16 @@ export default {
         }
       })
     },
-    addDevices() {
+    addDevices () {
       this.$router.push('/device/adddevices')
     },
-    searchEvent() {
+    searchEvent () {
       this.$refs.xGrid.commitProxy('query')
     },
-    formatDate1({cellValue}) {
+    formatDate1 ({ cellValue }) {
       return new Date(parseInt(cellValue) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ')
     },
-    formatDate2({cellValue}) {
+    formatDate2 ({ cellValue }) {
       return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss')
     }
   }

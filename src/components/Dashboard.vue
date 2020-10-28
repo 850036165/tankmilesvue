@@ -5,7 +5,7 @@
       style="margin-bottom:0;"
     >
       <el-breadcrumb-item :to="{ path: '/welcome' }">
-        <i class="el-icon-s-home"/>首页
+        <i class="el-icon-s-home" />首页
       </el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
         看板
@@ -138,7 +138,7 @@ export default {
   components: {
     countTo
   },
-  data() {
+  data () {
     return {
       loading1: false,
       startVal: 0,
@@ -151,10 +151,10 @@ export default {
       stores: []
     }
   },
-  created() {
+  created () {
     this.initData()
   },
-  mounted() {
+  mounted () {
     const that = this
     this.initMap()
     EventBus.$on('demo', function (isCollapse) {
@@ -169,7 +169,7 @@ export default {
     })
   },
   methods: {
-    initData() {
+    initData () {
       this.stores = {
         type: 'FeatureCollection',
         features: [
@@ -375,10 +375,10 @@ export default {
         ]
       }
     },
-    changeMap() {
+    changeMap () {
       this.Mapbox.resize()
     },
-    initMap() {
+    initMap () {
       const that = this
       this.loading1 = true
       mapboxgl.accessToken = 'pk.eyJ1IjoiemhlbmdnYW5nemh1IiwiYSI6ImNrZWFxMGRoOTAxYXcycnFqbjFkaXBmcHgifQ.C7gXGFGRWOuA3w5hwfuU1g' // 这里请换成自己的token

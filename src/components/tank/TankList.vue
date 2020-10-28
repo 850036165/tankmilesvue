@@ -100,7 +100,7 @@
           <!--自定义空数据模板-->
           <template v-slot:empty>
             <div style="color: black;">
-              <i/>
+              <i />
               <p>OOPS!此处暂无罐箱！</p>
               <span>请联系cimc后台咨询或</span>
               <router-link
@@ -124,7 +124,7 @@ import 'vxe-table/styles/variable.scss'
 
 export default {
   name: 'TankList',
-  data() {
+  data () {
     return {
       totalDevices: null,
       tableHeight: 0,
@@ -141,11 +141,8 @@ export default {
         border: true,
         rowId: 'id',
         sortConfig: {
-          trigger: 'default',
-          defaultSort: {
-            field: 'deviceSn',
-            order: 'desc'
-          }
+          remote: true,
+          trigger: 'default'
         },
         filterConfig: {
           remote: false
@@ -170,36 +167,36 @@ export default {
           sort: true, // 启用排序代理
           filter: false, // 启用筛选代理
           ajax: {
-            query: async ({page, sort, filters}) => {
+            query: async ({ page, sort, filters }) => {
               // 处理排序条件
               if (sort.property) {
                 console.log('初始order非null1', sort.property)
-                switch (sort.property) {
-                  case 'tankSn':
-                    sort.property = 0
-                    break
-                  case 'deviceSn':
-                    sort.property = 1
-                    break
-                  case 'receivedAt':
-                    sort.property = 2
-                    break
-                  case 'tankTemperature':
-                    sort.property = 3
-                    break
-                  case 'tankPressure':
-                    sort.property = 4
-                    break
-                  case 'tankLevel':
-                    sort.property = 5
-                    break
-                  case 'batteryLeft':
-                    sort.property = 6
-                    break
-                  default:
-                    sort.property = 0
+                if (typeof sort.property === 'number') { console.log('当前sort为number', sort.property) } else {
+                  switch (sort.property) {
+                    case 'tankSn':
+                      sort.property = 0
+                      break
+                    case 'deviceSn':
+                      sort.property = 1
+                      break
+                    case 'receivedAt':
+                      sort.property = 2
+                      break
+                    case 'tankTemperature':
+                      sort.property = 3
+                      break
+                    case 'tankPressure':
+                      sort.property = 4
+                      break
+                    case 'tankLevel':
+                      sort.property = 5
+                      break
+                    case 'batteryLeft':
+                      sort.property = 6
+                      break
+                  }
+                  console.log('初始order非null2', sort.property)
                 }
-                console.log('初始order非null2', sort.property)
               }
               if (sort.order) {
                 console.log('order值为1', sort.order)
@@ -208,6 +205,12 @@ export default {
                     sort.order = 'DESC'
                     break
                   case 'asc':
+                    sort.order = 'ASC'
+                    break
+                  case 'DESC':
+                    sort.order = 'DESC'
+                    break
+                  case 'ASC':
                     sort.order = 'ASC'
                     break
                   default:
@@ -226,15 +229,15 @@ export default {
               }, this.formData)
               // 处理筛选条件
               console.log('请求值1', queryParams)
-              filters.forEach(({field, values}) => {
+              filters.forEach(({ field, values }) => {
                 queryParams[field] = values.join(',')
               })
               console.log('请求值2' + JSON.stringify(queryParams))
-              queryParams = Object.assign(queryParams, {currentPage: page.currentPage - 1, pageSize: page.pageSize})
+              queryParams = Object.assign(queryParams, { currentPage: page.currentPage - 1, pageSize: page.pageSize })
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('/device/message/list', queryParams).catch((error) => {
-                VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
+                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevices = response.data.data.total
@@ -262,36 +265,36 @@ export default {
           }
         },
         columns: [
-          {type: 'seq', width: 50, align: 'center'},
+          { type: 'seq', width: 50, align: 'center' },
           {
             field: 'tankSn',
             align: 'center',
             title: '箱号',
             minWidth: 150,
             remoteSort: true,
-            slots: {default: 'tankSn_default'}
+            slots: { default: 'tankSn_default' }
           },
-          {field: 'deviceSn', align: 'center', title: '设备号', remoteSort: true, minWidth: 100},
-          {field: 'sampledAt', title: '记录时间', width: 140, formatter: this.formatDate2},
-          {field: 'receivedAt', title: '更新时间', width: 140, remoteSort: true, formatter: this.formatDate2},
-          {field: 'location', title: '地址', width: 100},
-          {field: 'tankTemperature', title: '温度', minWidth: 70, remoteSort: true},
-          {field: 'tankPressure', title: '压力', minWidth: 70, remoteSort: true},
-          {field: 'tankLevel', title: '液位', minWidth: 70, remoteSort: true},
-          {field: 'batteryLeft', title: '电量', minWidth: 70, remoteSort: true},
-          {field: 'lat', title: '经度', width: 100},
-          {field: 'lon', title: '纬度', width: 100},
-          {field: 'speed', title: '速度', width: 100},
-          {field: 'altitude', title: '高度', width: 100},
-          {field: 'gps_valid', title: 'GPSValid', align: 'center', width: 100},
-          {title: '操作', align: 'center', width: 80, slots: {default: 'operation'}}
+          { field: 'deviceSn', align: 'center', title: '设备号', remoteSort: true, minWidth: 100 },
+          { field: 'sampledAt', title: '记录时间', width: 140, formatter: this.formatDate2 },
+          { field: 'receivedAt', title: '更新时间', width: 140, remoteSort: true, formatter: this.formatDate2 },
+          { field: 'location', title: '地址', width: 100 },
+          { field: 'tankTemperature', title: '温度', minWidth: 70, remoteSort: true },
+          { field: 'tankPressure', title: '压力', minWidth: 70, remoteSort: true },
+          { field: 'tankLevel', title: '液位', minWidth: 70, remoteSort: true },
+          { field: 'batteryLeft', title: '电量', minWidth: 70, remoteSort: true },
+          { field: 'lat', title: '经度', width: 100 },
+          { field: 'lon', title: '纬度', width: 100 },
+          { field: 'speed', title: '速度', width: 100 },
+          { field: 'altitude', title: '高度', width: 100 },
+          { field: 'gps_valid', title: 'GPSValid', align: 'center', width: 100 },
+          { title: '操作', align: 'center', width: 80, slots: { default: 'operation' } }
         ]
       }
     }
   },
-  created() {
+  created () {
   },
-  mounted() {
+  mounted () {
     this.tableHeight = window.innerHeight - 185
     window.onresize = () => {
       return (() => {
@@ -300,7 +303,7 @@ export default {
     }
   },
   methods: {
-    cellStyle({row, rowIndex, column, columnIndex}) {
+    cellStyle ({ row, rowIndex, column, columnIndex }) {
       if (column.property === 'batteryLeft') {
         if (row.batteryAlert === true) {
           return {
@@ -313,19 +316,19 @@ export default {
         }
       }
     },
-    clickOperation(row, column) {
+    clickOperation (row, column) {
       console.log(row, column)
     },
-    massChange() {
+    massChange () {
       this.$router.push('/device/massoperation')
     },
-    headerCellStyle() {
+    headerCellStyle () {
       return {
         backgroundColor: '#2A68D3',
         color: '#ffffff'
       }
     },
-    goDetail(row) {
+    goDetail (row) {
       console.log(row)
       // 传递列参数至组件
       this.$router.push({
@@ -335,13 +338,13 @@ export default {
         }
       })
     },
-    addDevices() {
+    addDevices () {
       this.$router.push('/tank/addtanks')
     },
-    searchEvent() {
+    searchEvent () {
       this.$refs.xGrid.commitProxy('query')
     },
-    formatDate2({cellValue}) {
+    formatDate2 ({ cellValue }) {
       return XEUtils.toDateString(cellValue, 'yyyy/MM/dd HH:mm:ss')
     }
   }

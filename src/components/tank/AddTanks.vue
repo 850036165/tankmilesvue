@@ -82,13 +82,14 @@
                     v-model="addTankForm.device"
                     placeholder="请输入关联设备"
                     remote
-                    :remote-method="remoteMethod1"
+                    :remote-method="remoteMethod"
                     filterable
                     clearable
+                    default-first-option
                     :style="{width: '100%'}"
                   >
                     <el-option
-                      v-for="item in options1"
+                      v-for="item in options"
                       :key="item.deviceSn"
                       :label="item.deviceSn"
                       :value="item.deviceSn"
@@ -102,8 +103,6 @@
                 >
                   <el-select
                     :loading="loadingMedia"
-                    remote
-                    :remote-method="remoteMethod"
                     v-model="addTankForm.medium"
                     placeholder="请选择介质"
                     filterable
@@ -112,7 +111,7 @@
                     :style="{width: '100%'}"
                   >
                     <el-option
-                      v-for="item in options"
+                      v-for="item in mediaList"
                       :key="item.name"
                       :label="item.name"
                       :value="item.name"
@@ -171,12 +170,18 @@
                 <el-tag
                   :hit="false"
                   class="addTagClass"
+                  @click="$router.push('/tankmodel')"
                 >
-                  <i class="el-icon-circle-plus addTag"/><span class="addTagText">自定义</span>
+                  <i class="el-icon-circle-plus addTag" /><span class="addTagText">自定义</span>
                 </el-tag>
                 <el-tag
                   :id="item.name"
-                  style="margin: 3px;width: 80px;cursor:pointer;user-select: none"
+                  style="margin: 3px;cursor:pointer;
+                  user-select: none;
+                  width: 80px;
+                  overflow:hidden;
+                  text-overflow:ellipsis;
+                  white-space:nowrap;"
                   v-for="item in tankModelList"
                   :key="item.name"
                   :effect="item.name===selectedTag?'dark':'plain'"
@@ -187,11 +192,12 @@
               </div>
             </div>
             <div>
-              <span class="tableTitle">{{ selectedTag }}</span>
+              <span class="tableTitle">{{ selectedTag |filter1 }}</span>
               <span
-                style="float:right;width: 100px;height: 18px;font-size: 14px;font-weight: 400;color: #58647a;line-height: 24px;">罐箱容积:{{
-                  selectedTagTable.volume
-                }}L</span>
+                style="float:right;width: 100px;height: 18px;font-size: 14px;font-weight: 400;color: #58647a;line-height: 24px;"
+              >罐箱容积:{{
+                selectedTagTable.capacity|filter2
+              }}L</span>
               <table class="tankModelTable">
                 <tr>
                   <th colspan="3">
@@ -227,25 +233,25 @@
                 </tr>
                 <tr>
                   <td class="tableContent">
-                    {{ selectedTagTable.length }}
+                    {{ selectedTagTable.length |filter2 }}
                   </td>
                   <td class="tableContent">
-                    {{ selectedTagTable.width }}
+                    {{ selectedTagTable.width |filter2 }}
                   </td>
                   <td class="tableContent">
-                    {{ selectedTagTable.height }}
+                    {{ selectedTagTable.height |filter2 }}
                   </td>
                   <td class="tableContent">
-                    36000
+                    {{ selectedTagTable.MPGM |filter2 }}
                   </td>
                   <td class="tableContent">
-                    3910
+                    {{ selectedTagTable.tareMass|filter2 }}
                   </td>
                   <td class="tableContent">
-                    32360
+                    {{ selectedTagTable.payLoad |filter2 }}
                   </td>
                   <td class="tableContent">
-                    ASME SA240 304或同等材料
+                    {{ selectedTagTable.tankMaterial |filter2 }}
                   </td>
                 </tr>
               </table>
@@ -263,7 +269,10 @@
                   <td class="tableBackground">
                     内直径
                   </td>
-                  <td class="tableBackground">
+                  <td
+                    class="tableBackground"
+                    style="width: 12%"
+                  >
                     长
                   </td>
                   <td
@@ -287,23 +296,23 @@
                 </tr>
                 <tr>
                   <td class="tableContent">
-                    2333
+                    {{ selectedTagTable.internalDIA |filter2 }}
                   </td>
                   <td class="tableContent">
-                    5988
+                    {{ selectedTagTable.internalLength |filter2 }}
                   </td>
                   <td>罐体</td>
                   <td class="tableContent">
-                    2.67
+                    {{ selectedTagTable.tankMAWP |filter2 }}
                   </td>
                   <td class="tableContent">
-                    4
+                    {{ selectedTagTable.tankTestPressure |filter2 }}
                   </td>
                   <td class="tableContent">
-                    0.21
+                    {{ selectedTagTable.externalDesignPressure |filter2 }}
                   </td>
                   <td class="tableContent">
-                    30
+                    {{ selectedTagTable.insulationThickness |filter2 }}
                   </td>
                 </tr>
                 <tr>
@@ -312,25 +321,26 @@
                   </th>
                   <td>加热管</td>
                   <td class="tableContent">
-                    4
+                    {{ selectedTagTable.heatingCoilsMAWP |filter2 }}
                   </td>
                   <td class="tableContent">
-                    6
+                    {{ selectedTagTable.heatingCoilsTestPressure |filter2 }}
                   </td>
-                  <td>-</td>
+                  <td class="tableContent">
+                    N/A
+                  </td>
                   <td>保温材料</td>
                 </tr>
                 <tr>
                   <td>筒体设计温度</td>
                   <td
-                    colspan="2"
                     class="tableContent"
                   >
-                    -40-130
+                    {{ selectedTagTable.vesselDesignTemperature |filter2 }}
                   </td>
-                  <td colspan="3"/>
+                  <td colspan="4" />
                   <td class="tableContent">
-                    岩棉
+                    {{ selectedTagTable.insulation |filter2 }}
                   </td>
                 </tr>
               </table>
@@ -341,7 +351,88 @@
           label="附件上传"
           name="third"
         >
-          附件上传
+          <div style="display:flex;justify-content: flex-start">
+            <el-card style="margin: 5px 20px;width: 400px;">
+              <p class="uploadTile">
+                图片上传
+              </p>
+              <el-upload
+                style="margin: 0 auto"
+                action="http://125.72.105.218:59090/tank/attachment/upload"
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+                :on-success="handleSuccess"
+                :before-remove="beforeRemovePicture"
+                :before-upload="uploadPicture"
+                :on-error="handleError"
+                list-type="picture"
+                multiple
+                drag
+                :limit="pictureNumber"
+                :on-exceed="handleExceedPicture"
+                :file-list="fileList"
+              >
+                <i class="el-icon-upload" />
+                <div class="el-upload__text">
+                  将图片拖到此处，或<br>
+                  <el-button
+                    type="primary"
+                    size="small"
+                  >
+                    点击上传
+                  </el-button>
+                </div>
+                <div
+                  slot="tip"
+                  class="el-upload__tip"
+                >
+                  只能上传图片，且不超过5MB
+                </div>
+              </el-upload>
+            </el-card>
+            <el-card style="margin: 5px 20px;width: 400px">
+              <p class="uploadTile">
+                文件上传
+              </p>
+              <el-upload
+                action="http://125.72.105.218:59090/tank/attachment/upload"
+                :on-remove="handleRemove"
+                :on-success="handleSuccess"
+                :before-remove="beforeRemoveFile"
+                :before-upload="uploadFile"
+                list-type="list"
+                multiple
+                drag
+                :limit="fileNumber"
+                :on-exceed="handleExceedFile"
+                :file-list="fileList"
+              >
+                <i class="el-icon-upload" />
+                <div class="el-upload__text">
+                  将文件拖到此处，或<br>
+                  <el-button
+                    type="primary"
+                    size="small"
+                  >
+                    点击上传
+                  </el-button>
+                </div>
+                <div
+                  slot="tip"
+                  class="el-upload__tip"
+                >
+                  只能上传文档，且不超过5MB
+                </div>
+              </el-upload>
+            </el-card>
+          </div>
+          <el-dialog :visible.sync="dialogVisible">
+            <img
+              width="100%"
+              :src="dialogImageUrl"
+              alt=""
+            >
+          </el-dialog>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -351,30 +442,83 @@
 <script>
 export default {
   name: 'AddTanks',
-  data() {
+  filters: {
+    longFilter: function (value) {
+      if (value.length > 5) {
+        return value.substring(0, 8)
+      }
+    },
+    filter1: function (value) {
+      if (value === undefined || value === null) {
+        value = '未选择模型'
+      }
+      return value
+    },
+    filter2: function (value) {
+      if (value === undefined || value === null) {
+        value = '-'
+      }
+      return value
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.createTank === false) {
+      setTimeout(() => {
+        this.$confirm('此时离开将会丢失所有信息!已上传的附件也将被删除！', '确认信息', {
+          closeOnClickModal: false,
+          confirmButtonText: '确认离开',
+          cancelButtonText: '留在此页',
+          type: 'warning'
+        }).then(() => {
+          const attachment1 = this.attachmentArray.join(';')
+          console.log('删除的附件为', attachment1)
+          this.deletedFile(attachment1)
+          next(true)
+        }).catch(() => {
+          next(false)
+        }
+        )
+      }, 100)
+    } else {
+      next(true)
+    }
+  },
+  data () {
     return {
-      selectedTagTable: {name: undefined, length: undefined, width: undefined, height: undefined, volume: undefined},
+      fileNumber: 10,
+      pictureNumber: 5,
+      createTank: false,
+      previewList: [],
+      dialogImageUrl: '',
+      dialogVisible: false,
+      attachmentArray: [],
+      fileList: [],
+      selectedTagTable: {},
       selectedTag: undefined,
-      tankModelList: [
-        {name: '11m³Tank', length: 6058, width: 2438, height: 1591, volume: 1100},
-        {name: '12m³Tank', length: 6218, width: 2438, height: 2591, volume: 1200},
-        {name: '13m³Tank', length: 6318, width: 2438, height: 3591, volume: 3000},
-        {name: '14m³Tank', length: 1118, width: 2438, height: 4591, volume: 4000},
-        {name: '15m³Tank', length: 2582, width: 2438, height: 5591, volume: 5000},
-        {name: '16m³Tank', length: 3058, width: 2438, height: 6591, volume: 6000},
-        {name: '17m³Tank', length: 5058, width: 2738, height: 7591, volume: 7000},
-        {name: '18m³Tank', length: 6058, width: 2458, height: 8591, volume: 8000},
-        {name: '19m³Tank', length: 7058, width: 2478, height: 9591, volume: 9000},
-        {name: '20m³Tank', length: 2058, width: 2438, height: 2591, volume: 1300},
-        {name: '21m³Tank', length: 2258, width: 2421, height: 2591, volume: 1400},
-        {name: '22m³Tank', length: 1111, width: 2438, height: 2591, volume: 1600},
-        {name: '23m³Tank', length: 3333, width: 2238, height: 2591, volume: 1700},
-        {name: '24m³Tank', length: 4048, width: 2328, height: 2591, volume: 1090}
-      ],
+      tankModelList: [{
+        name: undefined,
+        capacity: undefined,
+        length: undefined,
+        width: undefined,
+        height: undefined,
+        MPGM: undefined,
+        tareMass: undefined,
+        payLoad: undefined,
+        tankMaterial: undefined,
+        internalDIA: undefined,
+        internalLength: undefined,
+        tankMAWP: undefined,
+        tankTestPressure: undefined,
+        heatingCoilsMAWP: undefined,
+        heatingCoilsTestPressure: undefined,
+        externalDesignPressure: undefined,
+        insulationThickness: undefined,
+        vesselDesignTemperature: undefined,
+        insulation: undefined
+      }],
       deviceList: [],
       loadingMedia: false,
       options: [],
-      options1: [],
       mediaList: [],
       activeName: 'first',
       addTankForm: {
@@ -383,7 +527,8 @@ export default {
         device: undefined,
         classificationSociety: undefined,
         medium: undefined,
-        remark: undefined
+        remark: undefined,
+        attachment: ''
       },
       ruleForm: {
         tankSn: [{
@@ -391,7 +536,7 @@ export default {
           message: '请输入箱号',
           trigger: 'blur'
         },
-          {min: 13, max: 13, message: '长度为13个字符', trigger: 'blur'}],
+        { min: 13, max: 13, message: '长度为13个字符', trigger: 'blur' }],
         buildAt: [{
           required: true,
           message: '请选择制造日期',
@@ -415,56 +560,147 @@ export default {
       }
     }
   },
-  mounted() {
+  created () {
+    window.addEventListener('beforeunload', e => this.beforeunloadFn(e))
+  },
+  destroyed () {
+    window.removeEventListener('beforeunload', e => this.beforeunloadFn(e))
+  },
+  mounted () {
     this.getMedia()
     this.getDevice()
-    // this.getTankModel()
-    this.selectedTagTable = this.tankModelList[0]
-    this.selectedTag = this.tankModelList[0].name
+    this.getTankModel()
   },
   methods: {
-    backToList() {
+    uploadPicture (file) {
+      const isPicture = ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml'].includes(file.type)
+      const isLt5M = file.size / 1024 / 1024 < 5
+      console.log('picture', file)
+      console.log('isPicture', isPicture)
+      if (!isPicture) {
+        this.$XModal.message({ message: '请上传图片格式文件!', status: 'error', id: '1' })
+      }
+      if (!isLt5M) {
+        this.$XModal.message({ message: '上传图片大小不能超过 5MB!', status: 'error', id: '1' })
+      }
+      return isPicture && isLt5M
+    },
+    uploadFile (file) {
+      const isFile = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)
+      const isLt5M = file.size / 1024 / 1024 < 5
+      console.log('file', file)
+      console.log('isFile', isFile)
+      if (!isFile) {
+        this.$XModal.message({ message: '请上传文档格式的文件!', status: 'error', id: '1' })
+      }
+      if (!isLt5M) {
+        this.$XModal.message({ message: '上传图片大小不能超过 5MB!', status: 'error', id: '1' })
+      }
+      return isFile && isLt5M
+    },
+    // 关闭或刷新时删除当前所有附件
+    beforeunloadFn () {
+      const attachment1 = this.attachmentArray.join(';')
+      console.log('删除的附件为', attachment1)
+      this.deletedFile(attachment1)
+    },
+    submitUpload () {
+      this.$refs.upload.submit()
+    },
+    handleError (response) {
+      this.$XModal.message({ message: '上传失败,请重新再试', status: 'error', id: '1' })
+      console.log('错误', response)
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    handleSuccess (response, fileList) {
+      console.log('返回', response)
+      console.log('文件列表', fileList)
+      this.attachmentArray.push(response.data)
+      console.log('附件列表数组', this.attachmentArray)
+      this.$XModal.message({ message: '上传成功！', status: 'success', id: '1' })
+    },
+    deletedFile (attachmentURL) {
+      if (!attachmentURL) console.log('附件为空', attachmentURL)
+      else {
+        this.$http.post('/tank/attachment/delete', { attachment: attachmentURL }).then(response => {
+          console.log('删除的响应值为', response)
+          if (response.data.code === 0) {
+            this.$XModal.message({ message: '附件已删除', status: 'success', id: '1' })
+          } else {
+            this.$XModal.message({ message: '删除失败！', status: 'error', id: '2' })
+          }
+        }).catch(error => {
+          this.$XModal.message({ message: `操作失败,文件未删除@${error}`, status: 'error', id: '2' })
+        })
+      }
+    },
+    handleRemove (file, fileList) {
+      // removeFunction
+      console.log('当前文件列表', fileList)
+      console.log('移除的文件', file)
+      if (file.response) {
+        console.log('移除的文件URL', file.response.data)
+        // 首先从附件列表中删除
+        this.attachmentArray.splice(this.attachmentArray.indexOf(file.response.data), 1)
+        // 再从服务器内删除
+        this.deletedFile(file.response.data)
+      }
+      console.log('附件列表数组', this.attachmentArray)
+    },
+    handleExceedFile (files, fileList) {
+      this.$message.info(`当前限制选择 ${this.fileNumber} 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    handleExceedPicture (files, fileList) {
+      this.$message.info(`当前限制选择 ${this.pictureNumber} 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    beforeRemovePicture (file, fileList) {
+      const isPicture = ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml'].includes(file.raw.type)
+      const isLt5M = file.size / 1024 / 1024 < 5
+      console.log('beforeRemove', isPicture, file)
+      if (isPicture && isLt5M) {
+        return this.$confirm(`确认移除文件 ${file.name}?`)
+      }
+    },
+    beforeRemoveFile (file, fileList) {
+      const isFile = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.raw.type)
+      const isLt5M = file.size / 1024 / 1024 < 5
+      console.log('beforeRemove', isFile, file)
+      if (isFile && isLt5M) {
+        return this.$confirm(`确认移除文件 ${file.name}?`)
+      }
+    },
+    backToList () {
       this.$router.push('/tank')
     },
-    selectTag(x) {
+    selectTag (x) {
       this.selectedTag = x.name
       this.selectedTagTable = x
       console.log(this.selectedTag)
     },
-    async getTankModel() {
+    async getTankModel () {
       const response = await this.$http.post('/tank/model/list').catch(error => {
-        this.$XModal.message({message: `罐箱请求失败@${error}`, status: 'warning'})
+        this.$XModal.message({ message: `罐箱请求失败@${error}`, status: 'warning', id: '1' })
       })
       this.tankModelList = response.data.data.data
       console.log('罐箱模型列表', this.tankModelList)
     },
-    remoteMethod1(query) {
+    remoteMethod (query) {
       if (query !== '') {
         this.loadingMedia = true
         setTimeout(() => {
           this.loadingMedia = false
-          this.options1 = this.deviceList.filter(item => {
+          this.options = this.deviceList.filter(item => {
             return item.deviceSn.toLowerCase().indexOf(query.toLowerCase()) > -1
-          })
-        }, 200)
-      } else {
-        this.options1 = []
-      }
-    },
-    remoteMethod(query) {
-      if (query !== '') {
-        this.loadingMedia = true
-        setTimeout(() => {
-          this.loadingMedia = false
-          this.options = this.mediaList.filter(item => {
-            return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
           })
         }, 200)
       } else {
         this.options = []
       }
     },
-    async getDevice() {
+    async getDevice () {
       const request = {
         currentPage: 0,
         keywords: '',
@@ -473,43 +709,53 @@ export default {
         pageSize: 999999
       }
       const response = await this.$http.post('/device/list', request).catch(error => {
-        this.$XModal.message({message: `设备列表请求失败@${error}`, status: 'warning'})
+        this.$XModal.message({ message: `设备列表请求失败@${error}`, status: 'warning', id: '1' })
       })
       console.log(response)
       this.deviceList = response.data.data.data.map(item => {
-        return {deviceSn: item.deviceSn}
+        return { deviceSn: item.deviceSn }
       })
       console.log('设备列表', this.deviceList)
     },
-    async getMedia() {
+    async getMedia () {
       const response = await this.$http.post('/tank/media/list').catch(error => {
-        this.$XModal.message({message: `介质列表请求失败@${error}`, status: 'warning'})
+        this.$XModal.message({ message: `介质列表请求失败@${error}`, status: 'warning', id: '1' })
       })
       this.mediaList = response.data.data.data
       console.log(this.mediaList)
     },
-    AddTanks() {
+    AddTanks () {
       this.$refs.addTankForm.validate(valid => {
         if (valid) {
           this.addTankForm.tankModel = this.selectedTag
+          this.addTankForm.attachment = this.attachmentArray.join(';')
           console.log(this.addTankForm)
-          this.$http.post('/tank/create', this.addTankForm).then(response => {
-            console.log(response.data.code)
-            if (response.data.code === 0) {
-              this.$XModal.message({message: '创建成功', status: 'success', id: '1'})
-              this.backToList()
-            } else {
-              this.$XModal.message({message: `创建失败@${response.data.message}`, status: 'warning', id: '1'})
-            }
-          }).catch(error => {
-            this.$XModal.message({message: `创建失败@${error}`, status: 'warning'})
-          })
-        } else this.$XModal.message({message: '请检查必填项', status: 'warning', id: '1'})
+          if (this.addTankForm.tankModel === undefined) {
+            this.$XModal.message({ message: '罐箱模型未选择', status: 'warning' })
+            this.activeName = 'second'
+          } else {
+            this.$http.post('/tank/create', this.addTankForm).then(response => {
+              console.log(response.data.code)
+              if (response.data.code === 0) {
+                this.$XModal.message({ message: '创建成功', status: 'success', id: '1' })
+                this.createTank = true
+                this.backToList()
+              } else {
+                this.$XModal.message({ message: `创建失败@${response.data.message}`, status: 'warning', id: '1' })
+              }
+            }).catch(error => {
+              this.$XModal.message({ message: `创建失败@${error}`, status: 'warning' })
+            })
+          }
+        } else {
+          this.$XModal.message({ message: '请检查必填项', status: 'warning', id: '1' })
+          this.activeName = 'first'
+        }
       })
     }
   },
   computed: {
-    pageHeight() {
+    pageHeight () {
       return (window.innerHeight - 280) + 'px'
     }
   }
@@ -525,7 +771,7 @@ export default {
   width: 35px;
   height: 18px;
   font-size: 14px;
-  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold sans-serif;
   font-weight: 700;
   color: #58647a;
 }
@@ -612,7 +858,7 @@ export default {
 .title {
   margin: 0 0 30px 0;
   font-size: 18px;
-  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold sans-serif;
   font-weight: 700;
   text-align: left;
   color: #58647a;
@@ -620,5 +866,13 @@ export default {
 
 /deep/ ::-webkit-scrollbar {
   width: 0;
+}
+
+.uploadTile {
+  margin: 5px;
+  font-size: 18px;
+  font-family: Microsoft YaHei UI, Microsoft YaHei UI-Bold, sans-serif;
+  text-align: left;
+  color: #58647a;
 }
 </style>

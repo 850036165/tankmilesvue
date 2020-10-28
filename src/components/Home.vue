@@ -44,32 +44,55 @@
             style="padding: 0 20px 0 30px"
           >首页看板</span>
         </el-menu-item>
-        <!--        项目管理一级菜单-->
-        <el-menu-item index="/project">
-          <i
-            class="el-icon-document"
-            style="font-size: 25px"
-          />
-          <span
-            slot="title"
-            style="padding: 0 20px 0 30px"
-          >项目管理</span>
-        </el-menu-item>
-        <!--        罐箱列表一级菜单-->
-        <el-menu-item index="/tank">
-          <i
-            class="el-icon-s-marketing"
-            style="font-size: 25px"
-          />
-          <span
-            slot="title"
-            style="padding: 0 20px 0 30px"
-          >罐箱列表</span>
-        </el-menu-item>
+        <!--          资产管理一级菜单-->
+        <el-submenu
+          index="/property"
+        >
+          <template slot="title">
+            <i
+              class="el-icon-monitor"
+              style="font-size: 25px"
+            />
+            <span style="padding: 0 20px 0 30px">资产管理</span>
+          </template>
+          <!--          资产管理二级菜单-->
+          <!--        罐箱列表一级菜单-->
+          <el-menu-item index="/tank">
+            <i
+              class="el-icon-receiving"
+              style="font-size: 25px"
+            />
+            <span
+              slot="title"
+              style="padding: 0 20px 0 30px"
+            >罐箱列表</span>
+          </el-menu-item>
+          <!--        项目管理一级菜单-->
+          <el-menu-item index="/project">
+            <i
+              class="el-icon-document"
+              style="font-size: 25px"
+            />
+            <span
+              slot="title"
+              style="padding: 0 20px 0 30px"
+            >项目管理</span>
+          </el-menu-item>
+          <!--        账户管理一级菜单-->
+          <el-menu-item index="/usermanage">
+            <i
+              class="el-icon-user"
+              style="font-size: 25px"
+            />
+            <span
+              slot="title"
+              style="padding: 0 20px 0 30px"
+            >账户管理</span>
+          </el-menu-item>
+        </el-submenu>
         <!--        监控设置一级菜单-->
         <el-submenu
-          index="/w"
-          disabled
+          index="/monitor"
         >
           <template slot="title">
             <i
@@ -79,11 +102,52 @@
             <span style="padding: 0 20px 0 30px">监控设置</span>
           </template>
           <!--          监控二级菜单-->
-          <el-menu-item index="/device">
-            <i class="el-icon-notebook-2"/><span style="padding: 0 20px 0 20px">监控列表</span>
+          <el-menu-item index="/monitoring">
+            <i class="el-icon-notebook-2" /><span style="padding: 0 20px 0 20px">监控列表</span>
           </el-menu-item>
-          <el-menu-item index="/firmware">
-            <i class="el-icon-location-information"/><span style="padding: 0 20px 0 20px">关注点设置</span>
+          <el-menu-item index="/poi">
+            <i class="el-icon-location-information" /><span style="padding: 0 20px 0 20px">关注点设置</span>
+          </el-menu-item>
+        </el-submenu>
+<!--        模型管理一级菜单-->
+        <el-submenu
+          index="/model"
+        >
+          <template slot="title">
+            <i
+              class="el-icon-files"
+              style="font-size: 25px"
+            />
+            <span style="padding: 0 20px 0 30px">模型管理</span>
+          </template>
+          <!--          模型管理二级菜单-->
+          <el-menu-item index="/tankmodel">
+            <i class="el-icon-truck" /><span style="padding: 0 20px 0 20px">罐箱模型</span>
+          </el-menu-item>
+          <el-menu-item index="/mediamodel">
+            <i class="el-icon-goblet-full" /><span style="padding: 0 20px 0 20px">介质模型</span>
+          </el-menu-item>
+          <el-menu-item index="/permissionmodel">
+            <i class="el-icon-thumb" /><span style="padding: 0 20px 0 20px">权限模型</span>
+          </el-menu-item>
+        </el-submenu>
+<!--        用户支持一级菜单-->
+        <el-submenu
+          index="/support"
+        >
+          <template slot="title">
+            <i
+              class="el-icon-service"
+              style="font-size: 25px"
+            />
+            <span style="padding: 0 20px 0 30px">用户支持</span>
+          </template>
+          <!--          用户支持二级菜单-->
+          <el-menu-item index="/product">
+            <i class="el-icon-document-copy" /><span style="padding: 0 20px 0 20px">产品资料</span>
+          </el-menu-item>
+          <el-menu-item index="/contact">
+            <i class="el-icon-message" /><span style="padding: 0 20px 0 20px">联系我们</span>
           </el-menu-item>
         </el-submenu>
         <!--        后台管理一级菜单-->
@@ -97,10 +161,16 @@
           </template>
           <!--          二级菜单-->
           <el-menu-item index="/device">
-            <i class="el-icon-receiving"/><span style="padding: 0 20px 0 20px">设备管理</span>
+            <i class="el-icon-mobile-phone" /><span style="padding: 0 20px 0 20px">设备管理</span>
           </el-menu-item>
           <el-menu-item index="/firmware">
-            <i class="el-icon-box"/><span style="padding: 0 20px 0 20px">固件管理</span>
+            <i class="el-icon-box" /><span style="padding: 0 20px 0 20px">固件管理</span>
+          </el-menu-item>
+          <el-menu-item index="/bill">
+            <i class="el-icon-wallet" /><span style="padding: 0 20px 0 20px">账单管理</span>
+          </el-menu-item>
+          <el-menu-item index="/record">
+            <i class="el-icon-mouse" /><span style="padding: 0 20px 0 20px">登录统计</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -180,7 +250,7 @@
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-weibiaoti-"/>
+                <use xlink:href="#icon-weibiaoti-" />
               </svg>
               <span style="font-size: 15px;width: 10px">CN</span>
             </el-dropdown-item>
@@ -192,7 +262,7 @@
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-meiguoqi"/>
+                <use xlink:href="#icon-meiguoqi" />
               </svg>
               <span style="font-size: 15px;width: 10px">EN</span>
             </el-dropdown-item>
@@ -205,7 +275,7 @@
                 class="icon"
                 aria-hidden="true"
               >
-                <use xlink:href="#icon-jp"/>
+                <use xlink:href="#icon-jp" />
               </svg>
               <span style="font-size: 15px;width: 10px">JP</span>
             </el-dropdown-item>
@@ -225,7 +295,7 @@
           style="-webkit-user-select: none;"
         >
           <!--  分隔符 -->
-          <div style="float:left;width: 1px;height: 40px; background: grey;margin: 0 10px 0 10px"/>
+          <div style="float:left;width: 1px;height: 40px; background: grey;margin: 0 10px 0 10px" />
           <!-- 头像及个人设置-->
           <el-submenu
             index=""
@@ -258,7 +328,7 @@
       </el-header>
       <!--      主体区域-->
       <el-main>
-        <router-view/>
+        <router-view />
         <!--        抽屉-->
         <el-drawer
           title="关于"
@@ -280,7 +350,7 @@ export default {
   //   this.getMenuList()
   // },
   name: 'Home',
-  data() {
+  data () {
     return {
       username: '朱正刚',
       currentLang: 'CN',

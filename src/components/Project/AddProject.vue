@@ -104,7 +104,7 @@
             </el-button>
           </el-form-item>
         </el-form>
-        <el-divider/>
+        <el-divider />
         <div class="chooseTanks">
           <!--          左侧表格-->
           <vxe-grid
@@ -202,7 +202,7 @@ import VXETable from 'vxe-table'
 
 export default {
   name: 'AddProject',
-  data() {
+  data () {
     return {
       loadingStatus: false,
       currentSelectedDevicesLeft: [],
@@ -225,9 +225,9 @@ export default {
           }
         },
         columns: [
-          {type: 'checkbox', field: 'sn', title: '箱号', minWidth: 100},
-          {field: 'deviceSn', title: '设备号', minWidth: 100},
-          {field: 'projectNames', title: '已分配项目', minWidth: 150}
+          { type: 'checkbox', field: 'sn', title: '箱号', minWidth: 100 },
+          { field: 'deviceSn', title: '设备号', minWidth: 100 },
+          { field: 'projectNames', title: '已分配项目', minWidth: 150 }
         ]
       },
       gridOptionsRight: {
@@ -254,7 +254,7 @@ export default {
           sort: true, // 启用排序代理
           filter: false, // 启用筛选代理
           ajax: {
-            query: async ({page, sort, filters}) => {
+            query: async ({ page, sort, filters }) => {
               // 处理排序条件
               if (sort.property !== undefined) {
                 sort.property = {
@@ -287,15 +287,15 @@ export default {
               }, this.formData)
               // 处理筛选条件
               console.log('请求值1', queryParams)
-              filters.forEach(({field, values}) => {
+              filters.forEach(({ field, values }) => {
                 queryParams[field] = values.join(',')
               })
               console.log('请求值2' + JSON.stringify(queryParams))
-              queryParams = Object.assign(queryParams, {currentPage: page.currentPage - 1, pageSize: page.pageSize})
+              queryParams = Object.assign(queryParams, { currentPage: page.currentPage - 1, pageSize: page.pageSize })
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('tank/list', queryParams).catch((error) => {
-                VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
+                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevicesRight = response.data.data.total
@@ -319,9 +319,9 @@ export default {
           }
         },
         columns: [
-          {type: 'checkbox', title: '箱号', minWidth: '25%'},
-          {field: 'deviceSn', title: '设备号', minWidth: '25%'},
-          {field: 'projectNames', title: '已分配项目', minWidth: '50%'}
+          { type: 'checkbox', title: '箱号', minWidth: '25%' },
+          { field: 'deviceSn', title: '设备号', minWidth: '25%' },
+          { field: 'projectNames', title: '已分配项目', minWidth: '50%' }
         ]
       },
       chooseProjectHolder: '无所属项目',
@@ -358,10 +358,10 @@ export default {
       }
     }
   },
-  created() {
+  created () {
   },
   methods: {
-    submitCreate() {
+    submitCreate () {
       this.loadingStatus = true
       const addProjectData = {}
       addProjectData.name = this.addProjectForm.projectName
@@ -396,15 +396,15 @@ export default {
           console.log('error@', error)
         })
     },
-    selectAllEventLeft() {
+    selectAllEventLeft () {
       this.currentSelectedDevicesLeft = [...this.$refs.xGridLeft.getCheckboxRecords(), ...this.$refs.xGridLeft.getCheckboxReserveRecords()]
     },
-    selectChangeEventLeft() {
+    selectChangeEventLeft () {
       this.currentSelectedDevicesLeft = [...this.$refs.xGridLeft.getCheckboxRecords(), ...this.$refs.xGridLeft.getCheckboxReserveRecords()]
     },
-    removeChecked() {
+    removeChecked () {
       if (this.currentSelectedDevicesLeft.length < 1) {
-        VXETable.modal.message({message: '未选择设备', status: 'warning', id: 'unique1'})
+        VXETable.modal.message({ message: '未选择设备', status: 'warning', id: 'unique1' })
       } else {
         this.$refs.xGridLeft.removeCheckboxRow()
         this.currentSelectedDevicesLeft = []
@@ -413,12 +413,12 @@ export default {
         console.log('移除处理后的数据', record)
         this.addProjectForm.allTanks = record.toString()
         console.log('tanks最终内容', this.addProjectForm.allTanks)
-        VXETable.modal.message({message: '移除成功', status: 'success'})
+        VXETable.modal.message({ message: '移除成功', status: 'success' })
       }
     },
-    transferToLeft() {
+    transferToLeft () {
       if (this.currentSelectedDevicesRight.length < 1) {
-        VXETable.modal.message({message: '请先选择设备', status: 'warning', id: 'unique1'})
+        VXETable.modal.message({ message: '请先选择设备', status: 'warning', id: 'unique1' })
       } else {
         this.$refs.xGridLeft.clearCheckboxRow()
         this.selectedTanksLeft = this.currentSelectedDevicesRight
@@ -427,18 +427,18 @@ export default {
         console.log('添加处理后的数据', record)
         this.addProjectForm.allTanks = record.toString()
         console.log('tanks最终内容', this.addProjectForm.allTanks)
-        VXETable.modal.message({message: `${record.length}台设备已添加`, status: 'success', id: 'unique1'})
+        VXETable.modal.message({ message: `${record.length}台设备已添加`, status: 'success', id: 'unique1' })
       }
     },
-    selectAllEventRight() {
+    selectAllEventRight () {
       this.currentSelectedDevicesRight = [...this.$refs.xGridRight.getCheckboxRecords(), ...this.$refs.xGridRight.getCheckboxReserveRecords()]
       console.log('全选值', this.currentSelectedDevicesRight.map(item => item.sn))
     },
-    selectChangeEventRight() {
+    selectChangeEventRight () {
       this.currentSelectedDevicesRight = [...this.$refs.xGridRight.getCheckboxRecords(), ...this.$refs.xGridRight.getCheckboxReserveRecords()]
       console.log('选择值', this.currentSelectedDevicesRight.map(item => item.sn))
     },
-    submitForm() {
+    submitForm () {
       this.$refs.addProjectForm.validate(valid => {
         if (!valid) {
         } else {
@@ -456,10 +456,10 @@ export default {
         }
       })
     },
-    resetForm() {
+    resetForm () {
       this.$refs.addProjectForm.resetFields()
     },
-    cleanParentProject() {
+    cleanParentProject () {
       if (this.parentProjectOptions === undefined) this.getParentProjectOptions()
       if (this.addProjectForm.isRoot === true) {
         this.chooseProjectHolder = '无所属项目'
@@ -471,21 +471,21 @@ export default {
         this.rules.parentProject[0].required = true
       }
     },
-    async getParentProjectOptions() {
+    async getParentProjectOptions () {
       const response = await this.$http.post('project/list').catch((error) => {
-        VXETable.modal.message({message: `请求失败@${error}`, status: 'error', size: 'medium'})
+        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
       })
       this.parentProjectOptions = this.handleData(response.data.data)
       console.log('级联原始数据', this.parentProjectOptions)
     },
-    chooseProject() {
+    chooseProject () {
       if (this.$refs.projectCascader.getCheckedNodes(true)[0].data) {
         this.parentProjectId = this.$refs.projectCascader.getCheckedNodes(true)[0].data.id
         console.log('父节点ID', this.parentProjectId)
       }
     },
     // 处理级联返回数据
-    handleData(data) {
+    handleData (data) {
       for (let i = 0; i < data.length; i++) {
         if (data[i].children.length < 1) {
           data[i].children = undefined

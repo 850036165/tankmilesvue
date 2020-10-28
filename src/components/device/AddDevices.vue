@@ -138,7 +138,7 @@
               size="small"
             >
               <!--              监控参数选择-->
-              <div style=""/>
+              <div style="" />
               <el-form-item label="监控参数:">
                 <el-switch
                   active-color="#13ce66"
@@ -268,7 +268,7 @@
 
 <script>
 export default {
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave (to, from, next) {
     if (this.changeStatus >= 1) {
       setTimeout(() => {
         this.$confirm('检测到未保存的信息，是否保存修改？', '确认信息', {
@@ -280,7 +280,7 @@ export default {
           next(true)
         }).catch(() => {
           next(false)
-          }
+        }
         )
       }, 100)
     } else {
@@ -288,25 +288,25 @@ export default {
     }
   },
   computed: {
-    addRules() {
+    addRules () {
       return {
         category: [
-          {required: true, message: '请选择设备类型', trigger: 'change'}
+          { required: true, message: '请选择设备类型', trigger: 'change' }
         ],
         deviceSn: [
-          {required: true, message: '请输入设备SN', trigger: 'change'},
-          {type: 'number', message: 'SN为数字格式', trigger: 'change'},
-          {pattern: /^\d{6}$/, message: '设备SN为6位数字', trigger: 'change'}
+          { required: true, message: '请输入设备SN', trigger: 'change' },
+          { type: 'number', message: 'SN为数字格式', trigger: 'change' },
+          { pattern: /^\d{6}$/, message: '设备SN为6位数字', trigger: 'change' }
         ],
         key: [
-          {required: true, message: '请输入设备ProductKey', trigger: 'change'},
-          {type: 'number', message: 'ProductKey为数字格式', trigger: 'change'},
-          {pattern: /^\d{6}$/, message: 'ProductKey为6位数字', trigger: 'change'}
+          { required: true, message: '请输入设备ProductKey', trigger: 'change' },
+          { type: 'number', message: 'ProductKey为数字格式', trigger: 'change' },
+          { pattern: /^\d{6}$/, message: 'ProductKey为6位数字', trigger: 'change' }
         ]
       }
     }
   },
-  data() {
+  data () {
     return {
       cardHeight: 0,
       deviceType1: 1,
@@ -334,53 +334,53 @@ export default {
       },
       typeList: [],
       requestType: [
-        {value: 1, label: 'Get'},
-        {value: 2, label: 'Post'}
+        { value: 1, label: 'Get' },
+        { value: 2, label: 'Post' }
       ]
     }
   },
   methods: {
-    leavePage() {
+    leavePage () {
       this.changeStatus = 0
       this.$router.push('/device')
     },
-    chooseDeviceType1() {
+    chooseDeviceType1 () {
       this.deviceType1 = 1
     },
-    chooseDeviceType2() {
+    chooseDeviceType2 () {
       this.deviceType1 = 2
-      this.$XModal.message({message: '三方设备暂未开放', status: 'warning', id: 'unique1'})
+      this.$XModal.message({ message: '三方设备暂未开放', status: 'warning', id: 'unique1' })
     },
-    async requestDevice() {
+    async requestDevice () {
       const response = await this.$http.post('/device/category/list').then(this.$XModal.message({
         message: '设备类型请求成功',
         status: 'success'
       })).catch(error => {
-        this.$XModal.message({message: `设备类型请求失败@${error}`, status: 'warning'})
+        this.$XModal.message({ message: `设备类型请求失败@${error}`, status: 'warning' })
       })
       this.typeList = response.data.data
       console.log('列表', this.typeList)
     },
-    addDevices() {
+    addDevices () {
       this.$refs.ruleForm.validate((valid) => {
         if (!valid) {
-          this.$XModal.message({message: '检查所有必填项', status: 'warning'})
+          this.$XModal.message({ message: '检查所有必填项', status: 'warning' })
         } else {
           console.log(this.addForm)
           this.$http.post('/device/create', this.addForm).then(response => {
             if (response.data.code === 0) {
-              this.$XModal.message({message: '设备创建成功', status: 'success'})
+              this.$XModal.message({ message: '设备创建成功', status: 'success' })
               this.changeStatus = 0
               this.$router.push('/device')
             } else {
-              this.$XModal.message({message: `创建失败@${response.data.message}`, status: 'error'})
+              this.$XModal.message({ message: `创建失败@${response.data.message}`, status: 'error' })
             }
           }).catch(error =>
-            this.$XModal.message({message: `遇到一个错误@${error}`, status: 'error'}))
+            this.$XModal.message({ message: `遇到一个错误@${error}`, status: 'error' }))
         }
       })
     },
-    watchChange() {
+    watchChange () {
       this.changeStatus = this.changeStatus + 1
       console.log(this.changeStatus)
     }
@@ -388,13 +388,13 @@ export default {
   name: 'AddDevices',
   watch: {
     addForm: {
-      handler() {
+      handler () {
         this.watchChange()
       },
       deep: true
     }
   },
-  mounted() {
+  mounted () {
     this.requestDevice()
   }
 }
