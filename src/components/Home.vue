@@ -44,11 +44,24 @@
             style="padding: 0 20px 0 30px"
           >首页看板</span>
         </el-menu-item>
+        <!--        罐箱列表一级菜单-->
+        <el-menu-item index="/tank">
+          <i
+            class="el-icon-receiving"
+            style="font-size: 25px"
+          />
+          <span
+            slot="title"
+            style="padding: 0 20px 0 30px"
+          >罐箱列表</span>
+        </el-menu-item>
         <!--          资产管理一级菜单-->
         <el-submenu
           index="/property"
         >
-          <template slot="title">
+          <template
+            slot="title"
+          >
             <i
               class="el-icon-monitor"
               style="font-size: 25px"
@@ -56,17 +69,6 @@
             <span style="padding: 0 20px 0 30px">资产管理</span>
           </template>
           <!--          资产管理二级菜单-->
-          <!--        罐箱列表一级菜单-->
-          <el-menu-item index="/tank">
-            <i
-              class="el-icon-receiving"
-              style="font-size: 25px"
-            />
-            <span
-              slot="title"
-              style="padding: 0 20px 0 30px"
-            >罐箱列表</span>
-          </el-menu-item>
           <!--        项目管理一级菜单-->
           <el-menu-item index="/project">
             <i
@@ -89,11 +91,22 @@
               style="padding: 0 20px 0 30px"
             >账户管理</span>
           </el-menu-item>
+          <!--          公司管理-->
+          <el-menu-item
+            index="/grouplist"
+          >
+            <i
+              class="el-icon-office-building"
+              style="font-size: 25px"
+            />
+            <span
+              slot="title"
+              style="padding: 0 20px 0 30px"
+            >公司管理</span>
+          </el-menu-item>
         </el-submenu>
         <!--        监控设置一级菜单-->
-        <el-submenu
-          index="/monitor"
-        >
+        <el-submenu index="/monitor">
           <template slot="title">
             <i
               class="el-icon-alarm-clock"
@@ -109,10 +122,8 @@
             <i class="el-icon-location-information" /><span style="padding: 0 20px 0 20px">关注点设置</span>
           </el-menu-item>
         </el-submenu>
-<!--        模型管理一级菜单-->
-        <el-submenu
-          index="/model"
-        >
+        <!--        模型管理一级菜单-->
+        <el-submenu index="/model">
           <template slot="title">
             <i
               class="el-icon-files"
@@ -127,14 +138,14 @@
           <el-menu-item index="/mediamodel">
             <i class="el-icon-goblet-full" /><span style="padding: 0 20px 0 20px">介质模型</span>
           </el-menu-item>
-          <el-menu-item index="/permissionmodel">
+          <el-menu-item
+            index="/permissionmodel"
+          >
             <i class="el-icon-thumb" /><span style="padding: 0 20px 0 20px">权限模型</span>
           </el-menu-item>
         </el-submenu>
-<!--        用户支持一级菜单-->
-        <el-submenu
-          index="/support"
-        >
+        <!--        用户支持一级菜单-->
+        <el-submenu index="/support">
           <template slot="title">
             <i
               class="el-icon-service"
@@ -151,7 +162,9 @@
           </el-menu-item>
         </el-submenu>
         <!--        后台管理一级菜单-->
-        <el-submenu index="/manage">
+        <el-submenu
+          index="/manage"
+        >
           <template slot="title">
             <i
               class="el-icon-set-up"
@@ -176,7 +189,7 @@
       </el-menu>
       <!--      版权信息-->
       <div
-        class="homeBottomText hidden-md-and-down"
+        class="homeBottomText"
         v-show="!isCollapse"
       >
         <p style="margin-left: 10px">
@@ -317,8 +330,8 @@
             <el-menu-item index="/personalsetting">
               个人设置
             </el-menu-item>
-            <el-menu-item index="about">
-              关于
+            <el-menu-item index="switchProject">
+              切换项目
             </el-menu-item>
             <el-menu-item index="logout">
               退出登录
@@ -328,7 +341,9 @@
       </el-header>
       <!--      主体区域-->
       <el-main>
-        <router-view />
+        <vue-page-transition name="fade">
+          <router-view />
+        </vue-page-transition>
         <!--        抽屉-->
         <el-drawer
           title="关于"
@@ -336,7 +351,23 @@
           :visible.sync="drawer"
           direction="rtl"
           size="20%"
-        />
+        >
+          <vxe-grid
+            row-id="name"
+            :header-cell-style="{
+              backgroundColor: '#2A68D3',
+              color: '#ffffff'
+            }"
+            ref="xGrid"
+            height="100%"
+            v-bind="gridOptions"
+            highlight-hover-row
+            highlight-current-row
+            highlight-hover-column
+            highlight-current-column
+            size="mini"
+          />
+        </el-drawer>
       </el-main>
     </el-container>
   </el-container>
@@ -344,6 +375,7 @@
 
 <script>
 import {EventBus} from '@/assets/JS/eventBus'
+import VXETable from 'vxe-table'
 
 export default {
   // created () {
@@ -352,20 +384,56 @@ export default {
   name: 'Home',
   data () {
     return {
+      ifAdmin: false,
       username: '朱正刚',
       currentLang: 'CN',
       classa: 'classa',
       classb: 'classb',
       drawer: false,
       isCollapse: false,
-      path: 'http://tankmiles-userimage.oss-cn-hangzhou.aliyuncs.com/默认头像.jpg',
-      // path: require('../assets/Image/user.jpg'),
-      logoUrl: require('../assets/Image/homelogo.png')
+      path: 'https://oss.tankmiles.com/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg',
+      logoUrl: 'https://oss.tankmiles.com/homelogo.png',
+      gridOptions: {
+        resizable: true,
+        showOverflow: true,
+        border: 'none',
+        treeConfig: {
+          expandAll: true,
+          reserve: true,
+          line: true,
+          children: 'children'
+          // iconOpen: 'el-icon-folder-remove',
+          // iconClose: 'el-icon-folder-add'
+        },
+        proxyConfig: {
+          seq: false, // 启用动态序号代理
+          sort: false, // 启用排序代理
+          filter: false, // 启用筛选代理
+          ajax: {
+            query: async () => {
+              const response = await this.$http.post('project/list').catch((error) => {
+                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
+              })
+              console.log('源数据', response)
+              const projectData = response.data.data
+              this.addLevel(projectData)
+              console.log('修改后', projectData)
+              return projectData
+            }
+          }
+        },
+        columns: [
+          { field: 'name', title: '选择项目', minWidth: 150, treeNode: true, slots: { default: 'projectName' } }
+        ]
+      }
     }
   },
   // 渲染页面时判断当前语言
   mounted () {
     // 判断菜单的折叠状态
+    this.username = window.localStorage.getItem('nickName')
+    this.ifAdmin = window.localStorage.getItem('admin') === 'true'
+    this.path = window.localStorage.getItem('avatarUrl')
     this.isCollapse = localStorage.getItem('isCollapse')
     this.isCollapse = this.isCollapse === 'true'
     if (this.$i18n.locale === 'zh') {
@@ -377,13 +445,20 @@ export default {
     }
   },
   methods: {
+    addLevel (array) {
+      if (array.length) {
+        for (let i = 0; i < array.length; i++) {
+          array[i].level = 0
+        }
+      }
+    },
     handleSelect (index) {
       switch (index) {
         case '/personalsetting':
           this.$router.push('/personalsetting')
           console.log(index)
           return
-        case 'about':
+        case 'switchProject':
           this.drawer = true
           console.log(index)
           return
@@ -426,6 +501,11 @@ export default {
 </script>
 
 <style lang="less">
+@media screen and (max-height: 660px) {
+ .homeBottomText {
+    display: none;
+  }
+}
 .el-aside.classa {
   width: 64px !important;
   transition: width 110ms;

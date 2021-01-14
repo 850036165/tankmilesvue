@@ -1,5 +1,5 @@
 <template>
-    <div>个人设置组件</div>
+  <div>个人设置组件</div>
 </template>
 
 <script>

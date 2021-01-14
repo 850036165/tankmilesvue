@@ -1,10 +1,9 @@
 <template>
-  <div>基本设置组件</div>
+  <div>1</div>
 </template>
-
 <script>
 export default {
-  name: 'BasicSetting'
+  name: 'AddGroup'
 }
 </script>
 

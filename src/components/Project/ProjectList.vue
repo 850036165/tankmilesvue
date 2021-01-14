@@ -4,6 +4,7 @@
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
         首页
       </el-breadcrumb-item>
+      <el-breadcrumb-item>资产管理</el-breadcrumb-item>
       <el-breadcrumb-item>项目管理</el-breadcrumb-item>
     </el-breadcrumb>
 
@@ -38,9 +39,10 @@
           size="mini"
         >
           <!--自定义列插槽-->
-          <template v-slot:projectName="{row}">
-            <span :class="row.level===0?'projectName':''">{{ row.name }}</span>
+          <template v-slot:projectGroup="{row}">
+            <span>{{ row.projectGroup.name }}</span>
           </template>
+          <!--          操作列模板-->
           <template v-slot:projectOperation="{row}">
             <div class="operationButton">
               <i
@@ -120,35 +122,39 @@
     </el-dialog>
     <!--    快速创建创建对话框-->
     <el-dialog
+      :show-close="false"
       top="40vh"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       custom-class="deleteDialog"
       :visible.sync="createDialogVisible"
       width="30%"
     >
       <div slot="title">
-        <span class="deleteTitle">快速创建项目于</span>
-        <p
-          class="deleteTitle"
-          style="color: #2f74eb;display: inline-block"
-        >
-          {{ toBeCreateProject.name }}
-        </p>
+        <span class="deleteTitle">分配用户</span>
       </div>
-      <el-input
-        v-model="toBeCreateProjectName"
-        style="margin: 20px 5px"
-        placeholder="输入项目名称"
-        required
+      <span
+        class="deleteContent"
+      >选择的用户将被分配至此项目</span>
+      <el-select
+        style="width: 100%;margin: 10px 0"
+        v-model="assignUserName"
+        collapse-tags
+        multiple
+        placeholder="请选择"
       >
-        <template slot="prepend">
-          {{ toBeCreateProject.name }}->
-        </template>
-      </el-input>
+        <el-option
+          v-for="item in userList"
+          :key="item.name"
+          :label="item.name"
+          :value="item.name"
+        />
+      </el-select>
       <div slot="footer">
         <div style="display: grid;grid-template-columns: 1fr 1fr;grid-template-rows: 50px;border-radius:0 0 3px 3px ">
           <!--        <div style="display: flex;justify-content: center;align-items: flex-end;">-->
           <div
-            @click="createDialogVisible = false"
+            @click="createDialogVisible = false;assignUserName = []"
             class="deleteConfirm"
           >
             <p class="deleteText">
@@ -156,7 +162,7 @@
             </p>
           </div>
           <div
-            @click="quickCreateProject ()"
+            @click="assignUsers"
             class="deleteCancel"
           >
             <p class="deleteText">
@@ -171,18 +177,21 @@
 
 <script>
 import VXETable from 'vxe-table'
+import XEUtils from 'xe-utils'
 
 export default {
   name: 'ProjectList',
   data () {
     return {
-      toBeCreateProjectName: '',
+      assignProject: null,
+      userList: [],
+      assignUserName: [],
       toBeDeletedProject: {},
-      toBeCreateProject: {},
       deleteDialogVisible: false,
       createDialogVisible: false,
       tableHeight: 0,
       gridOptions: {
+        stripe: true,
         resizable: true,
         showOverflow: true,
         exportConfig: {
@@ -190,6 +199,7 @@ export default {
         },
         border: true,
         sortConfig: {
+          remote: true,
           trigger: 'default',
           defaultSort: {
             field: 'deviceSn',
@@ -199,7 +209,7 @@ export default {
         filterConfig: {
           remote: false
         },
-        toolbar: {
+        toolbarConfig: {
           refresh: true,
           zoom: true,
           export: true,
@@ -208,13 +218,6 @@ export default {
           slots: {
             buttons: 'toolbar_buttons'
           }
-        },
-        treeConfig: {
-          reserve: true,
-          // line: true,
-          children: 'children'
-          // iconOpen: 'el-icon-folder-remove',
-          // iconClose: 'el-icon-folder-add'
         },
         proxyConfig: {
           seq: false, // 启用动态序号代理
@@ -227,65 +230,74 @@ export default {
               })
               console.log('源数据', response)
               const projectData = response.data.data
-              this.addLevel(projectData)
               console.log('修改后', projectData)
               return projectData
             }
           }
         },
         columns: [
-          { type: 'seq', width: 50, align: 'center' },
-          { field: 'name', title: '项目名称', minWidth: 150, treeNode: true, slots: { default: 'projectName' } },
-          { field: 'tankNum', title: '箱量', minWidth: 60 },
-          { field: 'accountNum', title: '账户数量', minWidth: 60 },
-          { field: 'createDate', title: '创建时间', minWidth: 60 },
-          { field: 'changeDate', title: '最近修改时间', minWidth: 60 },
+          { field: 'id', title: 'Id', width: 50, align: 'center' },
+          { field: 'name', title: '项目名称', minWidth: 100, align: 'center' },
+          // { field: 'tankNum', title: '箱量', minWidth: 60 },
+          // { field: 'accountNum', title: '账户数量', minWidth: 60 },
+          { field: 'createDate', title: '创建时间', minWidth: 60, formatter: this.formatDate2 },
+          { field: 'editAt', title: '最近修改时间', minWidth: 60, formatter: this.formatDate2 },
+          { field: 'projectGroup', title: '所属公司', minWidth: 60, align: 'center', slots: { default: 'projectGroup' } },
           { title: '操作', align: 'center', maxWidth: 80, slots: { default: 'projectOperation' } }
         ]
       }
     }
   },
   methods: {
+    assignUsers () {
+      const assignProjectId = this.assignProject.id
+      this.$http.post('project/user/add', { id: assignProjectId, names: this.assignUserName.toString() }).then(response => {
+        if (response.data.code !== 0) {
+          VXETable.modal.message({ message: `分配失败@${response.data.message}`, status: 'error', size: 'medium' })
+        } else {
+          VXETable.modal.message({ message: '分配成功', status: 'success', size: 'medium' })
+          this.createDialogVisible = false
+          this.assignUserName = []
+        }
+      }).catch(error => {
+        VXETable.modal.message({ message: `分配失败@${error}`, status: 'error', size: 'medium' })
+      })
+    },
+    async getUserList () {
+      const response = await this.$http.post('/user/list', {
+        currentPage: 0,
+        keywords: '',
+        order: 'DESC',
+        orderColumnIndex: 7,
+        pageSize: 999
+      }).catch(error => {
+        VXETable.modal.message({
+          message: `请求失败@${error}`,
+          status: 'error',
+          size: 'medium',
+          id: 'unique1'
+        })
+      })
+      this.userList = response.data.data.data
+      console.log(this.userList)
+    },
+    formatDate2 ({ cellValue }) {
+      return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss')
+    },
     goProjectDetail (row) {
       this.$router.push({
         path: 'project/projectdetail',
         query: {
-          name: row.name
+          name: row.name,
+          id: row.id
         }
       })
       console.log(row)
     },
     openCreateDialog (row) {
-      this.toBeCreateProjectName = ''
+      this.getUserList()
       this.createDialogVisible = true
-      this.toBeCreateProject = row
-    },
-    async quickCreateProject () {
-      const data = {
-        isRoot: false,
-        parentProjectId: this.toBeCreateProject.id,
-        name: this.toBeCreateProjectName
-      }
-      await this.$http.post('project/create', data).then(
-        response => {
-          console.log(response)
-          if (response.data.code === 0) {
-            this.$refs.xGrid.commitProxy('query')
-            VXETable.modal.message({ message: '创建成功', status: 'success', size: 'medium', id: 'unique1' })
-          } else {
-            VXETable.modal.message({
-              message: `创建失败@${response.data.message}`,
-              status: 'error',
-              size: 'medium',
-              id: 'unique1'
-            })
-          }
-        }
-      ).catch(error => {
-        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
-      })
-      this.createDialogVisible = false
-      this.toBeCreateProjectName = ''
+      this.assignProject = row
     },
     openDeleteDialog (row) {
       this.deleteDialogVisible = true
@@ -298,7 +310,7 @@ export default {
         response => {
           console.log(response)
           if (response.data.code === 0) {
-            this.$refs.xGrid.commitProxy('query')
+            this.$refs.xGrid.remove(this.toBeDeletedProject)
             VXETable.modal.message({ message: '删除成功', status: 'success', size: 'medium', id: 'unique1' })
           } else {
             VXETable.modal.message({
@@ -313,13 +325,6 @@ export default {
         VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
       })
       this.deleteDialogVisible = false
-    },
-    addLevel (array) {
-      if (array.length) {
-        for (let i = 0; i < array.length; i++) {
-          array[i].level = 0
-        }
-      }
     },
     headerCellStyle () {
       return {
@@ -382,7 +387,7 @@ export default {
 }
 
 /deep/ .el-dialog__body {
-  padding: 5px 30px 10px;
+  padding: 10px 30px 10px;
 }
 
 .deleteContent {

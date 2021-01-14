@@ -1,18 +1,19 @@
 <template>
   <div>
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb
+      separator-class="el-icon-arrow-right"
+    >
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
         首页
       </el-breadcrumb-item>
-      <!--      <el-breadcrumb-item>资产管理</el-breadcrumb-item>-->
-      <el-breadcrumb-item>罐箱列表</el-breadcrumb-item>
+      <el-breadcrumb-item>资产管理</el-breadcrumb-item>
+      <el-breadcrumb-item>公司管理</el-breadcrumb-item>
     </el-breadcrumb>
-
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
           <h1 style="margin: 0">
-            罐箱列表
+            公司管理
           </h1>
           <el-button
             style="height: 30px;"
@@ -20,15 +21,14 @@
             type="primary"
             icon="el-icon-edit-outline"
             round
-            @click="massChange"
           >
-            批量操作
+            keep
           </el-button>
         </div>
       </div>
       <div>
         <vxe-grid
-          :cell-style="cellStyle"
+          row-id="name"
           :header-cell-style="headerCellStyle"
           ref="xGrid"
           :height="tableHeight+'px'"
@@ -39,25 +39,27 @@
           highlight-current-column
           size="mini"
         >
-          <!--自定义列插槽-->
-          <template v-slot:operation="{row}">
-            <vxe-button
-              class="operationButton"
-              status="primary"
-              round
-              @click="clickOperation(row)"
-            >
-              操作
-            </vxe-button>
-          </template>
-          <template v-slot:tankSn_default="{ row }">
-            <div>
-              <button
-                class="deviceDetail"
-                @click="goDetail(row)"
+          <!--          操作列模板-->
+          <template v-slot:projectOperation="{row}">
+            <div class="operationButton">
+              <i
+                class="el-icon-edit-outline deleteIcon"
+                @click="editGroup(row)"
+              />
+              <el-popconfirm
+                confirm-button-text="确认"
+                cancel-button-text="取消"
+                icon="el-icon-info"
+                icon-color="red"
+                :title="`确认删除公司:${toBeDeletedGroup}？`"
+                @confirm="deleteGroup() "
               >
-                {{ row.sn }}
-              </button>
+                <i
+                  slot="reference"
+                  class="el-icon-delete deleteIcon"
+                  @click="getGroup(row)"
+                />
+              </el-popconfirm>
             </div>
           </template>
           <template v-slot:tools>
@@ -82,56 +84,107 @@
               <div style="display: flex;justify-content:center;align-items:center;">
                 <i
                   class="el-icon-circle-plus addButton"
-                  @click="addDevices"
+                  @click="addGroup"
                 />
-                <span class="addText">新增罐箱</span>
-              </div>
-              <div style="display: flex;justify-content:center;align-items:center;border-left: 1px solid #D8D8D8;">
-                <span
-                  class="addText"
-                  style="color: black;"
-                >罐箱总数</span>
-                <span
-                  class="addText"
-                  style="margin-left:10px;color: #2A68D3"
-                >{{ totalDevices }}</span>
+                <span class="addText">新增公司</span>
               </div>
             </div>
           </template>
           <!--自定义空数据模板-->
           <template v-slot:empty>
-            <div style="color: black;">
-              <i />
-              <p>OOPS!此处暂无罐箱！</p>
-              <span>请联系cimc后台咨询或</span>
-              <router-link
-                to="/tank/addtanks"
-                style="color: red"
-              >
-                新建罐箱
-              </router-link>
-            </div>
+            <span style="color: #2F74EB;">
+              <span>请联系CIMC后台咨询</span>
+            </span>
           </template>
         </vxe-grid>
       </div>
     </el-card>
+    <el-dialog
+      :show-close="false"
+      :modal-append-to-body="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      title="添加公司"
+      :visible.sync="addDialogVisible"
+      width="30%"
+    >
+      <div
+        slot="title"
+        style="font-weight: bold;font-size: 20px;color: #2F74EB"
+      >
+        <i
+          class="el-icon-user"
+          style="margin: 3px"
+        />
+        <span>添加公司</span>
+      </div>
+      <el-form
+        ref="addGroupForm"
+        :model="addGroupForm"
+        :rules="GroupForm"
+        size="small"
+        label-width="100px"
+      >
+        <el-form-item
+          label="公司名称"
+          prop="name"
+        >
+          <el-input
+            v-model="addGroupForm.name"
+            placeholder="请输入公司名称"
+            clearable
+            :style="{width: '100%'}"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button
+          @click="closeAddGroup"
+          size="small"
+        >
+          取消
+        </el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="confirmCreateGroup"
+        >
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import XEUtils from 'xe-utils'
 import VXETable from 'vxe-table'
-import 'vxe-table/styles/variable.scss'
+import XEUtils from 'xe-utils'
 
 export default {
-  name: 'TankList',
+  name: 'GroupList',
   data () {
     return {
-      totalDevices: null,
-      tableHeight: 0,
+      userList: [],
+      addDialogVisible: false,
+      addGroupForm: {
+        name: undefined,
+        adminUserName: undefined
+      },
+      GroupForm: {
+        name: [{
+          required: true,
+          message: '请输入公司名称',
+          trigger: 'blur'
+        }]
+      },
+      enabled: 'enabled',
+      disabled: 'disabled',
+      toBeDeletedGroup: null,
+      accountVisible: false,
       formData: {
         keywords: ''
       },
+      tableHeight: 0,
       gridOptions: {
         stripe: true,
         resizable: true,
@@ -143,11 +196,11 @@ export default {
         rowId: 'id',
         sortConfig: {
           defaultSort: {
-            field: 'sampledAt',
-            order: 'desc'
+            field: 'name',
+            order: 'asc'
           },
-          remote: true,
-          trigger: 'default'
+          trigger: 'default',
+          remote: true
         },
         filterConfig: {
           remote: false
@@ -176,31 +229,27 @@ export default {
               // 处理排序条件
               if (sort.property) {
                 console.log('初始order非null1', sort.property)
-                if (typeof sort.property === 'number') { console.log('当前sort为number', sort.property) } else {
+                if (typeof sort.property === 'number') {
+                  console.log('当前sort为number', sort.property)
+                } else {
                   switch (sort.property) {
-                    case 'sn':
+                    case 'name':
                       sort.property = 0
                       break
-                    case 'deviceSn':
+                    case 'nickName':
                       sort.property = 1
                       break
-                    case 'receivedAt':
+                    case 'email':
                       sort.property = 2
                       break
-                    case 'tankTemperature':
+                    case 'mobile':
                       sort.property = 3
                       break
-                    case 'tankPressure':
+                    case 'fixedPhone':
                       sort.property = 4
                       break
-                    case 'tankLevel':
+                    case 'createdAt':
                       sort.property = 5
-                      break
-                    case 'batteryLeft':
-                      sort.property = 6
-                      break
-                    case 'sampledAt':
-                      sort.property = 7
                       break
                   }
                   console.log('初始order非null2', sort.property)
@@ -244,7 +293,7 @@ export default {
               queryParams = Object.assign(queryParams, { currentPage: page.currentPage - 1, pageSize: page.pageSize })
               console.log('请求值3', queryParams)
               // 请求数据
-              const response = await this.$http.post('/tank/list/message', queryParams).catch((error) => {
+              const response = await this.$http.post('/project/group/list', queryParams).catch((error) => {
                 VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
@@ -274,58 +323,98 @@ export default {
         },
         columns: [
           { type: 'seq', width: 50, align: 'center' },
-          {
-            field: 'sn',
-            align: 'center',
-            title: '箱号',
-            minWidth: 150,
-            sortable: true,
-            slots: { default: 'tankSn_default' }
-          },
-          { field: 'deviceSn', align: 'center', title: '设备号', sortable: true, minWidth: 100 },
-          { field: 'sampledAt', title: '记录时间', width: 140, sortable: true, formatter: this.formatDate2 },
-          { field: 'location', title: '地址', width: 100 },
-          { field: 'tankTemperature', title: '温度', minWidth: 70, sortable: true, formatter: this.formatDate },
-          { field: 'tankPressure', title: '压力', minWidth: 70, sortable: true, formatter: this.formatDate },
-          { field: 'tankLevel', title: '液位', minWidth: 70, sortable: true, formatter: this.formatDate },
-          { field: 'batteryLeft', title: '电量', minWidth: 70, sortable: true, formatter: this.formatBattery },
-          { field: 'lat', title: '经度', width: 100 },
-          { field: 'lon', title: '纬度', width: 100 },
-          { field: 'speed', title: '速度', width: 100 },
-          { field: 'altitude', title: '高度', width: 100 },
-          { field: 'gps_valid', title: 'GPSValid', align: 'center', width: 100 },
-          { title: '操作', align: 'center', width: 80, slots: { default: 'operation' } }
+          { field: 'id', align: 'center', title: 'GroupId', minWidth: 30 },
+          { field: 'name', align: 'center', title: '公司名', sortable: true, minWidth: 180 },
+          { field: 'adminUserName', align: 'center', title: '管理员', minWidth: 150 },
+          { field: 'createdAt', align: 'center', title: '创建时间', sortable: true, minWidth: 150, formatter: this.formatDate2 },
+          { title: '操作', align: 'center', width: 80, slots: { default: 'projectOperation' } }
         ]
       }
     }
   },
-  created () {
-  },
   mounted () {
-    this.tableHeight = window.innerHeight - 185
+    this.tableHeight = window.innerHeight - 220
   },
   methods: {
-    formatDate ({ cellValue }) {
-      if (cellValue < 0 || cellValue === 32767) { return '-' } else return cellValue
-    },
-    cellStyle ({ row, rowIndex, column, columnIndex }) {
-      if (column.property === 'batteryLeft') {
-        if (row.batteryAlert === true) {
-          return {
-            borderLeft: 'solid 4px #FA675C'
+    confirmCreateGroup () {
+      console.log('提交', this.addGroupForm)
+      this.$http.post('project/group/create', this.addGroupForm)
+        .then((response) => {
+          console.log(response)
+          if (response.data.code !== 0) {
+            this.enabledUsers = !this.enabledUsers
+            VXETable.modal.message({
+              message: `新建失败@${response.data.message}`,
+              status: 'error',
+              size: 'medium',
+              id: 'unique1'
+            })
+          } else {
+            this.$refs.xGrid.commitProxy('query')
+            this.addDialogVisible = false
+            this.$refs.addGroupForm.resetFields()
+            VXETable.modal.message({
+              message: '新建成功',
+              status: 'success',
+              size: 'medium',
+              id: 'unique1'
+            })
           }
-        } else {
-          return {
-            paddingLeft: '4px'
+        })
+        .catch((error) => {
+          console.log(error)
+          this.enabledUsers = !this.enabledUsers
+          VXETable.modal.message({
+            message: `修改失败@${error}`,
+            status: 'error',
+            size: 'medium',
+            id: 'unique1'
+          })
+        })
+    },
+    closeAddGroup () {
+      this.addDialogVisible = false
+      this.addGroupForm.name = null
+      this.addGroupForm.adminUserName = null
+    },
+    editGroup (row) {
+      console.log(row)
+    },
+    getGroup (row) {
+      console.log(row)
+      this.toBeDeletedGroup = row.name
+      this.toBeDeletedGroupId = row
+    },
+    deleteGroup () {
+      this.$http.post('/project/group/delete', { id: this.toBeDeletedGroupId.id }).then(
+        response => {
+          if (response.data.code !== 0) {
+            VXETable.modal.message({
+              message: `删除失败@${response.data.message}`,
+              status: 'error',
+              size: 'medium',
+              id: 'unique1'
+            })
+          } else {
+            this.$refs.xGrid.remove(this.toBeDeletedGroupId)
+            VXETable.modal.message({
+              message: '删除成功',
+              status: 'success',
+              size: 'medium',
+              id: 'unique1'
+            })
           }
         }
-      }
+      ).catch((error) => {
+        VXETable.modal.message({ message: `删除失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
+      })
     },
-    clickOperation (row, column) {
-      console.log(row, column)
+    searchEvent () {
+      this.$refs.xGrid.commitProxy('query')
     },
-    massChange () {
-      this.$router.push('/device/massoperation')
+    addGroup () {
+      this.addDialogVisible = true
+      console.log('addGroup')
     },
     headerCellStyle () {
       return {
@@ -333,50 +422,30 @@ export default {
         color: '#ffffff'
       }
     },
-    goDetail (row) {
-      console.log(row)
-      // 传递列参数至组件
-      this.$router.push({
-        path: '/tank/tankdetail',
-        query: {
-          sn: row.deviceSn
-        }
-      })
-    },
-    addDevices () {
-      this.$router.push('/tank/addtanks')
-    },
-    searchEvent () {
-      this.$refs.xGrid.commitProxy('query')
-    },
     formatDate2 ({ cellValue }) {
-      return XEUtils.toDateString(cellValue, 'yyyy/MM/dd HH:mm:ss')
-    },
-    formatBattery ({ cellValue }) {
-      if (cellValue > 100) return 100
-      else return cellValue
+      return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss')
     }
   }
 }
 </script>
 
 <style scoped lang="less">
-/deep/ .el-card__body {
-  padding-top: 0;
-  padding-bottom: 0;
+/deep/ .el-dialog__body{
+  padding: 10px 20px 0;
 }
-
-.deviceDetail {
-  width: 100px;
-  background-color: grey;
-  border-radius: 2px;
-  border: none;
+/deep/ .v-modal{
+  z-index: 99!important;
 }
-
-.deviceDetail:hover {
-  background-color: #2F74EB;
-  border-radius: 2px;
+.deleteIcon {
+  font-weight: bold;
+  margin-left: 5px;
+  font-size: 15px;
+  color: #58647A;
   cursor: pointer;
+}
+
+.deleteIcon:hover {
+  color: black;
 }
 
 .addButton {
@@ -397,21 +466,8 @@ export default {
   font-weight: bold;
 }
 
-.classA {
-  display: inline-block;
-  height: 10px;
-  width: 10px;
-  border-radius: 50%;
-  background-color: #FA675C;
-  margin-right: 3px
-}
-
-.classB {
-  display: inline-block;
-  height: 10px;
-  width: 10px;
-  border-radius: 50%;
-  background-color: #33B892;
-  margin-right: 3px
+/deep/ .el-card__body {
+  padding-top: 0;
+  padding-bottom: 5px;
 }
 </style>

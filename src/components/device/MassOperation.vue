@@ -313,6 +313,7 @@ export default {
         border: true,
         rowId: 'id',
         sortConfig: {
+          remote: true,
           trigger: 'default',
           defaultSort: {
             field: 'name',
@@ -361,7 +362,7 @@ export default {
             }
           }
         },
-        toolbar: {
+        toolbarConfig: {
           refresh: true,
           custom: true,
           slots: {
@@ -374,14 +375,14 @@ export default {
             field: 'name',
             title: 'Name',
             minWidth: 200,
-            remoteSort: true
+            sortable: true
           },
-          { field: 'nickname', title: 'Nickname', remoteSort: true, minWidth: 200 },
-          { field: 'age', title: 'Age', remoteSort: true, width: 100 },
+          { field: 'nickname', title: 'Nickname', sortable: true, minWidth: 200 },
+          { field: 'age', title: 'Age', sortable: true, width: 100 },
           {
             field: 'role',
             title: 'Role',
-            remoteSort: true,
+            sortable: true,
             minWidth: 200,
             filters: [
               { label: '前端开发', value: '前端' },
@@ -392,8 +393,8 @@ export default {
             filterMultiple: false
           },
           { field: 'amount', title: 'Amount', width: 100, formatter: this.formatAmount },
-          { field: 'updateDate', title: 'Update Date', width: 160, remoteSort: true, formatter: this.formatDate },
-          { field: 'createDate', title: 'Create Date', width: 160, remoteSort: true, formatter: this.formatDate }
+          { field: 'updateDate', title: 'Update Date', width: 160, sortable: true, formatter: this.formatDate },
+          { field: 'createDate', title: 'Create Date', width: 160, sortable: true, formatter: this.formatDate }
         ]
       }
     }

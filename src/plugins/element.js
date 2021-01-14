@@ -40,6 +40,7 @@ import {
   Option,
   PageHeader,
   Pagination,
+  Popconfirm,
   Popover,
   Radio,
   RadioButton,
@@ -116,6 +117,7 @@ Vue.use(Tag)
 Vue.use(Upload)
 Vue.use(Card)
 Vue.use(DatePicker)
+Vue.use(Popconfirm)
 Vue.prototype.$message = Message
 Vue.prototype.$notify = Notification
 Vue.prototype.$confirm = MessageBox.confirm

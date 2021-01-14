@@ -28,10 +28,14 @@ import Product from '@/components/support/Product'
 import Contact from '@/components/support/Contact'
 import Bill from '@/components/Bill/Bill'
 import Record from '@/components/Record'
+import AddUsers from '@/components/UserManage/AddUsers'
+import UserEdit from '@/components/UserManage/UserEdit'
+import NoAccessPage from '@/components/NoAccessPage'
+import GroupList from '@/components/Group/GroupList'
 
 Vue.use(VueRouter)
 const routes = [
-  { path: '/', redirect: '/home' },
+  { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   {
     path: '/home',
@@ -42,7 +46,13 @@ const routes = [
       { path: '/message', component: Message },
       { path: '/personalSetting', component: PersonalSetting },
       { path: '/basicSetting', component: BasicSetting },
-      { path: '/dashboard', component: DashBoard },
+      {
+        path: '/dashboard',
+        component: DashBoard,
+        meta: {
+          transition: 'fade'
+        }
+      },
       { path: '/device', component: DeviceList },
       { path: '/device/adddevices', component: AddDevices },
       { path: '/device/massoperation', component: MassOperation },
@@ -63,7 +73,11 @@ const routes = [
       { path: '/product', component: Product },
       { path: '/contact', component: Contact },
       { path: '/bill', component: Bill },
-      { path: '/record', component: Record }
+      { path: '/record', component: Record },
+      { path: '/addusers', component: AddUsers },
+      { path: '/useredit', component: UserEdit },
+      { path: '/403', component: NoAccessPage },
+      { path: '/grouplist', component: GroupList }
 
     ]
   }
@@ -76,9 +90,26 @@ const router = new VueRouter({
 })
 // 挂载路由守卫
 router.beforeEach((to, from, next) => {
+  const tokenStr = window.sessionStorage.getItem('token')
+  if (to.path === '/login') {
+    if (tokenStr) {
+      return next('/dashboard')
+    } else return next()
+  } else {
+    if (!tokenStr) {
+      Vue.prototype.$notify({
+        title: '请求失败',
+        message: '未检测到Authtoken,请先登陆',
+        type: 'error'
+      })
+      return next('/login')
+    } else next()
+  }
+})
+/* router.beforeEach((to, from, next) => {
   if (to.path === '/login') return next()
   const tokenStr = window.sessionStorage.getItem('token')
   if (!tokenStr) return next('/login')
   next()
-})
+}) */
 export default router

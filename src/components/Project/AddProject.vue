@@ -38,10 +38,10 @@
         >
           <el-form-item
             label="项目名称"
-            prop="projectName"
+            prop="name"
           >
             <el-input
-              v-model="addProjectForm.projectName"
+              v-model="addProjectForm.name"
               placeholder="请输入项目名称"
               clearable
               prefix-icon="el-icon-document-copy"
@@ -49,41 +49,25 @@
             />
           </el-form-item>
           <el-form-item
-            label="顶级项目"
-            prop="isRoot"
+            label="所属公司"
+            prop="groupId"
           >
-            <vxe-switch
-              v-model="addProjectForm.isRoot"
-              on-label="是"
-              off-label="否"
-              @change="cleanParentProject"
-            />
-            <!--  <el-switch  active-color="#13ce66"
-                          inactive-color="#ff4949" v-model="addProjectForm.isRoot" @change="cleanParentProject"></el-switch>-->
-          </el-form-item>
-          <el-form-item
-            label="所属项目"
-            prop="parentProject"
-          >
-            <el-cascader
-              ref="projectCascader"
-              v-model="addProjectForm.parentProject"
-              :options="parentProjectOptions"
-              @change="chooseProject"
-              collapse-tags
-              :disabled="addProjectForm.isRoot"
-              :show-all-levels="true"
-              :props="parentProjectProps"
+            <el-select
+              v-model="addProjectForm.groupId"
+              placeholder="所属公司"
               :style="{width: '30%'}"
-              :placeholder="chooseProjectHolder"
-              separator=">"
-              filterable
-              clearable
-            />
+            >
+              <el-option
+                v-for="item in groupList"
+                :key="item.name"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="备注">
             <el-input
-              v-model="addProjectForm.addProjectText"
+              v-model="addProjectForm.remark"
               placeholder="请输入备注"
               :maxlength="20"
               show-word-limit
@@ -204,6 +188,7 @@ export default {
   name: 'AddProject',
   data () {
     return {
+      groupList: [],
       loadingStatus: false,
       currentSelectedDevicesLeft: [],
       currentSelectedDevicesRight: [],
@@ -219,7 +204,7 @@ export default {
           labelField: 'sn',
           reserve: false
         },
-        toolbar: {
+        toolbarConfig: {
           slots: {
             buttons: 'toolbar_buttons_left'
           }
@@ -313,7 +298,7 @@ export default {
             }
           }
         },
-        toolbar: {
+        toolbarConfig: {
           slots: {
             buttons: 'toolbar_buttons_right'
           }
@@ -324,56 +309,50 @@ export default {
           { field: 'projectNames', title: '已分配项目', minWidth: '50%' }
         ]
       },
-      chooseProjectHolder: '无所属项目',
       parentProjectId: 0,
       addProjectForm: {
-        projectName: undefined,
-        parentProject: [],
-        addProjectName: undefined,
-        addProjectText: '',
-        isRoot: true,
+        name: '',
+        groupId: '',
+        remark: '',
         allTanks: ''
       },
       rules: {
-        projectName: [{
+        name: [{
           required: true,
           message: '请输入项目名称',
           trigger: 'blur'
         }],
-        parentProject: [{
-          required: false,
-          type: 'array',
-          message: '请至少选择一个所属项目',
-          trigger: 'change'
-        }],
-        field105: []
-      },
-      parentProjectOptions: undefined,
-      parentProjectProps: {
-        multiple: false,
-        label: 'name',
-        value: 'id',
-        children: 'children',
-        checkStrictly: true
+        groupId: [{
+          required: true,
+          message: '请选择所属公司',
+          trigger: 'blur'
+        }]
       }
     }
   },
-  created () {
+  mounted () {
+    this.getGroupList()
   },
   methods: {
+    async getGroupList () {
+      const response = await this.$http.post('/project/group/list', {
+        currentPage: 0,
+        keywords: '',
+        order: 'DESC',
+        pageSize: 999
+      }).catch((error) => {
+        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+      })
+      this.groupList = response.data.data.data
+    },
     submitCreate () {
       this.loadingStatus = true
       const addProjectData = {}
-      addProjectData.name = this.addProjectForm.projectName
-      addProjectData.isRoot = this.addProjectForm.isRoot
-      addProjectData.remark = this.addProjectForm.addProjectText
+      addProjectData.name = this.addProjectForm.name
+      addProjectData.groupId = this.addProjectForm.groupId
+      addProjectData.remark = this.addProjectForm.remark
       addProjectData.tanks = this.addProjectForm.allTanks
-      if (addProjectData.isRoot === true) {
-        addProjectData.parentProjectId = []
-      } else {
-        addProjectData.parentProjectId = this.parentProjectId
-      }
-      console.log('请求数据为', addProjectData)
+      console.log('请求数据为', this.addProjectForm)
       this.$http.post('project/create', addProjectData).then(response => {
         console.log(response)
         if (response.data.code === 0) {
@@ -443,7 +422,7 @@ export default {
         if (!valid) {
         } else {
           if (this.addProjectForm.allTanks === '') {
-            this.$XModal.confirm('您尚未添加罐箱,确认创建吗？', '即将创建项目').then(type => {
+            VXETable.modal.confirm('您尚未添加罐箱,确认创建吗？', '即将创建项目').then(type => {
               if (type === 'confirm') {
                 this.submitCreate()
               } else {
@@ -458,42 +437,6 @@ export default {
     },
     resetForm () {
       this.$refs.addProjectForm.resetFields()
-    },
-    cleanParentProject () {
-      if (this.parentProjectOptions === undefined) this.getParentProjectOptions()
-      if (this.addProjectForm.isRoot === true) {
-        this.chooseProjectHolder = '无所属项目'
-        this.addProjectForm.parentProject = []
-        this.rules.parentProject[0].required = false
-        console.log(this.rules.parentProject[0].required)
-      } else {
-        this.chooseProjectHolder = '请选择所属项目'
-        this.rules.parentProject[0].required = true
-      }
-    },
-    async getParentProjectOptions () {
-      const response = await this.$http.post('project/list').catch((error) => {
-        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
-      })
-      this.parentProjectOptions = this.handleData(response.data.data)
-      console.log('级联原始数据', this.parentProjectOptions)
-    },
-    chooseProject () {
-      if (this.$refs.projectCascader.getCheckedNodes(true)[0].data) {
-        this.parentProjectId = this.$refs.projectCascader.getCheckedNodes(true)[0].data.id
-        console.log('父节点ID', this.parentProjectId)
-      }
-    },
-    // 处理级联返回数据
-    handleData (data) {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].children.length < 1) {
-          data[i].children = undefined
-        } else {
-          this.handleData(data[i].children)
-        }
-      }
-      return data
     }
   }
 }

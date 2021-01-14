@@ -357,11 +357,13 @@
                 图片上传
               </p>
               <el-upload
+                :headers="myHeaders"
                 style="margin: 0 auto"
-                action="http://125.72.105.218:59090/tank/attachment/upload"
+                action="http://47.89.13.131:9090/tank/attachment/upload"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
                 :on-success="handleSuccess"
+                accept="image/png,image/gif,image/jpg,image/jpeg"
                 :before-remove="beforeRemovePicture"
                 :before-upload="uploadPicture"
                 :on-error="handleError"
@@ -395,7 +397,8 @@
                 文件上传
               </p>
               <el-upload
-                action="http://125.72.105.218:59090/tank/attachment/upload"
+                :headers="myHeaders"
+                action="http://47.89.13.131:9090/tank/attachment/upload"
                 :on-remove="handleRemove"
                 :on-success="handleSuccess"
                 :before-remove="beforeRemoveFile"
@@ -440,6 +443,8 @@
 </template>
 
 <script>
+import VXETable from 'vxe-table'
+
 export default {
   name: 'AddTanks',
   filters: {
@@ -485,6 +490,7 @@ export default {
   },
   data () {
     return {
+      myHeaders: { authtoken: 1 },
       fileNumber: 10,
       pictureNumber: 5,
       createTank: false,
@@ -567,6 +573,7 @@ export default {
     window.removeEventListener('beforeunload', e => this.beforeunloadFn(e))
   },
   mounted () {
+    this.myHeaders.authtoken = sessionStorage.getItem('token')
     this.getMedia()
     this.getDevice()
     this.getTankModel()
@@ -578,10 +585,10 @@ export default {
       console.log('picture', file)
       console.log('isPicture', isPicture)
       if (!isPicture) {
-        this.$XModal.message({ message: '请上传图片格式文件!', status: 'error', id: '1' })
+        VXETable.modal.message({ message: '请上传图片格式文件!', status: 'error', id: '1' })
       }
       if (!isLt5M) {
-        this.$XModal.message({ message: '上传图片大小不能超过 5MB!', status: 'error', id: '1' })
+        VXETable.modal.message({ message: '上传图片大小不能超过 5MB!', status: 'error', id: '1' })
       }
       return isPicture && isLt5M
     },
@@ -591,10 +598,10 @@ export default {
       console.log('file', file)
       console.log('isFile', isFile)
       if (!isFile) {
-        this.$XModal.message({ message: '请上传文档格式的文件!', status: 'error', id: '1' })
+        VXETable.modal.message({ message: '请上传文档格式的文件!', status: 'error', id: '1' })
       }
       if (!isLt5M) {
-        this.$XModal.message({ message: '上传图片大小不能超过 5MB!', status: 'error', id: '1' })
+        VXETable.modal.message({ message: '上传图片大小不能超过 5MB!', status: 'error', id: '1' })
       }
       return isFile && isLt5M
     },
@@ -608,7 +615,7 @@ export default {
       this.$refs.upload.submit()
     },
     handleError (response) {
-      this.$XModal.message({ message: '上传失败,请重新再试', status: 'error', id: '1' })
+      VXETable.modal.message({ message: '上传失败,请重新再试', status: 'error', id: '1' })
       console.log('错误', response)
     },
     handlePictureCardPreview (file) {
@@ -620,7 +627,7 @@ export default {
       console.log('文件列表', fileList)
       this.attachmentArray.push(response.data)
       console.log('附件列表数组', this.attachmentArray)
-      this.$XModal.message({ message: '上传成功！', status: 'success', id: '1' })
+      VXETable.modal.message({ message: '上传成功！', status: 'success', id: '1' })
     },
     deletedFile (attachmentURL) {
       if (!attachmentURL) console.log('附件为空', attachmentURL)
@@ -628,12 +635,12 @@ export default {
         this.$http.post('/tank/attachment/delete', { attachment: attachmentURL }).then(response => {
           console.log('删除的响应值为', response)
           if (response.data.code === 0) {
-            this.$XModal.message({ message: '附件已删除', status: 'success', id: '1' })
+            VXETable.modal.message({ message: '附件已删除', status: 'success', id: '1' })
           } else {
-            this.$XModal.message({ message: '删除失败！', status: 'error', id: '2' })
+            VXETable.modal.message({ message: '删除失败！', status: 'error', id: '2' })
           }
         }).catch(error => {
-          this.$XModal.message({ message: `操作失败,文件未删除@${error}`, status: 'error', id: '2' })
+          VXETable.modal.message({ message: `操作失败,文件未删除@${error}`, status: 'error', id: '2' })
         })
       }
     },
@@ -682,7 +689,7 @@ export default {
     },
     async getTankModel () {
       const response = await this.$http.post('/tank/model/list').catch(error => {
-        this.$XModal.message({ message: `罐箱请求失败@${error}`, status: 'warning', id: '1' })
+        VXETable.modal.message({ message: `罐箱请求失败@${error}`, status: 'warning', id: '1' })
       })
       this.tankModelList = response.data.data.data
       console.log('罐箱模型列表', this.tankModelList)
@@ -709,7 +716,7 @@ export default {
         pageSize: 999999
       }
       const response = await this.$http.post('/device/list', request).catch(error => {
-        this.$XModal.message({ message: `设备列表请求失败@${error}`, status: 'warning', id: '1' })
+        VXETable.modal.message({ message: `设备列表请求失败@${error}`, status: 'warning', id: '1' })
       })
       console.log(response)
       this.deviceList = response.data.data.data.map(item => {
@@ -719,7 +726,7 @@ export default {
     },
     async getMedia () {
       const response = await this.$http.post('/tank/media/list').catch(error => {
-        this.$XModal.message({ message: `介质列表请求失败@${error}`, status: 'warning', id: '1' })
+        VXETable.modal.message({ message: `介质列表请求失败@${error}`, status: 'warning', id: '1' })
       })
       this.mediaList = response.data.data.data
       console.log(this.mediaList)
@@ -731,24 +738,24 @@ export default {
           this.addTankForm.attachment = this.attachmentArray.join(';')
           console.log(this.addTankForm)
           if (this.addTankForm.tankModel === undefined) {
-            this.$XModal.message({ message: '罐箱模型未选择', status: 'warning' })
+            VXETable.modal.message({ message: '罐箱模型未选择', status: 'warning' })
             this.activeName = 'second'
           } else {
             this.$http.post('/tank/create', this.addTankForm).then(response => {
               console.log(response.data.code)
               if (response.data.code === 0) {
-                this.$XModal.message({ message: '创建成功', status: 'success', id: '1' })
+                VXETable.modal.message({ message: '创建成功', status: 'success', id: '1' })
                 this.createTank = true
                 this.backToList()
               } else {
-                this.$XModal.message({ message: `创建失败@${response.data.message}`, status: 'warning', id: '1' })
+                VXETable.modal.message({ message: `创建失败@${response.data.message}`, status: 'warning', id: '1' })
               }
             }).catch(error => {
-              this.$XModal.message({ message: `创建失败@${error}`, status: 'warning' })
+              VXETable.modal.message({ message: `创建失败@${error}`, status: 'warning' })
             })
           }
         } else {
-          this.$XModal.message({ message: '请检查必填项', status: 'warning', id: '1' })
+          VXETable.modal.message({ message: '请检查必填项', status: 'warning', id: '1' })
           this.activeName = 'first'
         }
       })

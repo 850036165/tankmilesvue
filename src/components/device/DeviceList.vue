@@ -56,7 +56,7 @@
                 class="deviceDetail"
                 @click="goDetail(row)"
               >
-                设备号:{{ row.deviceSn }}
+                {{ row.deviceSn }}
               </button>
             </div>
           </template>
@@ -134,6 +134,7 @@ export default {
         border: true,
         rowId: 'id',
         sortConfig: {
+          remote: true,
           trigger: 'default',
           defaultSort: {
             field: 'deviceSn',
@@ -149,9 +150,7 @@ export default {
           layouts: ['PrevPage', 'JumpNumber', 'NextPage', 'Sizes', 'Total'],
           border: false,
           background: true,
-          align: 'right',
-          pageSize: 15,
-          pageSizes: [5, 15, 20, 50, 100, 200]
+          align: 'right'
         },
         // radioConfig: {
         //   labelField: 'id',
@@ -159,6 +158,9 @@ export default {
         //   highlight: true
         // },
         proxyConfig: {
+          prop: {
+            total: 'total'
+          },
           seq: true, // 启用动态序号代理
           sort: true, // 启用排序代理
           filter: false, // 启用筛选代理
@@ -291,7 +293,7 @@ export default {
             }
           }
         },
-        toolbar: {
+        toolbarConfig: {
           refresh: true,
           zoom: true,
           export: true,
@@ -308,27 +310,27 @@ export default {
             align: 'center',
             title: '设备号',
             minWidth: 150,
-            remoteSort: true,
+            sortable: true,
             slots: { default: 'deviceSn_default' }
           },
-          { field: 'tankSn', title: '箱号', remoteSort: true, minWidth: 100 },
-          { field: 'category', title: '设备类型', remoteSort: true, width: 120 },
-          { field: 'projectNames', title: '所属项目', remoteSort: true, minWidth: 150 },
-          { field: 'firmwareVersion', title: '固件版本', width: 100, remoteSort: true },
-          { field: 'lastUpgradeTime', title: '最近更新', width: 140, remoteSort: true, formatter: this.formatDate1 },
-          { field: 'temperatureInterval', title: '温度周期', width: 100, remoteSort: true },
-          { field: 'gpsInterval', title: 'GPS周期', width: 100, remoteSort: true },
-          { field: 'commInterval', title: '基站通讯周期', width: 120, remoteSort: true },
-          { field: 'maxWorkTime', title: '最大工作时间', width: 120, remoteSort: true },
-          { field: 'updateTime', title: '更新时间', width: 140, remoteSort: true, formatter: this.formatDate2 },
-          { field: 'lat', title: '经度', width: 100, remoteSort: true },
-          { field: 'lon', title: '纬度', width: 100, remoteSort: true },
+          { field: 'tankSn', title: '箱号', sortable: true, minWidth: 100 },
+          { field: 'category', title: '设备类型', sortable: true, width: 120 },
+          { field: 'projectNames', title: '所属项目', sortable: true, minWidth: 150 },
+          { field: 'firmwareVersion', title: '固件版本', width: 100, sortable: true },
+          { field: 'lastUpgradeTime', title: '最近更新', width: 140, sortable: true, formatter: this.formatDate1 },
+          { field: 'temperatureInterval', title: '温度周期', width: 100, sortable: true },
+          { field: 'gpsInterval', title: 'GPS周期', width: 100, sortable: true },
+          { field: 'commInterval', title: '基站通讯周期', width: 120, sortable: true },
+          { field: 'maxWorkTime', title: '最大工作时间', width: 120, sortable: true },
+          { field: 'updateTime', title: '更新时间', width: 140, sortable: true, formatter: this.formatDate2 },
+          { field: 'lat', title: '经度', width: 100, sortable: true },
+          { field: 'lon', title: '纬度', width: 100, sortable: true },
           { field: 'location', title: '地址', width: 100 },
-          { field: 'tankTemperature', title: '温度', minWidth: 70, remoteSort: true },
-          { field: 'tankPressure', title: '压力', minWidth: 70, remoteSort: true },
-          { field: 'tankLevel', title: '液位', minWidth: 70, remoteSort: true },
-          { field: 'batteryLeft', title: '电量', minWidth: 70, remoteSort: true },
-          { field: 'connected', title: '在线', align: 'center', width: 80, remoteSort: true },
+          { field: 'tankTemperature', title: '温度', minWidth: 70, sortable: true },
+          { field: 'tankPressure', title: '压力', minWidth: 70, sortable: true },
+          { field: 'tankLevel', title: '液位', minWidth: 70, sortable: true },
+          { field: 'batteryLeft', title: '电量', minWidth: 70, sortable: true },
+          { field: 'connected', title: '在线', align: 'center', width: 80, sortable: true },
           { title: '操作', align: 'center', width: 80, slots: { default: 'operation' } }
         ]
       }

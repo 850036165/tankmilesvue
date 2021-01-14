@@ -27,6 +27,7 @@
       <!--      主体表格-->
       <div>
         <el-dialog
+          :modal-append-to-body="false"
           :show-close="false"
           :close-on-click-modal="false"
           :close-on-press-escape="false"
@@ -553,7 +554,7 @@ export default {
         filterConfig: {
           remote: false
         },
-        toolbar: {
+        toolbarConfig: {
           refresh: true,
           zoom: true,
           export: true,
@@ -627,8 +628,22 @@ export default {
           this.dialogVisible = false
           this.$refs.xGrid.commitProxy('query')
           this.$XModal.message({ message: '创建成功', status: 'success', id: '1' })
-        } else { this.$message({ message: `创建失败@${response.data.message}`, type: 'error' }) }
-      }).catch(error => { this.$message({ message: `创建失败@${error}`, type: 'error' }) })
+        } else {
+          VXETable.modal.message({
+            message: `创建失败@${response.data.message}`,
+            status: 'error',
+            size: 'medium',
+            id: 'unique1'
+          })
+        }
+      }).catch(error => {
+        VXETable.modal.message({
+          message: `创建失败失败@${error}`,
+          status: 'error',
+          size: 'medium',
+          id: 'unique1'
+        })
+      })
     },
     headerCellStyle () {
       return {
@@ -743,5 +758,7 @@ export default {
 /deep/.el-dialog__body{
   padding: 10px 20px;
 }
-
+/deep/ .v-modal{
+  z-index: 99!important;
+}
 </style>

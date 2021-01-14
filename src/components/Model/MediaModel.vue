@@ -87,6 +87,9 @@ export default {
     return {
       tableHeight: 0,
       gridOptions: {
+        printConfig: {
+          sheetName: 'tankmilesPrint'
+        },
         resizable: true,
         showOverflow: true,
         exportConfig: {
@@ -94,6 +97,7 @@ export default {
         },
         border: true,
         sortConfig: {
+          remote: true,
           trigger: 'default',
           defaultSort: {
             field: 'deviceSn',
@@ -103,7 +107,7 @@ export default {
         filterConfig: {
           remote: false
         },
-        toolbar: {
+        toolbarConfig: {
           refresh: true,
           zoom: true,
           export: true,

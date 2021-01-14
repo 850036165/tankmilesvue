@@ -112,8 +112,7 @@
                 >
                   <el-input
                     placeholder="6位数字"
-                    :maxlength="6"
-                    v-model.number="addForm.deviceSn"
+                    v-model="addForm.deviceSn"
                     :readonly="canNotEdit"
                   />
                 </el-form-item>
@@ -154,11 +153,17 @@
                 cellspacing="0"
                 class="tableClass"
               >
+                <tr style="background-color: #F5F7FA">
+                  <td style="width: 2%">
+                    箱号
+                  </td>
+                  <td colspan="3">
+                    {{ addForm.tankSn }}
+                  </td>
+                </tr>
                 <tr>
-                  <td>箱号</td>
-                  <td>{{ addForm.tankSn }}</td>
                   <td>连接状态</td>
-                  <td>
+                  <td colspan="3">
                     <i
                       :class="[addForm.connected?'el-icon-success':'el-icon-error',addForm.connected?'connected':'disconnected']"
                     />
@@ -706,7 +711,7 @@ export default {
     return {
       activeTabs: 'first',
       deviceRawId: undefined,
-      selectDate: [undefined, undefined],
+      selectDate: null,
       formData: {
         keywords: ''
       },
@@ -720,6 +725,7 @@ export default {
         border: true,
         rowId: 'id',
         sortConfig: {
+          remote: true,
           trigger: 'default',
           defaultSort: {
             field: 'deviceSn',
@@ -842,7 +848,7 @@ export default {
             }
           }
         },
-        toolbar: {
+        toolbarConfig: {
           refresh: true,
           zoom: true,
           export: true,
@@ -854,12 +860,12 @@ export default {
         },
         columns: [
           { type: 'seq', width: 50, align: 'center' },
-          { field: 'at', title: '更改时间', remoteSort: true, minWidth: 180, align: 'center', formatter: this.formatDate2 },
-          { field: 'operationType', title: '操作类型', remoteSort: true, minWidth: 180, align: 'center' },
-          { field: 'operatedName', title: '操作参数', remoteSort: true, minWidth: 100 },
-          { field: 'operatedValue', title: '修改数值', remoteSort: true, minWidth: 100 },
-          { field: 'oldValue', title: '原数值', remoteSort: true, minWidth: 100 },
-          { field: 'operator', title: '操作账户', remoteSort: true, minWidth: 100 }
+          { field: 'at', title: '更改时间', sortable: true, minWidth: 180, align: 'center', formatter: this.formatDate2 },
+          { field: 'operationType', title: '操作类型', sortable: true, minWidth: 180, align: 'center' },
+          { field: 'operatedName', title: '操作参数', sortable: true, minWidth: 100 },
+          { field: 'operatedValue', title: '修改数值', sortable: true, minWidth: 100 },
+          { field: 'oldValue', title: '原数值', sortable: true, minWidth: 100 },
+          { field: 'operator', title: '操作账户', sortable: true, minWidth: 100 }
         ]
       },
       addFormTemp: {},
@@ -961,7 +967,7 @@ export default {
       return {
         deviceSn: [
           { required: true, message: '请输入设备SN', trigger: 'change' },
-          { pattern: /^\d{6}|0$/, message: '设备SN为6位数字', trigger: 'change' }],
+          { pattern: /[0-9]{4}-[0-9]{6}/, message: '格式为XXXX-XXXXXX', trigger: 'change' }],
         key: [
           { required: true, message: '请输入设备ProductKey', trigger: 'change' },
           { pattern: /^\d{6}|0$/, message: 'ProductKey为6位数字', trigger: 'change' }],
@@ -1032,11 +1038,11 @@ export default {
       }
     },
     async requestDevice () {
-      const response = await this.$http.post('/device/category/list').then(this.$XModal.message({
+      const response = await this.$http.post('/device/category/list').then(VXETable.modal.message({
         message: '设备类型请求成功',
         status: 'success'
       })).catch(error => {
-        this.$XModal.message({ message: `设备类型请求失败@${error}`, status: 'warning' })
+        VXETable.modal.message({ message: `设备类型请求失败@${error}`, status: 'warning' })
       })
       this.typeList = response.data.data
       console.log('列表', this.typeList)
@@ -1055,19 +1061,19 @@ export default {
         this.$http.post('/device/edit', this.addForm).then(async response => {
           console.log('test', response.data)
           if (response.data.code !== 0) {
-            this.$XModal.message({ message: `修改错误@${response.data.message}`, status: 'warning', id: '2' })
+            VXETable.modal.message({ message: `修改错误@${response.data.message}`, status: 'warning', id: '2' })
             this.addForm = this.addFormTemp // 若修改错误，恢复初始数据
           } else {
             console.log('请求设备代码', this.$route.query.sn)
             await this.$router.push({ query: { sn: this.addForm.deviceSn } })
             //    this.$route.query.sn = this.addForm.deviceSn // 将query值修改为修改后的值
             await this.getDeviceDetail(this.addForm.deviceSn)
-            this.$XModal.message({ message: '修改成功', status: 'success', id: '3' })
+            VXETable.modal.message({ message: '修改成功', status: 'success', id: '3' })
             console.log('提交内容为', this.addForm)
           }
         }).catch(error => console.log(error))
       }).catch(() => {
-        this.$XModal.message({ message: '配置错误,检查后重试', status: 'warning', id: '1' })
+        VXETable.modal.message({ message: '配置错误,检查后重试', status: 'warning', id: '1' })
       })
     },
     quitEdit () {

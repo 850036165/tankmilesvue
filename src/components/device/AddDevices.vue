@@ -84,9 +84,9 @@
                 prop="deviceSn"
               >
                 <el-input
-                  placeholder="6位数字"
-                  :maxlength="6"
-                  v-model.number="addForm.deviceSn"
+                  placeholder="格式为1234-123456"
+                  :maxlength="11"
+                  v-model="addForm.deviceSn"
                 />
               </el-form-item>
               <!--              设备key-->
@@ -186,12 +186,16 @@
           >
             <el-form-item>
               <el-button
+                size="small"
                 type="primary"
                 @click="addDevices"
               >
                 添加设备
               </el-button>
-              <el-button @click="leavePage">
+              <el-button
+                @click="leavePage"
+                size="small"
+              >
                 取消返回
               </el-button>
             </el-form-item>
@@ -267,6 +271,8 @@
 </template>
 
 <script>
+import VXETable from 'vxe-table'
+
 export default {
   beforeRouteLeave (to, from, next) {
     if (this.changeStatus >= 1) {
@@ -295,8 +301,7 @@ export default {
         ],
         deviceSn: [
           { required: true, message: '请输入设备SN', trigger: 'change' },
-          { type: 'number', message: 'SN为数字格式', trigger: 'change' },
-          { pattern: /^\d{6}$/, message: '设备SN为6位数字', trigger: 'change' }
+          { pattern: /[0-9]{4}-[0-9]{6}/, message: '格式为XXXX-XXXXXX', trigger: 'change' }
         ],
         key: [
           { required: true, message: '请输入设备ProductKey', trigger: 'change' },
@@ -349,14 +354,14 @@ export default {
     },
     chooseDeviceType2 () {
       this.deviceType1 = 2
-      this.$XModal.message({ message: '三方设备暂未开放', status: 'warning', id: 'unique1' })
+      VXETable.modal.message({ message: '三方设备暂未开放', status: 'warning', id: 'unique1' })
     },
     async requestDevice () {
-      const response = await this.$http.post('/device/category/list').then(this.$XModal.message({
+      const response = await this.$http.post('/device/category/list').then(VXETable.modal.message({
         message: '设备类型请求成功',
         status: 'success'
       })).catch(error => {
-        this.$XModal.message({ message: `设备类型请求失败@${error}`, status: 'warning' })
+        VXETable.modal.message({ message: `设备类型请求失败@${error}`, status: 'warning' })
       })
       this.typeList = response.data.data
       console.log('列表', this.typeList)
@@ -364,19 +369,19 @@ export default {
     addDevices () {
       this.$refs.ruleForm.validate((valid) => {
         if (!valid) {
-          this.$XModal.message({ message: '检查所有必填项', status: 'warning' })
+          VXETable.modal.message({ message: '检查所有必填项', status: 'warning' })
         } else {
           console.log(this.addForm)
           this.$http.post('/device/create', this.addForm).then(response => {
             if (response.data.code === 0) {
-              this.$XModal.message({ message: '设备创建成功', status: 'success' })
+              VXETable.modal.message({ message: '设备创建成功', status: 'success' })
               this.changeStatus = 0
               this.$router.push('/device')
             } else {
-              this.$XModal.message({ message: `创建失败@${response.data.message}`, status: 'error' })
+              VXETable.modal.message({ message: `创建失败@${response.data.message}`, status: 'error' })
             }
           }).catch(error =>
-            this.$XModal.message({ message: `遇到一个错误@${error}`, status: 'error' }))
+            VXETable.modal.message({ message: `遇到一个错误@${error}`, status: 'error' }))
         }
       })
     },

@@ -115,9 +115,6 @@
     <el-card
       class="mapCard"
       v-loading="loading1"
-      element-loading-text="加载中"
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(1, 1, 1, 0.9)"
     >
       <p
         id="map"
@@ -422,7 +419,6 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import url('https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css');
 
 /deep/ .el-loading-spinner .el-loading-text {
   color: white;
@@ -567,7 +563,7 @@ export default {
 .mapCard {
   outline: none;
   margin: 30px auto 0;
-  width: 97%;
+  width: 100%;
 }
 
 .mapDiv {
@@ -576,7 +572,4 @@ export default {
   height: 300px;
 }
 
-/deep/ .mapboxgl-canvas {
-  outline: none !important;
-}
 </style>

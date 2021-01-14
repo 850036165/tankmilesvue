@@ -78,8 +78,10 @@
           >
             <!--密码-->
             <el-input
+              @keyup.enter.native="login()"
               id="input"
               type="password"
+              show-password
               v-model="loginForm.password"
               prefix-icon="el-icon-lock"
               :placeholder="$t('login.password')"
@@ -108,12 +110,12 @@
         </el-form>
       </div>
       <p class="bottom_text hidden-md-and-down">
-        Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.
+        Copyright © 2019-2020 Nantong CIMC Tank Equipment Co., Ltd.
       </p>
     </div>
     <!--    轮播背景-->
     <el-carousel
-      :interval="30000"
+      :interval="10000"
       id="el-carousel"
       height="100%"
       arrow="never"
@@ -141,6 +143,7 @@
 
 <script>
 import 'element-ui/lib/theme-chalk/display.css'
+import md5 from 'js-md5'
 
 export default {
   name: 'Login',
@@ -153,12 +156,12 @@ export default {
         password: '111111'
       },
       imageBox: [
-        { path: require('../assets/Image/Imagebox/1.jpg') },
-        { path: require('../assets/Image/Imagebox/2.jpg') },
-        { path: require('../assets/Image/Imagebox/3.jpg') },
-        { path: require('../assets/Image/Imagebox/4.jpg') }
+        { path: 'https://oss.tankmiles.com/1.jpg' },
+        { path: 'https://oss.tankmiles.com/2.jpg' },
+        { path: 'https://oss.tankmiles.com/3.jpg' },
+        { path: 'https://oss.tankmiles.com/4.jpg' }
       ],
-      url: require('../assets/Image/Login_logo.png'),
+      url: 'https://oss.tankmiles.com/Login_logo.png',
       href: 'https://www.baidu.com'
     }
   },
@@ -173,19 +176,17 @@ export default {
       // 验证规则
       return {
         name: [
-          { required: true, message: `${this.$t('login.alert1')}`, trigger: 'blur' },
-          { min: 4, max: 10, message: `${this.$t('login.alert11')}`, trigger: 'blur' }
+          { required: true, message: `${this.$t('login.alert1')}`, trigger: 'blur' }
         ],
         password: [
-          { required: true, message: `${this.$t('login.alert2')}`, trigger: 'blur' },
-          { min: 6, max: 20, message: `${this.$t('login.alert21')}`, trigger: 'blur' }
+          { required: true, message: `${this.$t('login.alert2')}`, trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
     goHomePage () {
-      window.open('https://www.baidu.com', '_blank')
+      window.open(this.href, '_blank')
     },
     // 登录请求
     login () {
@@ -197,10 +198,13 @@ export default {
           this.loadingStatus = false
           return
         }
-        // start
-        await this.$http.post('/user/login', this.loginForm).then(async (response) => {
+        // md5加密
+        await this.$http.post('/user/login', {
+          name: this.loginForm.name,
+          password: md5(this.loginForm.password)
+        }).then(async (response) => {
           // console.log(response.data.code)
-          if (response.data.code !== 0) {
+          if (response.data.code === 102) {
             this.$notify({
               title: `${this.$t('login.alert3')}`,
               message: `${this.$t('login.alert6')}`,
@@ -208,7 +212,15 @@ export default {
             })
             this.loadingText1.loadingText = `${this.$t('login.login')}`
             this.loadingStatus = false
-          } else {
+          } else if (response.data.code === 103) {
+            this.$notify({
+              title: '登录失败',
+              message: '您的账户已被禁用',
+              type: 'warning'
+            })
+            this.loadingText1.loadingText = `${this.$t('login.login')}`
+            this.loadingStatus = false
+          } else if (response.data.code === 0) {
             let text = ''
             const time = new Date().getHours()
             if ((time >= 0) && (time < 7)) {
@@ -232,13 +244,25 @@ export default {
             console.log(text)
             this.$notify({
               title: `${this.$t('login.alert4')}`,
-              message: `${this.loginForm.name}!${text}`,
+              message: `${response.data.data.nickName}!${text}`,
               type: 'success'
             })
             this.loadingText1.loadingText = `${this.$t('login.login')}`
             this.loadingStatus = false
-            window.sessionStorage.setItem('token', response.data.message)
+            window.sessionStorage.setItem('token', response.data.data.sessionId)
+            window.localStorage.setItem('avatarUrl', response.data.data.avatarUrl)
+            window.localStorage.setItem('nickName', response.data.data.nickName)
+            window.localStorage.setItem('groupId', response.data.data.groupId)
+            window.localStorage.setItem('admin', response.data.data.admin)
             await this.$router.push('/dashboard')
+          } else {
+            this.$notify({
+              title: '未知错误',
+              message: '未知错误',
+              type: 'error'
+            })
+            this.loadingText1.loadingText = `${this.$t('login.login')}`
+            this.loadingStatus = false
           }
           // end
         }).catch((error) => {
@@ -347,7 +371,6 @@ export default {
 }
 
 .bottom_text {
-  width: 100%;
   -webkit-user-select: none;
   font-weight: lighter;
   font-size: 10px;
@@ -355,7 +378,7 @@ export default {
   bottom: 0;
   color: #6c6e6f;
   font-family: "Helvetica Neue", sans-serif;
-  text-align: center;
+  text-align: left;
   margin: 5px 0;
 }
 

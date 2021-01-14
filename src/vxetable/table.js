@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import 'xe-utils'
 import VXETable from 'vxe-table'
-import 'vxe-table/lib/index.css'
+import 'vxe-table/lib/style.css'
 import './variable.scss'
 import VXETablePluginExportXLSX from 'vxe-table-plugin-export-xlsx'
 import 'vxe-table/styles/variable.scss'
