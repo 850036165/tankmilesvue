@@ -17,7 +17,7 @@
           <h1 style="margin: 0">
             权限模型
           </h1>
-          <el-button
+          <!-- <el-button
             style="height: 30px;"
             size="mini"
             type="primary"
@@ -25,7 +25,7 @@
             round
           >
             Button
-          </el-button>
+          </el-button>-->
         </div>
       </div>
       <div>
@@ -121,7 +121,7 @@
       :close-on-click-modal="false"
       title="编辑权限路由"
       :visible.sync="dialogVisible"
-      width="60%"
+      width="30%"
     >
       <div
         slot="title"
@@ -133,13 +133,21 @@
         />
         <span>编辑权限路由</span>
       </div>
+      <el-checkbox
+        style="width: 200px;margin:0 auto;height: 100%;display: flex;justify-content: start;align-items: center;flex-wrap: wrap"
+        :indeterminate="isIndeterminate"
+        v-model="checkAll"
+        @change="handleCheckAllChange"
+      >
+        全选
+      </el-checkbox>
       <el-checkbox-group
-        style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;flex-wrap: wrap"
+        style="width: 200px;margin:0 auto;height: 100%;display: flex;justify-content: start;align-items: center;flex-wrap: wrap"
         v-model="checkList"
       >
         <el-checkbox
-          @change="pushURL(item)"
-          style="width: 180px;height: 20px;margin-right: 10px"
+          @change="pushURL(routerList)"
+          style="width: 100%;height: 20px"
           :key="item"
           v-for="item in routerList"
           :label="item"
@@ -254,13 +262,15 @@
 </template>
 
 <script>
-import VXETable from 'vxe-table'
 import XEUtils from 'xe-utils'
+import VXETable from 'vxe-table'
 
 export default {
   name: 'PermissionModel',
   data () {
     return {
+      checkAll: true,
+      isIndeterminate: false,
       tempProjectList: [],
       projectIdNode: 0,
       projectListProps: {
@@ -366,6 +376,10 @@ export default {
     this.tableHeight = window.innerHeight - 200
   },
   methods: {
+    handleCheckAllChange (val) {
+      this.checkList = val ? this.routerList : []
+      this.isIndeterminate = false
+    },
     selectProject (value) {
       console.log(value)
       const result = this.projectList.find(item => item.id === value)
@@ -564,6 +578,10 @@ export default {
     pushURL (value) {
       console.log(this.checkList, 'test')
       console.log(value)
+      const checkedCount = this.checkList.length
+      this.checkAll = checkedCount === this.routerList.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.routerList.length
+      console.log(this.isIndeterminate, this.routerList, this.checkList.length, 'this.isIndeterminate')
     },
     async getRouterList () {
       const response = await this.$http.post('/security/routes/list').catch((error) => {
@@ -578,7 +596,13 @@ export default {
       this.roleGroupId = test.projectGroup.id
       console.log('test', this.roleGroupId)
       // 请求所有路由列表
-      this.getRouterList()
+      this.getRouterList().then(() => {
+        // 判断全选是否勾选
+        const checkedCount = this.checkList.length
+        this.checkAll = checkedCount === this.routerList.length
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.routerList.length
+        console.log(this.isIndeterminate, this.routerList, this.checkList.length, 'this.isIndeterminate')
+      })
       console.log(this.routerList, '当前路由列表为')
       console.log(value, '当前row列表为')
       // 将已勾选项填充至勾选的数组

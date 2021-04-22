@@ -2,19 +2,19 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
-        首页
+        {{ $t('tankList.homePage') }}
       </el-breadcrumb-item>
       <!--      <el-breadcrumb-item>资产管理</el-breadcrumb-item>-->
-      <el-breadcrumb-item>罐箱列表</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ $t('tankList.tankList') }}</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
           <h1 style="margin: 0">
-            罐箱列表
+            {{ $t('tankList.tankList') }}
           </h1>
-          <el-button
+          <!--    <el-button
             style="height: 30px;"
             size="mini"
             type="primary"
@@ -23,7 +23,7 @@
             @click="massChange"
           >
             批量操作
-          </el-button>
+          </el-button>-->
         </div>
       </div>
       <div>
@@ -41,17 +41,17 @@
         >
           <!--自定义列插槽-->
           <template v-slot:operation="{row}">
-            <vxe-button
+            <el-button
               class="operationButton"
-              status="primary"
-              round
+              type="info"
+              size="mini"
               @click="clickOperation(row)"
             >
-              操作
-            </vxe-button>
+              {{ $t('tankList.operation') }}
+            </el-button>
           </template>
           <template v-slot:tankSn_default="{ row }">
-            <div>
+            <div style="display: flex;justify-content: left;align-items: start">
               <button
                 class="deviceDetail"
                 @click="goDetail(row)"
@@ -69,10 +69,13 @@
             >
               <vxe-form-item
                 field="keywords"
-                :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"
+                :item-render="{name: 'input', attrs: {placeholder: $t('tankList.inputName')}}"
               />
               <vxe-form-item
-                :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"
+                :item-render="{ name: '$buttons',
+                                children: [{ props: { type: 'submit', content: $t('tankList.search'),
+                                                      status: 'primary' } },
+                                           { props: { type: 'reset', content: $t('tankList.reset')} }] }"
               />
             </vxe-form>
           </template>
@@ -84,13 +87,13 @@
                   class="el-icon-circle-plus addButton"
                   @click="addDevices"
                 />
-                <span class="addText">新增罐箱</span>
+                <span class="addText">{{ $t('tankList.newTank') }}</span>
               </div>
               <div style="display: flex;justify-content:center;align-items:center;border-left: 1px solid #D8D8D8;">
                 <span
                   class="addText"
                   style="color: black;"
-                >罐箱总数</span>
+                >{{ $t('tankList.totalTank') }}</span>
                 <span
                   class="addText"
                   style="margin-left:10px;color: #2A68D3"
@@ -102,13 +105,13 @@
           <template v-slot:empty>
             <div style="color: black;">
               <i />
-              <p>OOPS!此处暂无罐箱！</p>
-              <span>请联系cimc后台咨询或</span>
+              <p>OOPS!{{ $t('tankList.noTankHere') }}！</p>
+              <span>{{ $t('tankList.contactCIMC') }}</span>
               <router-link
                 to="/tank/addtanks"
                 style="color: red"
               >
-                新建罐箱
+                {{ $t('tankList.newTank') }}
               </router-link>
             </div>
           </template>
@@ -245,7 +248,7 @@ export default {
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('/tank/list/message', queryParams).catch((error) => {
-                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+                VXETable.modal.message({ message: `${this.$t('login.loginFailed')}请求失败@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevices = response.data.data.total
@@ -269,7 +272,8 @@ export default {
           print: true,
           custom: true,
           slots: {
-            buttons: 'toolbar_buttons'
+            buttons: 'toolbar_buttons',
+            tools: 'tools'
           }
         },
         columns: [
@@ -277,24 +281,24 @@ export default {
           {
             field: 'sn',
             align: 'center',
-            title: '箱号',
+            title: `${this.$t('tankList.tankContainerNo')}`,
             minWidth: 150,
             sortable: true,
             slots: { default: 'tankSn_default' }
           },
-          { field: 'deviceSn', align: 'center', title: '设备号', sortable: true, minWidth: 100 },
-          { field: 'sampledAt', title: '记录时间', width: 140, sortable: true, formatter: this.formatDate2 },
-          { field: 'location', title: '地址', width: 100 },
-          { field: 'tankTemperature', title: '温度', minWidth: 70, sortable: true, formatter: this.formatDate },
-          { field: 'tankPressure', title: '压力', minWidth: 70, sortable: true, formatter: this.formatDate },
-          { field: 'tankLevel', title: '液位', minWidth: 70, sortable: true, formatter: this.formatDate },
-          { field: 'batteryLeft', title: '电量', minWidth: 70, sortable: true, formatter: this.formatBattery },
-          { field: 'lat', title: '经度', width: 100 },
-          { field: 'lon', title: '纬度', width: 100 },
-          { field: 'speed', title: '速度', width: 100 },
-          { field: 'altitude', title: '高度', width: 100 },
+          { field: 'deviceSn', align: 'left', title: `${this.$t('tankList.deviceID')}`, sortable: true, minWidth: 100 },
+          { field: 'sampledAt', title: `${this.$t('tankList.recordTime')}`, width: 140, sortable: true, formatter: this.formatDate2 },
+          { field: 'location', title: `${this.$t('tankList.address')}`, minWidth: 100 },
+          { field: 'tankTemperature', title: `${this.$t('tankList.temperature')}`, Width: 80, sortable: true, formatter: this.formatDate },
+          { field: 'tankPressure', title: `${this.$t('tankList.pressure')}`, Width: 70, sortable: true, formatter: this.formatDate },
+          { field: 'tankLevel', title: `${this.$t('tankList.fluidLevel')}`, Width: 70, sortable: true, formatter: this.formatDate },
+          { field: 'batteryLeft', title: `${this.$t('tankList.battery')}`, Width: 70, sortable: true, formatter: this.formatBattery },
+          // { field: 'lat', title: `${this.$t('tankList.longitude')}`, width: 100 },
+          // { field: 'lon', title: `${this.$t('tankList.latitude')}`, width: 100 },
+          // { field: 'speed', title: `${this.$t('tankList.speed')}`, width: 100 },
+          // { field: 'altitude', title: `${this.$t('tankList.high')}`, width: 100 },
           { field: 'gps_valid', title: 'GPSValid', align: 'center', width: 100 },
-          { title: '操作', align: 'center', width: 80, slots: { default: 'operation' } }
+          { title: `${this.$t('tankList.operation')}`, align: 'center', width: 80, slots: { default: 'operation' } }
         ]
       }
     }
@@ -323,6 +327,12 @@ export default {
     },
     clickOperation (row, column) {
       console.log(row, column)
+      this.$router.push({
+        path: '/edittank',
+        query: {
+          id: row.id
+        }
+      })
     },
     massChange () {
       this.$router.push('/device/massoperation')
@@ -330,7 +340,8 @@ export default {
     headerCellStyle () {
       return {
         backgroundColor: '#2A68D3',
-        color: '#ffffff'
+        color: '#ffffff',
+        textAlign: 'left'
       }
     },
     goDetail (row) {
@@ -367,8 +378,7 @@ export default {
 }
 
 .deviceDetail {
-  width: 100px;
-  background-color: grey;
+  background-color: white;
   border-radius: 2px;
   border: none;
 }

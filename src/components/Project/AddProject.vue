@@ -2,19 +2,19 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
-        首页
+        {{ $t('addProject.dashboard') }}
       </el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/project' }">
-        项目管理
+        {{ $t('addProject.projectManagement') }}
       </el-breadcrumb-item>
-      <el-breadcrumb-item>新增项目</el-breadcrumb-item>
+      <el-breadcrumb-item> {{ $t('addProject.newProject') }}</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
           <h1 style="margin: 0">
-            新增项目
+            {{ $t('addProject.newProject') }}
           </h1>
           <el-button
             style="height: 30px;"
@@ -23,7 +23,7 @@
             icon="el-icon-edit-outline"
             round
           >
-            批量新增
+            {{ $t('addProject.batchAddition') }}
           </el-button>
         </div>
       </div>
@@ -37,24 +37,24 @@
           style="margin-top: 10px"
         >
           <el-form-item
-            label="项目名称"
+            :label=" $t('addProject.projectName')"
             prop="name"
           >
             <el-input
               v-model="addProjectForm.name"
-              placeholder="请输入项目名称"
+              :placeholder=" $t('addProject.inputProjectName')"
               clearable
               prefix-icon="el-icon-document-copy"
               :style="{width: '30%'}"
             />
           </el-form-item>
           <el-form-item
-            label="所属公司"
+            :label=" $t('addProject.company')"
             prop="groupId"
           >
             <el-select
               v-model="addProjectForm.groupId"
-              placeholder="所属公司"
+              :placeholder=" $t('addProject.company')"
               :style="{width: '30%'}"
             >
               <el-option
@@ -65,10 +65,10 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item :label=" $t('addProject.remarks')">
             <el-input
               v-model="addProjectForm.remark"
-              placeholder="请输入备注"
+              :placeholder=" $t('addProject.inputRemarks')"
               :maxlength="20"
               show-word-limit
               clearable
@@ -81,10 +81,10 @@
               @click="submitForm"
               :loading="loadingStatus"
             >
-              提交
+              {{ $t('addProject.submit') }}
             </el-button>
             <el-button @click="resetForm">
-              重置
+              {{ $t('addProject.reset') }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -108,7 +108,7 @@
             <!--            顶部模板-->
             <template v-slot:toolbar_buttons_left>
               <div style="background-color: #FA8532;line-height: 46px;border: 1px solid darkgrey">
-                <span class="addProjectText">已添加罐箱数:</span>
+                <span class="addProjectText">{{ $t('addProject.totalTankNum') }}:</span>
                 <span
                   class="addProjectText"
                   style="margin-left:10px;"
@@ -118,7 +118,7 @@
             <!--自定义空数据模板-->
             <template v-slot:empty>
               <span style="color: black;">
-                <span>请添加设备或暂不添加</span>
+                <span>{{ $t('addProject.addDeviceOrNot') }}</span>
               </span>
             </template>
           </vxe-grid>
@@ -156,12 +156,12 @@
             <!--            顶部模板-->
             <template v-slot:toolbar_buttons_right>
               <div style="background-color: #58647A;line-height: 46px;border: 1px solid #929090">
-                <span class="addProjectText">可添加罐箱数:</span>
+                <span class="addProjectText">{{ $t('addProject.canAddTankNum') }}:</span>
                 <span
                   class="addProjectText"
                   style="margin-left:10px"
                 >{{ totalDevicesRight }}</span>
-                <span class="addProjectText">当前选择:</span>
+                <span class="addProjectText">{{ $t('addProject.currentSelect') }}:</span>
                 <span
                   class="addProjectText"
                   style="margin-left:10px;color:#FA8532 "
@@ -171,7 +171,7 @@
             <!--自定义空数据模板-->
             <template v-slot:empty>
               <span style="color: black;">
-                <span>请联系cimc后台咨询</span>
+                <span>{{ $t('addProject.contactCIMC') }}</span>
               </span>
             </template>
           </vxe-grid>
@@ -210,9 +210,9 @@ export default {
           }
         },
         columns: [
-          { type: 'checkbox', field: 'sn', title: '箱号', minWidth: 100 },
-          { field: 'deviceSn', title: '设备号', minWidth: 100 },
-          { field: 'projectNames', title: '已分配项目', minWidth: 150 }
+          { type: 'checkbox', field: 'sn', title: `${this.$t('addProject.tankNo')}`, minWidth: 100 },
+          { field: 'deviceSn', title: `${this.$t('addProject.deviceID')}`, minWidth: 100 },
+          { field: 'projectNames', title: `${this.$t('addProject.assignedProject')}`, minWidth: 150 }
         ]
       },
       gridOptionsRight: {
@@ -280,7 +280,7 @@ export default {
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('tank/list', queryParams).catch((error) => {
-                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+                VXETable.modal.message({ message: `${this.$t('addProject.requestFailed')}@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevicesRight = response.data.data.total
@@ -304,9 +304,9 @@ export default {
           }
         },
         columns: [
-          { type: 'checkbox', title: '箱号', minWidth: '25%' },
-          { field: 'deviceSn', title: '设备号', minWidth: '25%' },
-          { field: 'projectNames', title: '已分配项目', minWidth: '50%' }
+          { type: 'checkbox', title: `${this.$t('addProject.tankNo')}`, minWidth: '25%' },
+          { field: 'deviceSn', title: `${this.$t('addProject.deviceID')}`, minWidth: '25%' },
+          { field: 'projectNames', title: `${this.$t('addProject.assignedProject')}`, minWidth: '50%' }
         ]
       },
       parentProjectId: 0,
@@ -319,12 +319,12 @@ export default {
       rules: {
         name: [{
           required: true,
-          message: '请输入项目名称',
+          message: `${this.$t('addProject.inputProjectName')}`,
           trigger: 'blur'
         }],
         groupId: [{
           required: true,
-          message: '请选择所属公司',
+          message: `${this.$t('addProject.inputCompany')}`,
           trigger: 'blur'
         }]
       }
@@ -341,7 +341,7 @@ export default {
         order: 'DESC',
         pageSize: 999
       }).catch((error) => {
-        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+        VXETable.modal.message({ message: `${this.$t('addProject.requestFailed')}@${error}`, status: 'error', size: 'medium' })
       })
       this.groupList = response.data.data.data
     },
@@ -359,14 +359,14 @@ export default {
           this.loadingStatus = false
           this.$notify({
             title: `${addProjectData.name}`,
-            message: '新建项目成功',
+            message: `${this.$t('addProject.createProjectSuccess')}`,
             type: 'success'
           })
           this.$router.push('/project')
         } else {
           this.$notify({
-            title: '失败',
-            message: '新建项目失败',
+            title: `${this.$t('addProject.fail')}`,
+            message: `${this.$t('addProject.createProjectFailed')}`,
             type: 'error'
           })
         }
@@ -383,7 +383,7 @@ export default {
     },
     removeChecked () {
       if (this.currentSelectedDevicesLeft.length < 1) {
-        VXETable.modal.message({ message: '未选择设备', status: 'warning', id: 'unique1' })
+        VXETable.modal.message({ message: `${this.$t('addProject.noDeviceSelected')}`, status: 'warning', id: 'unique1' })
       } else {
         this.$refs.xGridLeft.removeCheckboxRow()
         this.currentSelectedDevicesLeft = []
@@ -392,12 +392,12 @@ export default {
         console.log('移除处理后的数据', record)
         this.addProjectForm.allTanks = record.toString()
         console.log('tanks最终内容', this.addProjectForm.allTanks)
-        VXETable.modal.message({ message: '移除成功', status: 'success' })
+        VXETable.modal.message({ message: `${this.$t('addProject.removeSuccess')}`, status: 'success' })
       }
     },
     transferToLeft () {
       if (this.currentSelectedDevicesRight.length < 1) {
-        VXETable.modal.message({ message: '请先选择设备', status: 'warning', id: 'unique1' })
+        VXETable.modal.message({ message: `${this.$t('addProject.selectDevice')}`, status: 'warning', id: 'unique1' })
       } else {
         this.$refs.xGridLeft.clearCheckboxRow()
         this.selectedTanksLeft = this.currentSelectedDevicesRight
@@ -406,7 +406,7 @@ export default {
         console.log('添加处理后的数据', record)
         this.addProjectForm.allTanks = record.toString()
         console.log('tanks最终内容', this.addProjectForm.allTanks)
-        VXETable.modal.message({ message: `${record.length}台设备已添加`, status: 'success', id: 'unique1' })
+        VXETable.modal.message({ message: `${record.length}${this.$t('addProject.addDeviceNum')}`, status: 'success', id: 'unique1' })
       }
     },
     selectAllEventRight () {
@@ -422,7 +422,7 @@ export default {
         if (!valid) {
         } else {
           if (this.addProjectForm.allTanks === '') {
-            VXETable.modal.confirm('您尚未添加罐箱,确认创建吗？', '即将创建项目').then(type => {
+            VXETable.modal.confirm(`${this.$t('addProject.createDeviceWithoutTank')}`).then(type => {
               if (type === 'confirm') {
                 this.submitCreate()
               } else {

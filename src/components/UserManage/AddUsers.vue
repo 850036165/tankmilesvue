@@ -18,13 +18,13 @@
       新建账户
     </h1>
     <el-card>
-      <div style="display: flex;justify-content: center;">
+      <div style="display: flex;justify-content: center;grid-column-gap: 30px">
         <div style="width: 50%">
           <p style="width: 72px;height: 23px;font-size: 18px;font-weight: 700;text-align: left;color: #58647a;">
             基础信息
           </p>
           <el-form
-            style="width: 400px"
+            style="width: 100%;"
             ref="addUserForm"
             :model="addUserForm"
             :rules="userRuleForm"
@@ -61,12 +61,29 @@
                   @completed="handleCompleted"
                   @error="handlerError"
                   trigger="#pick-avatar"
-                  upload-url="http://47.89.13.131:9090/user/avatar/upload"
+                  upload-url="https://api.tankmiles.com:9443/user/avatar/upload"
                   :labels="button"
                 />
               </div>
             </el-form-item>
             <el-row>
+              <el-form-item
+                label="公司"
+                prop="groupId"
+              >
+                <el-select
+                  style="width: 100%"
+                  v-model="addUserForm.groupId"
+                  placeholder="请选择公司"
+                >
+                  <el-option
+                    v-for="item in groupList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
               <el-form-item
                 label="显示名称"
                 prop="nickName"
@@ -76,7 +93,7 @@
                   placeholder="请输入显示名称"
                   clearable
                   show-word-limit
-                  :maxlength="5"
+                  :maxlength="10"
                   prefix-icon="el-icon-user-solid"
                   :style="{width: '100%'}"
                 />
@@ -277,12 +294,12 @@ color: #006af1;"
       </p>
       <p>
         亲爱的用户<br>
-        欢迎使用罐程平台，请使用一下信息登录：
+        欢迎使用罐程平台，请使用以下信息登录：
       </p>
       <p>
         网址：<a href="https://www.tankmiles.com">Tankmiles.com</a><br>
         用户名:{{ addUserForm.email }}<br>
-        密码:{{ addUserForm.password }}
+        密码:{{ tempAddUserForm.password }}
       </p>
       <p>
         如有疑问请联系我们<br>
@@ -328,8 +345,8 @@ color: #006af1;"
 <script>
 import AvatarCropper from 'vue-avatar-cropper'
 import Password from 'vue-password-strength-meter'
-import VXETable from 'vxe-table'
 import XEUtils from 'xe-utils'
+import VXETable from 'vxe-table'
 import axios from 'axios'
 import md5 from 'js-md5'
 import emailContent from '@/assets/JS/emailContent'
@@ -344,6 +361,18 @@ export default {
   },
   data () {
     return {
+      tempAddUserForm: {
+        name: '',
+        nickName: '',
+        email: '',
+        mobile: '',
+        fixedPhone: '',
+        roles: null,
+        password: '',
+        enabled: true,
+        avatarUrl: null,
+        groupId: null
+      },
       chosenGroupId: null,
       groupList: null,
       mailLoading: false,
@@ -367,7 +396,8 @@ export default {
         roles: null,
         password: '',
         enabled: true,
-        avatarUrl: null
+        avatarUrl: null,
+        groupId: null
       },
       userRuleForm: {
         groupId: [{
@@ -390,28 +420,25 @@ export default {
           message: '邮箱格式不正确',
           trigger: ['blur', 'change']
         }],
-        /* mobile: [
+        mobile: [
           {
             required: true,
-            pattern: /^1(?:70\d|(?:9[89]|8[0-24-9]|7[135-8]|66|5[0-35-9])\d|3(?:4[0-8]|[0-35-9]\d))\d{7}$/,
-            message: '手机格式不正确',
+            message: '请输入手机号码',
             trigger: ['blur', 'change']
           }
-        ], */
+        ],
         fixedPhone: [],
         password: [{
           required: false,
           message: '请输入密码',
           trigger: 'blur'
-        }
+        },
+        { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
         ]
       },
       gridOptions: {
         resizable: true,
         showOverflow: true,
-        exportConfig: {
-          types: ['xlsx', 'csv', 'html', 'xml', 'txt']
-        },
         border: true,
         sortConfig: {
           remote: true,
@@ -430,7 +457,7 @@ export default {
           filter: false, // 启用筛选代理
           ajax: {
             query: async () => {
-              if (this.chosenGroupId !== null) {
+              if (this.chosenGroupId) {
                 const response = await this.$http.post('/security/role/list', { groupId: this.chosenGroupId }).catch((error) => {
                   VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
                 })
@@ -453,24 +480,38 @@ export default {
   },
   created () {
     this.getProjectList()
+    this.getGroupList()
   },
   mounted () {
     this.myHeaders.authtoken = sessionStorage.getItem('token')
-    this.chosenGroupId = window.localStorage.getItem('groupId')
+    this.chosenGroupId = localStorage.getItem('groupId')
   },
   methods: {
+    async  getGroupList () {
+      const response = await this.$http.post('/project/group/list', {
+        currentPage: 0,
+        keywords: '',
+        order: 'DESC',
+        orderColumnIndex: 0,
+        pageSize: 999
+      })
+      this.groupList = response.data.data.data
+    },
     sendMessage () {
       this.mailLoading = true
       const mailData = {
         subject: '',
         toName: this.addUserForm.nickName,
         toEmail: this.addUserForm.email,
-        bodyHtml: emailContent(this.addUserForm)
+        bodyHtml: null
       }
       if (window.localStorage.getItem('lang') === 'zh') {
         mailData.subject = '罐程-新用户通知'
+        mailData.bodyHtml = emailContent(this.tempAddUserForm)
       } else {
         mailData.subject = 'Tankmiles-UserNotifications'
+        // 如果不是中文，则应用英文模板
+        mailData.bodyHtml = emailContent(this.tempAddUserForm)
       }
       this.$http.post('mail/send', mailData).then(response => {
         console.log(response)
@@ -646,6 +687,7 @@ export default {
         this.addUserForm.roles = rolesSelected
         this.addUserForm.avatarUrl = this.userAvatar
         this.addUserForm.name = this.addUserForm.email
+        this.tempAddUserForm = XEUtils.clone(this.addUserForm, true)
         this.addUserForm.password = md5(this.addUserForm.password)
         console.log(this.addUserForm)
         this.$http.post('/user/create', this.addUserForm).then(

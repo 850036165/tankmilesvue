@@ -13,7 +13,7 @@
           <h1 style="margin: 0">
             罐箱模型
           </h1>
-          <el-button
+          <!--<el-button
             style="height: 30px;"
             size="mini"
             type="primary"
@@ -21,7 +21,7 @@
             round
           >
             Button
-          </el-button>
+          </el-button>-->
         </div>
       </div>
       <!--      主体表格-->
@@ -638,7 +638,7 @@ export default {
         }
       }).catch(error => {
         VXETable.modal.message({
-          message: `创建失败失败@${error}`,
+          message: `创建失败@${error}`,
           status: 'error',
           size: 'medium',
           id: 'unique1'

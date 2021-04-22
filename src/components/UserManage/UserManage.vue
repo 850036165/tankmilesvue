@@ -15,7 +15,7 @@
           <h1 style="margin: 0">
             账户管理
           </h1>
-          <el-button
+          <!--<el-button
             style="height: 30px;"
             size="mini"
             type="primary"
@@ -24,7 +24,7 @@
             round
           >
             余额查看
-          </el-button>
+          </el-button>-->
         </div>
       </div>
       <div>
@@ -126,28 +126,28 @@
       </div>
     </el-card>
     <!--    侧边抽屉-->
-    <el-drawer
+    <!-- <el-drawer
       class="drawerStyle"
       :visible.sync="accountVisible"
       direction="ltr"
     >
       <span>TEST</span>
-    </el-drawer>
+    </el-drawer>-->
   </div>
 </template>
 
 <script>
-import VXETable from 'vxe-table'
 import XEUtils from 'xe-utils'
+import VXETable from 'vxe-table'
 
 export default {
   name: 'UserManage',
   data () {
     return {
+      accountVisible: false,
       enabled: 'enabled',
       disabled: 'disabled',
       toBeDeletedUser: null,
-      accountVisible: false,
       formData: {
         keywords: ''
       },

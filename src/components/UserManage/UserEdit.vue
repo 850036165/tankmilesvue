@@ -4,8 +4,21 @@
     <el-card
       class="leftCard"
     >
+      <avatar-cropper
+        @upload-handler="uploadFunction"
+        :output-quality="1"
+        :upload-headers="myHeaders"
+        @uploading="handleUploading"
+        @uploaded="handleUploaded"
+        @completed="handleCompleted"
+        @error="handlerError"
+        trigger="#pick-avatar"
+        upload-url="https://api.tankmiles.com:9443/user/avatar/upload"
+        :labels="button"
+      />
       <div style="width: 200px;height: 200px;position: relative;border-radius: 50%; overflow:hidden;">
         <el-avatar
+          v-loading="uploading"
           style="display: block;"
           icon="el-icon-user-solid"
           :size="200"
@@ -17,6 +30,7 @@
         >
           <i
             class="el-icon-camera cameraHover"
+            id="pick-avatar"
           />
         </div>
       </div>
@@ -53,11 +67,37 @@ color: #58647a;cursor: pointer"
         </p>
       </div>
       <el-form
+        hide-required-asterisk
+        inline-message
+        :model="userDataTemp"
+        :rules="rules"
         size="mini"
         style="width: 200px"
         label-position="top"
       >
         <el-form-item
+          prop="nickName"
+          style="height: 50px"
+        >
+          <span slot="label"><i
+            class="el-icon-user"
+            style="font-weight: bold"
+          />显示名称</span>
+          <p
+            v-if="!showInput"
+            class="formText"
+          >
+            {{ userData.nickName }}
+          </p>
+          <el-input
+            :disabled="!showInput"
+            style="height: 28px;margin: 0"
+            v-if="showInput"
+            v-model="userDataTemp.nickName"
+          />
+        </el-form-item>
+        <el-form-item
+          prop="email"
           style="height: 50px"
         >
           <span slot="label"><i
@@ -68,18 +108,18 @@ color: #58647a;cursor: pointer"
             v-if="!showInput"
             class="formText"
           >
-            {{ userData.name }}
+            {{ userData.email }}
           </p>
           <el-input
-            :disabled="!showInput"
+            :disabled="true"
             style="height: 28px;margin: 0"
             v-if="showInput"
-            v-model="userData.name"
+            v-model="userDataTemp.email"
           />
         </el-form-item>
         <el-form-item
+          prop="mobile"
           style="height: 50px"
-          label="电话"
         >
           <span slot="label"><i
             class="el-icon-mobile-phone"
@@ -95,73 +135,37 @@ color: #58647a;cursor: pointer"
             :disabled="!showInput"
             style="height: 28px;margin: 0"
             v-if="showInput"
-            v-model="userData.name"
+            v-model="userDataTemp.mobile"
           />
         </el-form-item>
         <el-form-item
+          prop="fixedPhone"
           style="height: 50px"
-          label="固话"
         >
           <span slot="label"><i
             class="el-icon-place"
             style="font-weight: bold"
-          /> 国家</span>
+          /> 固话</span>
           <p
             v-if="!showInput"
             class="formText"
           >
-            {{ userData.name }}
+            {{ userData.fixedPhone }}
           </p>
           <el-input
             :disabled="!showInput"
             style="height: 28px;margin: 0"
             v-if="showInput"
-            v-model="userData.name"
-          />
-        </el-form-item>
-        <el-form-item
-          style="height: 50px"
-          label="公司"
-        >
-          <span slot="label"><i
-            class="el-icon-office-building"
-            style="font-weight: bold"
-          /> 公司</span>
-          <p
-            v-if="!showInput"
-            class="formText"
-          >
-            {{ userData.name }}
-          </p>
-          <el-input
-            :disabled="!showInput"
-            style="height: 28px;margin: 0"
-            v-if="showInput"
-            v-model="userData.name"
-          />
-        </el-form-item>
-        <el-form-item
-          style="height: 50px"
-          label="地址"
-        >
-          <span slot="label"><i
-            class="el-icon-location-outline"
-            style="font-weight: bold"
-          /> 地址</span>
-          <p
-            v-if="!showInput"
-            class="formText"
-          >
-            {{ userData.mobile }}
-          </p>
-          <el-input
-            :disabled="!showInput"
-            style="height: 28px;margin: 0"
-            v-if="showInput"
-            v-model="userData.name"
+            v-model="userDataTemp.fixedPhone"
           />
         </el-form-item>
       </el-form>
+      <el-button
+        circle
+        icon="el-icon-key"
+        type="info"
+        @click="openDialog"
+      />
     </el-card>
     <el-card>
       <el-breadcrumb
@@ -203,21 +207,6 @@ color: #58647a;"
             highlight-current-column
             size="mini"
           >
-            <!--将表单放在工具栏中-->
-            <template v-slot:toolbar_buttons>
-              <el-date-picker
-                :clearable="false"
-                size="mini"
-                align="center"
-                style="width: 200px"
-                v-model="timeRange"
-                type="daterange"
-                unlink-panels
-                range-separator="-"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              />
-            </template>
             <!--自定义空数据模板-->
             <template v-slot:empty>
               <span style="color: #2F74EB;">
@@ -226,30 +215,167 @@ color: #58647a;"
             </template><vxe-grid />
           </vxe-grid>
         </el-tab-pane>
-        <el-tab-pane
-          label="账户权限"
-          name="second"
-        >
-          账户权限
-        </el-tab-pane>
       </el-tabs>
     </el-card>
+    <el-dialog
+      :close-on-click-modal="false"
+      v-bind="$attrs"
+      :visible.sync="dialogVisible"
+      width="500px"
+    >
+      <div
+        slot="title"
+        style="font-weight: bold;font-size: 20px;color: #2F74EB"
+      >
+        <i
+          class="el-icon-unlock"
+          style="margin: 3px"
+        />
+        <span>修改密码</span>
+      </div>
+      <el-form
+        :model="ruleForm"
+        status-icon
+        :rules="rules1"
+        ref="ruleForm"
+        label-width="80px"
+      >
+        <el-form-item
+          label="密码"
+          prop="pass"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm.pass"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item
+          label="确认密码"
+          prop="checkPass"
+        >
+          <el-input
+            type="password"
+            v-model="ruleForm.checkPass"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="submitForm()"
+          >
+            提交
+          </el-button>
+          <el-button @click="resetForm()">
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import AvatarCropper from 'vue-avatar-cropper'
+import XEUtils from 'xe-utils'
 import VXETable from 'vxe-table'
-
+import axios from 'axios'
+import md5 from 'js-md5'
 export default {
   name: 'UserEdit',
+  components: { AvatarCropper },
   data () {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.ruleForm.pass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
-      timeRange: [],
+      ruleForm: {
+        pass: null,
+        checkPass: null
+      },
+      dialogVisible: false,
+      lastAvatarUrl: null,
+      uploading: false,
+      myHeaders: { authtoken: 1 },
+      rules: {
+        nickName: [{
+          required: true,
+          message: '请输入显示名称',
+          trigger: 'blur'
+        }],
+        email: [{
+          required: true,
+          message: '请输入邮箱',
+          trigger: 'blur'
+        },
+        {
+            pattern: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/, // eslint-disable-line
+          message: '邮箱格式不正确',
+          trigger: ['blur', 'change']
+        }],
+        fixedPhone: [],
+        mobile: [
+          {
+            required: true,
+            pattern: /^1(?:70\d|(?:9[89]|8[0-24-9]|7[135-8]|66|5[0-35-9])\d|3(?:4[0-8]|[0-35-9]\d))\d{7}$/,
+            message: '手机格式不正确',
+            trigger: ['blur', 'change']
+          }
+        ]
+      },
+      rules1: {
+        pass: [
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          { validator: validatePass, trigger: 'blur' },
+          { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
+        ],
+        checkPass: [
+          {
+            required: true,
+            message: '请再次输入密码',
+            trigger: 'blur'
+          },
+          { validator: validatePass2, trigger: 'blur' },
+          { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
+        ]
+      },
       tableHeight: 0,
       activeName: 'first',
       userName: null,
       showInput: false,
       userData: {
+        name: '',
+        nickName: '',
+        email: '',
+        mobile: '',
+        fixedPhone: '',
+        roles: null,
+        password: '',
+        enabled: true,
+        avatarUrl: null
+      },
+      userDataTemp: {
         name: '',
         nickName: '',
         email: '',
@@ -392,27 +518,70 @@ export default {
           zoom: true,
           export: true,
           print: true,
-          custom: true,
-          slots: {
-            buttons: 'toolbar_buttons'
-          }
+          custom: true
         },
         columns: [
           { type: 'seq', width: 50, align: 'center' },
-          { align: 'center', title: '显示名称', minWidth: 180, slots: { default: 'userName' } },
-          { field: 'name', align: 'center', title: '用户名', sortable: true, minWidth: 180 },
-          { field: 'roles', align: 'center', title: '角色', minWidth: 150 },
-          { field: 'email', align: 'center', title: '邮箱', sortable: true, minWidth: 180 },
-          { field: 'mobile', align: 'center', title: '手机号', sortable: true, minWidth: 100 },
-          { field: 'fixedPhone', align: 'center', title: '固话', sortable: true, minWidth: 100 },
-          { field: 'createdAt', align: 'center', title: '创建时间', sortable: true, minWidth: 150, formatter: this.formatDate2 },
-          { field: 'enabled', align: 'center', title: '启用中', minWidth: 100, slots: { default: 'enableUsers' } },
-          { title: '操作', align: 'center', width: 80, slots: { default: 'projectOperation' } }
+          { field: '操作', align: 'center', title: '用户名', sortable: true, minWidth: 180 },
+          { field: 'roles', align: 'center', title: '路由路径', minWidth: 150 },
+          { field: 'createdAt', align: 'center', title: '操作时间', sortable: true, minWidth: 150, formatter: this.formatDate2 }
         ]
       }
     }
   },
   methods: {
+    submitForm () {
+      this.$refs.ruleForm.validate(valid => {
+        if (!valid) return
+        console.log(this.ruleForm)
+        this.$http.post('user/edit', { name: this.userName, password: md5(this.ruleForm.checkPass) })
+        VXETable.modal.message({ message: '修改成功', status: 'success', size: 'medium', id: 'unique1' })
+        this.dialogVisible = false
+        this.$refs.ruleForm.resetFields()
+      })
+    },
+    resetForm () {
+      this.$refs.ruleForm.resetFields()
+    },
+    openDialog () {
+      this.dialogVisible = true
+    },
+    uploadFunction (file) {
+      console.log(file)
+    },
+    handleUploading (form, xhr) {
+      this.uploading = true
+      console.log('handleUploading', form, xhr)
+    },
+    handleUploaded (response) {
+      console.log('handleUploaded', response)
+      this.$http.post('user/edit', { name: this.userName, avatarUrl: this.userData.avatarUrl })
+      VXETable.modal.message({ message: '修改成功', status: 'success', size: 'medium', id: 'unique1' })
+    },
+    handleCompleted (response, form, xhr) {
+      console.log('handleCompleted', response.code)
+      if (response.code !== 0) {
+        this.uploading = false
+        VXETable.modal.message({ message: '上传失败', status: 'error', size: 'medium', id: 'unique1' })
+      } else {
+        // 如果上次上传过头像则删除上次头像
+        if (this.lastAvatarUrl !== null) {
+          this.$http.post('/user/avatar/delete', { attachment: this.lastAvatarUrl }).then((response) => {
+            console.log(response)
+          })
+        }
+        this.lastAvatarUrl = response.data
+        this.userData.avatarUrl = axios.defaults.baseURL + response.data
+        this.$nextTick(() => {
+          this.uploading = false
+        })
+
+        console.log('头像地址', this.userData.avatarUrl)
+      }
+    },
+    handlerError (message, type, xhr) {
+      console.log('handlerError', message, type, xhr)
+    },
     headerCellStyle () {
       return {
         backgroundColor: '#2A68D3',
@@ -426,21 +595,36 @@ export default {
     },
     editForm () {
       this.showInput = true
+      this.userDataTemp = XEUtils.clone(this.userData, true)
+      console.log(this.userDataTemp)
     },
     saveEdit () {
+      this.$http.post('user/edit', this.userDataTemp).then(() => {
+        this.getUserDetail()
+      })
+      VXETable.modal.message({ message: '修改成功', status: 'success', size: 'medium', id: 'unique1' })
       this.showInput = false
     }
   },
   mounted () {
+    this.myHeaders.authtoken = sessionStorage.getItem('token')
     this.tableHeight = window.innerHeight - 220
     this.userName = this.$route.query.user
     console.log('用户信息', this.userData)
     this.getUserDetail()
+  },
+  computed: {
+    button () {
+      return { submit: '提交', cancel: '取消' }
+    }
   }
 }
 </script>
 
 <style scoped>
+/deep/.el-dialog__body{
+  padding: 10px 20px;
+}
 .cameraHover {
   font-weight: 200;
   color: white;
@@ -484,11 +668,7 @@ export default {
   justify-content: center;
 }
 
-/deep/ .el-form-item .el-form-item--mini {
-  margin: 0
-}
-
 .el-form-item {
-  margin: 5px !important;
+  margin-bottom: 30px !important;
 }
 </style>

@@ -5,72 +5,84 @@
       style="margin-bottom:0;"
     >
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
-        首页
+        {{ $t('tankDetail.dashboard') }}
       </el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/tank' }">
-        罐箱列表
+        {{ $t('tankDetail.tankList') }}
       </el-breadcrumb-item>
-      <el-breadcrumb-item>{{ $route.query.sn }}</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ latestData.tankSn }}</el-breadcrumb-item>
     </el-breadcrumb>
     <h2 style="display: inline-block">
-      罐箱详情
+      {{ $t('tankDetail.tankDetail') }}
     </h2>
     <h2 style="display: inline-block;margin-left: 10px;color:#006af1 ">
       {{ latestData.tankSn |ifEmpty }}
     </h2>
     <el-tabs
-      :value="activeTab"
+      v-model="activeTab"
       @tab-click="resetMap"
     >
       <el-tab-pane
-        label="数据监控"
+        :label="$t('tankDetail.dataMonitoring')"
         name="first"
       >
         <!--        设备总览栏-->
         <el-card style="margin:5px">
           <h3 style="margin-top: 0;margin-bottom: 10px;font-weight:normal">
-            监控信息总览
+            {{ $t('tankDetail.overviewMonitoringInfo') }}
           </h3>
           <div
             class="dataCard"
             v-loading="dataLoading"
           >
             <div class="cardItem1">
-              <span><i class="el-icon-connection cardIcon" />设备号</span>
-              <span>{{ latestData.deviceSn |ifEmpty }}</span>
-              <span><i class="el-icon-mobile cardIcon" />设备型号</span>
-              <span>tanktrac</span>
-              <span><i class="el-icon-set-up cardIcon" />固件版本</span>
-              <span>v1.0</span>
-              <span><i class="el-icon-time cardIcon" />记录时间</span>
+              <span><i class="el-icon-connection cardIcon" />{{ $t('tankDetail.deviceID') }}</span>
+              <div style="text-align: center">
+                <span style="font-weight: bold">{{ latestData.deviceSn |ifEmpty }}</span>
+              </div>
+              <span><i class="el-icon-mobile cardIcon" />{{ $t('tankDetail.deviceModel') }}</span>
+              <span style="font-weight: bold">tanktrac</span>
+              <span><i class="el-icon-set-up cardIcon" />{{ $t('tankDetail.firmwareVersion') }}</span>
+              <span style="font-weight: bold">v1.0</span>
+              <span><i class="el-icon-time cardIcon" />{{ $t('tankDetail.recordDate') }}</span>
               <span style="font-weight: bold">{{ latestData.sampledAt |ifEmpty |dateFilter }}</span>
-              <span><i class="el-icon-time cardIcon" />更新时间</span>
+              <span><i class="el-icon-time cardIcon" />{{ $t('tankDetail.updateDate') }}</span>
               <span style="font-weight: bold">{{ latestData.receivedAt |ifEmpty |dateFilter }}</span>
             </div>
             <div class="cardItem3">
-              <span><i class="el-icon-cpu cardIcon" />电池电量/%</span>
+              <span><svg
+                class="icon1"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-dianliang" />
+              </svg>{{ $t('tankDetail.battery') }}/%</span>
               <span style="font-weight: bold">{{ latestData.batteryLeft |ifEmpty | batteryLimit }}<span
                 style="padding-left: 2px;font-weight: normal"
               /></span>
-              <i class="el-icon-alarm-clock" />
-              <span><i class="el-icon-odometer cardIcon" />温度/C°</span>
+              <!--              <i class="el-icon-alarm-clock" />-->
+              <span><i class="el-icon-odometer cardIcon" />{{ $t('tankDetail.temperature') }}/C°</span>
               <span style="font-weight: bold">{{ latestData.tankTemperature|ifTemp }}<span
                 style="padding-left: 2px;font-weight: normal"
               /></span>
-              <i class="el-icon-alarm-clock" />
-              <span><i class="el-icon-stopwatch cardIcon" />压力/Bar</span>
+              <!--              <i class="el-icon-alarm-clock" />-->
+              <span><i class="el-icon-stopwatch cardIcon" />{{ $t('tankDetail.pressure') }}/Bar</span>
               <span style="font-weight: bold">{{ latestData.tankPressure |ifEmpty }}<span
                 style="padding-left: 2px;font-weight: normal"
               /></span>
-              <i class="el-icon-alarm-clock" />
-              <span><i class="el-icon-goblet-full cardIcon" />液位/mm</span>
+              <!--              <i class="el-icon-alarm-clock" />-->
+              <span><svg
+                class="icon1"
+                aria-hidden="true"
+              >
+                <use xlink:href="#icon-yewei-copy" />
+              </svg>{{ $t('tankDetail.fluidLevel') }}/mm</span>
               <span style="font-weight: bold">{{ latestData.tankLevel |ifEmpty }}<span
                 style="padding-left: 2px;font-weight: normal"
               /></span>
-              <i class="el-icon-alarm-clock" />
-              <span><i class="el-icon-map-location cardIcon" />位置</span>
-              <span style="font-size: 13px">{{ latestData.location|ifEmpty }}<span /></span>
-              <i class="el-icon-alarm-clock" />
+              <!--              <i class="el-icon-alarm-clock" />-->
+              <span><i class="el-icon-map-location cardIcon" />{{ $t('tankDetail.location') }}</span>
+              <span style="font-size: 13px;font-weight: bold">{{ deivceLocation|ifEmpty }}<span /></span>
+              <!--              <i class="el-icon-alarm-clock" />-->
             </div>
             <div style="display: flex">
               <el-image
@@ -89,12 +101,46 @@
           <div
             id="deviceMap"
             ref="mapDiv"
+            :style="{height:mapHeight}"
             class="mapDiv"
           />
+          <el-popover
+            style="padding: 0"
+            placement="right"
+            trigger="click"
+            popper-class="datePopper"
+            @show="test"
+          >
+            <el-date-picker
+              :clearable="false"
+              size="mini"
+              style="width: 200px"
+              v-model="travelDate"
+              type="daterange"
+              format="yyyy/MM/dd"
+              range-separator="-"
+              :picker-options="pickerOptions1"
+              @change="addLineLayer"
+              value-format="timestamp"
+            />
+            <el-button
+              :title="$t('tankDetail.trajectory')"
+              slot="reference"
+              id="testButton"
+              class="showHistoryButton"
+              style="position: absolute;top:150px;right:10px;"
+            >
+              <i
+                class="el-icon-s-flag"
+                style="color: #006af1"
+              />
+            </el-button>
+          </el-popover>
         </el-card>
+        <div />
       </el-tab-pane>
       <el-tab-pane
-        label="数据图表"
+        :label="$t('tankDetail.dataDiagram')"
         name="second"
       >
         <el-card>
@@ -114,12 +160,12 @@
           />
           <div
             ref="tempChart"
-            :style="{width: scrollerWidth,height: '1000px',margin: '0 auto'}"
+            :style="{width: scrollerWidth,height: '650px',margin: '0 auto'}"
           />
         </el-card>
       </el-tab-pane>
       <el-tab-pane
-        label="历史数据"
+        :label="$t('tankDetail.history')"
         name="third"
       >
         <div
@@ -147,8 +193,8 @@
                 type="daterange"
                 value-format="timestamp"
                 range-separator="-"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
+                :start-placeholder="$t('tankDetail.startDate')"
+                :end-placeholder="$t('tankDetail.endDate')"
                 @change="queryTime"
               />
             </template>
@@ -162,24 +208,25 @@
               >
                 <vxe-form-item
                   field="keywords"
-                  :item-render="{name: 'input', attrs: {placeholder: '请输入名称'}}"
+                  :item-render="{name: 'input', attrs: {placeholder: $t('tankList.inputName')}}"
                 />
                 <vxe-form-item
-                  :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: '搜索', status: 'primary' } }, { props: { type: 'reset', content: '重置' } }] }"
+                  :item-render="{ name: '$buttons', children: [{ props: { type: 'submit', content: $t('tankList.search'), status: 'primary' } }, { props: { type: 'reset', content: $t('tankList.reset')} }] }"
                 />
               </vxe-form>
             </template>
             <!--自定义空数据模板-->
             <template v-slot:empty>
               <span style="color: black;">
-                <span>暂无数据,请联系cimc后台咨询</span>
+                <span>{{ $t('tankDetail.noDataContact') }}</span>
               </span>
             </template>
           </vxe-grid>
         </div>
       </el-tab-pane>
       <el-tab-pane
-        label="罐箱资料"
+        :disabled="true"
+        :label="$t('tankDetail.tankInfo')"
         name="fourth"
       >
         <el-card />
@@ -189,11 +236,12 @@
 </template>
 
 <script>
-import echarts from 'echarts'
-import VXETable from 'vxe-table'
+// import echarts from 'echarts'
+import echarts from '@/assets/JS/echarts'
 import XEUtils from 'xe-utils'
+import VXETable from 'vxe-table'
 import mapboxgl from 'mapbox-gl'
-import {EventBus} from '@/assets/JS/eventBus'
+import { EventBus } from '@/assets/JS/eventBus'
 
 export default {
   name: 'TankDetail',
@@ -216,6 +264,13 @@ export default {
   },
   data () {
     return {
+      pickerOptions1: {
+        disabledDate (time) {
+          return time.getTime() >= Date.now()
+        }
+      },
+      travelDate: null,
+      deivceLocation: null,
       activeTab: 'first',
       chartDate: null,
       loading1: false,
@@ -257,7 +312,7 @@ export default {
           background: true,
           align: 'right',
           pageSize: 15,
-          pageSizes: [5, 15, 20, 50, 100, 200]
+          pageSizes: [15, 50, 100, 999]
         },
         // radioConfig: {
         //   labelField: 'id',
@@ -301,6 +356,8 @@ export default {
                     case 'sampledAt':
                       sort.property = 7
                       break
+                    default:
+                      sort.property = 7
                   }
                   console.log('初始order非null2', sort.property)
                 }
@@ -351,7 +408,7 @@ export default {
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('/device/message/list', queryParams).catch((error) => {
-                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+                VXETable.modal.message({ message: `${this.$t('tankDetail.requireFailed')}@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevices = response.data.data.total
@@ -363,19 +420,20 @@ export default {
                 },
                 result: response.data.data.data
               }
-              console.log('最终数据', listData)
+              console.log('最终', listData)
               return listData
             }
           }
         },
         toolbarConfig: {
           refresh: true,
-          zoom: true,
           export: true,
+          zoom: true,
           print: true,
           custom: true,
           slots: {
-            buttons: 'toolbar_buttons'
+            buttons: 'toolbar_buttons',
+            tools: 'tools'
           }
         },
         columns: [
@@ -383,32 +441,84 @@ export default {
           {
             field: 'tankSn',
             align: 'center',
-            title: '箱号',
+            title: `${this.$t('tankDetail.tankSn')}`,
             minWidth: 150,
             sortable: true
           },
-          { field: 'deviceSn', align: 'center', title: '设备号', sortable: true, minWidth: 100 },
-          { field: 'sampledAt', title: '记录时间', width: 140, sortable: true, formatter: this.formatDate },
-          { field: 'location', title: '地址', width: 100 },
-          { field: 'tankTemperature', title: '温度', minWidth: 70, align: 'center', sortable: true, formatter: this.formatTemp },
-          { field: 'tankPressure', title: '压力', minWidth: 70, align: 'center', sortable: true, formatter: this.formatPressure },
-          { field: 'tankLevel', title: '液位', minWidth: 70, align: 'center', sortable: true, formatter: this.formatLevel },
-          { field: 'batteryLeft', title: '电量', minWidth: 70, align: 'center', sortable: true, formatter: this.formatBattery },
-          { field: 'lat', title: '经度', width: 100 },
-          { field: 'lon', title: '纬度', width: 100 },
-          { field: 'speed', title: '速度', width: 100 },
-          { field: 'altitude', title: '高度', width: 100 },
+          { field: 'deviceSn', align: 'center', title: `${this.$t('tankDetail.deviceID')}`, sortable: true, minWidth: 100 },
+          { field: 'sampledAt', title: `${this.$t('tankDetail.recordDate')}`, width: 140, sortable: true, formatter: this.formatDate },
+          { field: 'location', title: `${this.$t('tankDetail.location')}`, minWidth: 100 },
+          { field: 'tankTemperature', title: `${this.$t('tankDetail.temperature')}`, Width: 70, align: 'center', sortable: true, formatter: this.formatTemp },
+          { field: 'tankPressure', title: `${this.$t('tankDetail.pressure')}`, Width: 70, align: 'center', sortable: true, formatter: this.formatPressure },
+          { field: 'tankLevel', title: `${this.$t('tankDetail.fluidLevel')}`, Width: 70, align: 'center', sortable: true, formatter: this.formatLevel },
+          { field: 'batteryLeft', title: `${this.$t('tankDetail.battery')}`, Width: 70, align: 'center', sortable: true, formatter: this.formatBattery },
+          // { field: 'lat', title: `${this.$t('tankDetail.longitude')}`, width: 100 },
+          // { field: 'lon', title: `${this.$t('tankDetail.latitude')}`, width: 100 },
+          // { field: 'speed', title: `${this.$t('tankDetail.speed')}`, width: 100 },
+          // { field: 'altitude', title: `${this.$t('tankDetail.high')}`, width: 100 },
           { field: 'gps_valid', title: 'GPSValid', align: 'center', width: 100 }
         ]
       }
     }
   },
   methods: {
+    test () {
+      VXETable.modal.message({ message: `${this.$t('tankDetail.timeRange')}`, status: 'warning', size: 'medium', id: 'unique' })
+    },
+    async addLineLayer () {
+      const selectTimeRange = this.travelDate.map(item => {
+        return item / 1000
+      })
+      this.loading1 = true
+      const GPSLine = await this.getGPSData(selectTimeRange)
+      console.log(GPSLine, 'gesresult')
+      if (this.Mapbox.getLayer('locations')) {
+        this.Mapbox.removeLayer('locations')
+        this.Mapbox.removeSource('locations')
+      }
+      if (GPSLine.features[0].geometry.coordinates.length === 0) {
+        this.loading1 = false
+        await VXETable.modal.message({ message: `${this.$t('tankDetail.noDate')}`, status: 'warning' })
+      } else {
+        console.log(this.Mapbox, 'mapbox')
+        this.Mapbox.addLayer({
+          id: 'locations',
+          type: 'line',
+          // 添加包含有坐标和附加信息的GeoJSON数据源
+          source: {
+            type: 'geojson',
+            data: GPSLine
+          },
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#4169E1',
+            'line-width': 3
+          }
+        })
+        const flyPoint = GPSLine.features[0].geometry.coordinates[GPSLine.features[0].geometry.coordinates.length - 1]
+        this.Mapbox.flyTo({
+          center: flyPoint,
+          zoom: 14,
+          curve: 1.42
+        })
+        this.loading1 = false
+        await VXETable.modal.message({ message: `${this.$t('tankDetail.pathSuccess')}`, status: 'success' })
+      }
+    },
     resetMap () {
       console.log(this.activeTab)
-      this.$nextTick(() => {
-        this.changeMap()
-      })
+      if (this.activeTab === 'first') {
+        this.$nextTick(() => {
+          this.getTankLatestData()
+          this.changeMap()
+        })
+      }
+      if (this.activeTab === 'third') {
+        this.$refs.xGrid.commitProxy('query')
+      }
     },
     async  printSelectDate () {
       console.log('SelectDate', this.chartDate)
@@ -424,11 +534,16 @@ export default {
           endAt: parseInt(this.chartDate[1] / 1000),
           sn: this.deviceSn1
         }).catch((error) => {
-          VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+          VXETable.modal.message({ message: `${this.$t('tankDetail.requireFailed')}@${error}`, status: 'error', size: 'medium' })
         })
         if (response.data.data.data.length === 0) {
+          this.myChart.setOption({
+            dataset: {
+              source: []
+            }
+          })
           this.myChart.showLoading({
-            text: '暂无数据',
+            text: `${this.$t('tankDetail.noDate')}`,
             color: '#ffffff',
             textColor: '#8a8e91',
             maskColor: 'rgba(255, 255, 255, 0.8)'
@@ -454,12 +569,17 @@ export default {
     changeMap () {
       this.Mapbox.resize()
     },
-    initDeviceMap (location) {
+    async initDeviceMap (location) {
       const that = this
       this.loading1 = true
       mapboxgl.accessToken = 'pk.eyJ1IjoiemhlbmdnYW5nemh1IiwiYSI6ImNrZWFxMGRoOTAxYXcycnFqbjFkaXBmcHgifQ.C7gXGFGRWOuA3w5hwfuU1g'
       const position = this.translatePosition(location.lon, location.lat)
+      const baiduLat = position[1]
+      const baiduLon = position[0]
+      const tempLocation = await this.$jsonp(`https://api.map.baidu.com/reverse_geocoding/v3/?ak=1ndOWqbbIzGzbI2fltp2z2zCTk0KQACE&output=json&coordtype=wgs84ll&language=en&location=${baiduLat},${baiduLon}`)
+      this.deivceLocation = tempLocation.result.formatted_address
       console.log('当前经纬度', this.translatePosition(location.lon, location.lat))
+      console.log('当前位置信息', this.deivceLocation)
       this.Mapbox = new mapboxgl.Map({  // eslint-disable-line
         container: 'deviceMap', // container id 绑定的组件的id
         style: 'mapbox://styles/mapbox/streets-v11', // 地图样式
@@ -471,12 +591,22 @@ export default {
         bearing: 0, // 地图的初始方向，值是北的逆时针度数，默认是0，即是正北
         antialias: false // 抗锯齿，通过false关闭提升性能
       })
-      const marker = new mapboxgl.Marker() // eslint-disable-line
+      const marker = new mapboxgl.Marker({color:'#2A68D3'}) // eslint-disable-line
         .setLngLat(position)
         .addTo(this.Mapbox)
+      // create the popup
+      const popup = new mapboxgl.Popup({ offset: 25 })
+      popup.setText(`${this.$t('tankDetail.location')}:${this.deivceLocation}`)
+      marker.setPopup(popup)
       this.Mapbox.addControl(new mapboxgl.FullscreenControl())
       this.Mapbox.addControl(new mapboxgl.NavigationControl())
+      const scale = new mapboxgl.ScaleControl({
+        unit: 'metric'
+      })
+      this.Mapbox.addControl(scale)
       this.Mapbox.on('load', function () {
+        // 向地图中添加数据图层
+        console.log('地图加载成功')
         that.Mapbox.resize()
         that.loading1 = false
       })
@@ -516,12 +646,52 @@ export default {
         color: '#ffffff'
       }
     },
+    async getGPSData (timeRange) {
+      const currentDate = Math.round(new Date().getTime() / 1000)
+      const currentLastDate = currentDate - 72 * 60 * 60
+      this.chartDate = [currentLastDate * 1000, currentDate * 1000]
+      const GPSdata = await this.$http.post('/device/message/tracks', {
+        deviceSn: this.deviceSn1,
+        startAt: timeRange[0],
+        endAt: timeRange[1]
+      })
+      let finalGPS = GPSdata.data.data.map(item => [item.lat, item.lon])
+      finalGPS = finalGPS.map(item => this.translatePosition(item[1], item[0]))
+      const deviceGeoJsonData = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: []
+            }
+          }
+        ]
+      }
+      deviceGeoJsonData.features = [{
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: finalGPS
+        }
+      }]
+      console.log('deviceGeoJsonData', deviceGeoJsonData)
+      return deviceGeoJsonData
+    },
     getTankLatestData () {
       const that = this
       this.$http.post('/device/message/latest', { deviceSn: this.deviceSn1 }).then(response => {
         if (response.data.code !== 0) {
           that.dataLoading = false
-          VXETable.modal.message({ message: `请求失败@${response.data.message}`, status: 'error', size: 'medium' })
+          this.$notify({
+            title: `${this.$t('tankDetail.requireFailed')}`,
+            message: `${response.data.message}`,
+            type: 'warning'
+          })
+          //    VXETable.modal.message({ message: `请求失败@${response.data.message}`, status: 'error', size: 'medium' })
         } else {
           this.latestData = response.data.data
           this.initDeviceMap(response.data.data)
@@ -529,8 +699,6 @@ export default {
             that.dataLoading = false
           })
         }
-      }).catch((error) => {
-        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
       })
     }
   },
@@ -564,18 +732,16 @@ export default {
       endAt: currentDate,
       sn: this.deviceSn1
     }).catch((error) => {
-      VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+      VXETable.modal.message({ message: `${this.$t('tankDetail.requireFailed')}@${error}`, status: 'error', size: 'medium' })
     })
     console.log(response.data.data.data, '图表打印数据')
     const option = {
       toolbox: {
+        right: '100px',
         show: true,
         feature: {
           dataZoom: {
             yAxisIndex: 'none'
-          },
-          dataView: {
-            readOnly: false
           },
           magicType: {
             type: ['line', 'bar']
@@ -584,18 +750,18 @@ export default {
           saveAsImage: {}
         }
       },
-      legend: [{}, {}, {}, {}],
+      legend: [{}, {}, {}],
       dataZoom: [
         {
           type: 'slider',
-          xAxisIndex: [0, 1, 2, 3],
+          xAxisIndex: [0, 1, 2],
           start: 0,
           end: 100,
           minSpan: 30
         },
         {
           type: 'inside',
-          xAxisIndex: [0, 1, 2, 3],
+          xAxisIndex: [0, 1, 2],
           start: 0,
           end: 100,
           minSpan: 30
@@ -615,11 +781,6 @@ export default {
           yAxisIndex: [2],
           start: 0,
           end: 100
-        }, {
-          type: 'slider',
-          yAxisIndex: [3],
-          start: 0,
-          end: 100
         }
       ],
       tooltip: {
@@ -629,20 +790,18 @@ export default {
         axisPointer: {
           type: 'line',
           axis: 'x'
-        }
-        /*,
+        },
         formatter: function (params) {
-          // console.log(params, 'dasjkdhka') // 查看数据
           let res = ''
           let data1 = ''
-          const time = XEUtils.toDateString(params[0].value.receivedAt, 'yyyy-MM-dd HH:mm:ss')
+          const time = XEUtils.toDateString(params[0].value.sampledAt, 'yyyy-MM-dd HH:mm:ss')
           for (let i = 0; i < params.length; i++) {
             console.log(params[i].value, params[i].dimensionNames[1], 'test11231')
             data1 = '<p>' + params[i].name + '</p>'
-            res += '<p class="padding:15px 0;">' + params[i].marker + params[i].seriesName + '<span style="font-weight:900;float:right;padding-left:15px;">' + params[i].value[params[i].dimensionNames[[params[i].encode.y[0]]]] + '</span>' + '</p>'
+            res += '<p>' + params[i].marker + params[i].seriesName + ': ' + params[i].value[params[i].dimensionNames[[params[i].encode.y[0]]]] + '</p>'
           }
           return time + data1 + res
-        } */
+        }
       },
       axisPointer: {
         type: 'line',
@@ -655,32 +814,52 @@ export default {
         },
         link: [
           {
-            xAxisIndex: [0, 1, 2, 3]
+            xAxisIndex: [0, 1, 2]
           }
         ]
       },
       grid: [
-        { top: '8%', height: '15%' },
-        { top: '30%', height: '15%' },
-        { top: '55%', height: '15%' },
-        { bottom: '8%', height: '15%' }
+        { top: '5%', height: '20%' },
+        { top: '37%', height: '20%' },
+        { top: '67%', height: '20%' }
       ],
       dataset: {
         source: response.data.data.data
       },
       xAxis: [
-        { type: 'time', name: '时间', gridIndex: 0 },
-        { type: 'time', name: '时间', gridIndex: 1 },
-        { type: 'time', name: '时间', gridIndex: 2 },
-        { type: 'time', name: '时间', gridIndex: 3 }],
+        { type: 'time', name: `${this.$t('tankDetail.time')}`, gridIndex: 0 },
+        { type: 'time', name: `${this.$t('tankDetail.time')}`, gridIndex: 1 },
+        { type: 'time', name: `${this.$t('tankDetail.time')}`, gridIndex: 2 }],
       yAxis: [
-        { type: 'value', name: '温度', gridIndex: 0 },
-        { type: 'value', name: '压力', gridIndex: 1 },
-        { type: 'value', name: '液位', gridIndex: 2 },
-        { type: 'value', name: '电量', gridIndex: 3 }],
+        {
+          type: 'value',
+          name: `${this.$t('tankDetail.temperature')}`,
+          max: function (value) {
+            return value.max + 10
+          },
+          gridIndex: 0
+        },
+        {
+          type: 'value',
+          name: `${this.$t('tankDetail.pressure')}`,
+          min: 0,
+          max: function (value) {
+            return value.max + 1
+          },
+          gridIndex: 1
+        },
+        {
+          type: 'value',
+          min: 0,
+          max: function (value) {
+            return value.max + 100
+          },
+          name: `${this.$t('tankDetail.fluidLevel')}`,
+          gridIndex: 2
+        }],
       series: [
         {
-          name: '温度',
+          name: `${this.$t('tankDetail.temperature')}`,
           type: 'line',
           showSymbol: false,
           xAxisIndex: 0,
@@ -689,7 +868,7 @@ export default {
           dimensions: ['sampledAt', 'tankTemperature']
         },
         {
-          name: '压力',
+          name: `${this.$t('tankDetail.pressure')}`,
           type: 'line',
           showSymbol: false,
           xAxisIndex: 1,
@@ -698,29 +877,20 @@ export default {
           dimensions: ['sampledAt', 'tankPressure']
         },
         {
-          name: '液位',
+          name: `${this.$t('tankDetail.fluidLevel')}`,
           type: 'line',
           showSymbol: false,
           xAxisIndex: 2,
           yAxisIndex: 2,
           connectNulls: false,
           dimensions: ['sampledAt', 'tankLevel']
-        },
-        {
-          name: '电量',
-          type: 'line',
-          showSymbol: false,
-          xAxisIndex: 3,
-          yAxisIndex: 3,
-          connectNulls: false,
-          dimensions: ['sampledAt', 'batteryLeft']
         }
       ]
     }
     this.myChart.setOption(option)
     if (response.data.data.data.length === 0) {
       this.myChart.showLoading({
-        text: '暂无数据',
+        text: `${this.$t('tankDetail.noDate')}`,
         color: '#ffffff',
         textColor: '#8a8e91',
         maskColor: 'rgba(255, 255, 255, 0.8)'
@@ -732,11 +902,17 @@ export default {
     }
   },
   computed: {
+    mapHeight: function () {
+      return (window.innerHeight - 300) + 'px'
+    },
     pickerOptions () {
       return {
+        disabledDate (time) {
+          return time.getTime() >= Date.now()
+        },
         shortcuts: [
           {
-            text: '最近一天',
+            text: `${this.$t('tankDetail.lastDay')}`,
             onClick (picker) {
               const end = new Date()
               const start = new Date()
@@ -744,7 +920,7 @@ export default {
               picker.$emit('pick', [start, end])
             }
           }, {
-            text: '最近一周',
+            text: `${this.$t('tankDetail.lastWeek')}`,
             onClick (picker) {
               const end = new Date()
               const start = new Date()
@@ -752,19 +928,11 @@ export default {
               picker.$emit('pick', [start, end])
             }
           }, {
-            text: '最近一个月',
+            text: `${this.$t('tankDetail.lastMonth')}`,
             onClick (picker) {
               const end = new Date()
               const start = new Date()
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', [start, end])
-            }
-          }, {
-            text: '最近三个月',
-            onClick (picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
               picker.$emit('pick', [start, end])
             }
           }]
@@ -780,8 +948,32 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+.showHistoryButton{
+  width: 31px;
+  height: 31px;
+  display: block;
+  padding: 0;
+  outline: none;
+  border-radius: 25%;
+  border: 2px solid rgba(170, 170, 170,0.5);
+  background-color: white;
+  cursor: pointer;
+}
+.icon1 {
+  width: 18px;
+  height: 18px;
+  color: #006af1;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  margin: 0 5px 0 0;
+}
+/deep/.mapboxgl-popup-close-button {
+  outline: none !important;
+}
 .deviceMapCard {
+  position: relative;
   margin: 10px 5px;
 }
 
@@ -790,6 +982,7 @@ export default {
 }
 
 .mapDiv {
+  position: relative;
   width: 100%;
   margin: 0;
   height: 300px;
@@ -806,9 +999,9 @@ export default {
   text-align: start;
   border-right: 2px solid #EBEEF5;
   display: grid;
-  grid-template-columns:auto 1fr;
+  grid-template-columns:0.5fr 1fr;
   grid-template-rows:repeat(5, 1fr);
-  justify-items: center;
+  justify-items: start;
   align-items: center;
 }
 
@@ -826,7 +1019,7 @@ export default {
   border-right: 2px solid #EBEEF5;
   padding-left: 10px;
   display: grid;
-  grid-template-columns:0.8fr 1fr 20px;
+  grid-template-columns:0.8fr 1fr;
   grid-template-rows:repeat(5, 1fr);
   justify-items: start;
   align-items: center;

@@ -1,38 +1,71 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../components/Login'
-import Home from '../components/Home'
-import DashBoard from '../components/DashBoard'
-import Message from '../components/Bar/Message'
-import PersonalSetting from '../components/Bar/PersonalSetting'
-import BasicSetting from '../components/Bar/BasicSetting'
-import DeviceList from '../components/device/DeviceList'
-import AddDevices from '../components/device/AddDevices'
-import TankModel from '@/components/Model/TankModel'
-import MassOperation from '../components/device/MassOperation'
-import DeviceDetail from '../components/device/DeviceDetail'
-import FirmwareManage from '../components/Firmware/FirmwareManage'
-import TankList from '../components/tank/TankList'
-import AddTanks from '../components/tank/AddTanks'
-import TankDetail from '@/components/tank/TankDetail'
-import ProjectList from '@/components/Project/ProjectList'
-import AddProject from '@/components/Project/AddProject'
-import ProjectDetail from '@/components/Project/ProjectDetail'
-import Welcome from '@/components/Welcome'
-import MediaModel from '@/components/Model/MediaModel'
-import PermissionModel from '@/components/Model/PermissionModel'
-import UserManage from '@/components/UserManage/UserManage'
-import Monitoring from '@/components/monitoring/Monitoring'
-import POI from '@/components/monitoring/POI'
-import Product from '@/components/support/Product'
-import Contact from '@/components/support/Contact'
-import Bill from '@/components/Bill/Bill'
-import Record from '@/components/Record'
-import AddUsers from '@/components/UserManage/AddUsers'
-import UserEdit from '@/components/UserManage/UserEdit'
-import NoAccessPage from '@/components/NoAccessPage'
-import GroupList from '@/components/Group/GroupList'
-
+// import Login from '../components/Login'
+const Login = () => import(/* webpackChunkName: "login" */ '../components/Login')
+// import Home from '../components/Home'
+// import DashBoard from '../components/DashBoard'
+// import Message from '../components/Bar/Message'
+// import PersonalSetting from '../components/Bar/PersonalSetting'
+// import BasicSetting from '../components/Bar/BasicSetting'
+const Home = () => import(/* webpackChunkName: "main" */ '../components/Home')
+const DashBoard = () => import(/* webpackChunkName: "main" */ '../components/DashBoard')
+const Message = () => import(/* webpackChunkName: "main" */ '../components/Bar/Message')
+const PersonalSetting = () => import(/* webpackChunkName: "main" */ '../components/Bar/PersonalSetting')
+const BasicSetting = () => import(/* webpackChunkName: "main" */ '../components/Bar/BasicSetting')
+// import DeviceList from '../components/device/DeviceList'
+// import AddDevices from '../components/device/AddDevices'
+// import DeviceDetail from '../components/device/DeviceDetail'
+const DeviceList = () => import(/* webpackChunkName: "device" */ '../components/device/DeviceList')
+const AddDevices = () => import(/* webpackChunkName: "device" */ '../components/device/AddDevices')
+const DeviceDetail = () => import(/* webpackChunkName: "device" */ '../components/device/DeviceDetail')
+// import TankModel from '@/components/Model/TankModel'
+const TankModel = () => import(/* webpackChunkName: "tank" */ '@/components/Model/TankModel')
+// import MassOperation from '../components/device/MassOperation'
+const MassOperation = () => import(/* webpackChunkName: "tank" */ '../components/device/MassOperation')
+// import FirmwareManage from '../components/Firmware/FirmwareManage'
+const FirmwareManage = () => import(/* webpackChunkName: "firmware" */ '../components/Firmware/FirmwareManage')
+// import TankList from '../components/tank/TankList'
+const TankList = () => import(/* webpackChunkName: "tank" */ '../components/tank/TankList')
+// import AddTanks from '../components/tank/AddTanks'
+const AddTanks = () => import(/* webpackChunkName: "tank" */ '../components/tank/AddTanks')
+// import TankDetail from '@/components/tank/TankDetail'
+const TankDetail = () => import(/* webpackChunkName: "tank" */ '@/components/tank/TankDetail')
+// import ProjectList from '@/components/Project/ProjectList'
+const ProjectList = () => import(/* webpackChunkName: "project" */ '@/components/Project/ProjectList')
+// import AddProject from '@/components/Project/AddProject'
+const AddProject = () => import(/* webpackChunkName: "project" */ '@/components/Project/AddProject')
+// import ProjectDetail from '@/components/Project/ProjectDetail'
+const ProjectDetail = () => import(/* webpackChunkName: "project" */ '@/components/Project/ProjectDetail')
+// import MediaModel from '@/components/Model/MediaModel'
+const MediaModel = () => import(/* webpackChunkName: "model" */ '@/components/Model/MediaModel')
+// import PermissionModel from '@/components/Model/PermissionModel'
+const PermissionModel = () => import(/* webpackChunkName: "model" */ '@/components/Model/PermissionModel')
+// import UserManage from '@/components/UserManage/UserManage'
+const UserManage = () => import(/* webpackChunkName: "user" */ '@/components/UserManage/UserManage')
+// import Monitoring from '@/components/monitoring/Monitoring'
+const Monitoring = () => import(/* webpackChunkName: "monitor" */ '@/components/monitoring/Monitoring')
+// import POI from '@/components/monitoring/POI'
+const POI = () => import(/* webpackChunkName: "monitor" */ '@/components/monitoring/POI')
+// import Product from '@/components/support/Product'
+const Product = () => import(/* webpackChunkName: "support" */ '@/components/support/Product')
+// import Contact from '@/components/support/Contact'
+const Contact = () => import(/* webpackChunkName: "support" */ '@/components/support/Contact')
+// import Bill from '@/components/Bill/Bill'
+const Bill = () => import(/* webpackChunkName: "bill" */ '@/components/Bill/Bill')
+// import Record from '@/components/Record'
+const Record = () => import(/* webpackChunkName: "record" */ '@/components/Record')
+// import AddUsers from '@/components/UserManage/AddUsers'
+const AddUsers = () => import(/* webpackChunkName: "user" */ '@/components/UserManage/AddUsers')
+// import UserEdit from '@/components/UserManage/UserEdit'
+const UserEdit = () => import(/* webpackChunkName: "user" */ '@/components/UserManage/UserEdit')
+// import NoAccessPage from '@/components/NoAccessPage'
+const NoAccessPage = () => import(/* webpackChunkName: "access" */ '@/components/NoAccessPage')
+// import GroupList from '@/components/Group/GroupList'
+const GroupList = () => import(/* webpackChunkName: "group" */ '@/components/Group/GroupList')
+// import createMonitor from '@/components/monitoring/createMonitor'
+const createMonitor = () => import(/* webpackChunkName: "monitor" */ '@/components/monitoring/createMonitor')
+// import EditTank from '@/components/tank/EditTank'
+const EditTank = () => import(/* webpackChunkName: "tank" */ '@/components/tank/EditTank')
 Vue.use(VueRouter)
 const routes = [
   { path: '/', redirect: '/login' },
@@ -42,7 +75,6 @@ const routes = [
     component: Home,
     // redirect: '/welcome',
     children: [
-      { path: '/welcome', component: Welcome },
       { path: '/message', component: Message },
       { path: '/personalSetting', component: PersonalSetting },
       { path: '/basicSetting', component: BasicSetting },
@@ -77,7 +109,9 @@ const routes = [
       { path: '/addusers', component: AddUsers },
       { path: '/useredit', component: UserEdit },
       { path: '/403', component: NoAccessPage },
-      { path: '/grouplist', component: GroupList }
+      { path: '/grouplist', component: GroupList },
+      { path: '/createmonitor', component: createMonitor },
+      { path: '/edittank', component: EditTank }
 
     ]
   }

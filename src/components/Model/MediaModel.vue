@@ -13,7 +13,7 @@
           <h1 style="margin: 0">
             介质模型
           </h1>
-          <el-button
+          <!--<el-button
             style="height: 30px;"
             size="mini"
             type="primary"
@@ -21,7 +21,7 @@
             round
           >
             Button
-          </el-button>
+          </el-button>-->
         </div>
       </div>
       <!--      主体表格-->

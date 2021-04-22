@@ -9,7 +9,7 @@
         :collapse="isCollapse"
         background-color="#2d3463"
         text-color="#fff"
-        active-text-color="#ffd04b"
+        active-text-color="#2F74EB"
         :unique-opened="true"
         :default-active="$route.path"
         router
@@ -23,9 +23,9 @@
           <!--          logo图标-->
           <el-image
             v-show="!isCollapse"
-            style="width: 121px;height: 55px"
+            style="width: 107px;height: 32px"
             :src="logoUrl"
-            fit="fit"
+            fit="contain"
           />
           <i
             v-show="isCollapse"
@@ -41,8 +41,8 @@
           />
           <span
             slot="title"
-            style="padding: 0 20px 0 30px"
-          >首页看板</span>
+            style="padding: 0 20px 0 20px"
+          >{{ $t('home.dashboard') }}</span>
         </el-menu-item>
         <!--        罐箱列表一级菜单-->
         <el-menu-item index="/tank">
@@ -52,12 +52,13 @@
           />
           <span
             slot="title"
-            style="padding: 0 20px 0 30px"
-          >罐箱列表</span>
+            style="padding: 0 20px 0 20px"
+          >{{ $t('home.tankList') }}</span>
         </el-menu-item>
         <!--          资产管理一级菜单-->
         <el-submenu
           index="/property"
+          v-if="ifAdmin"
         >
           <template
             slot="title"
@@ -66,7 +67,7 @@
               class="el-icon-monitor"
               style="font-size: 25px"
             />
-            <span style="padding: 0 20px 0 30px">资产管理</span>
+            <span style="padding: 0 20px 0 20px">{{ $t('home.platformManagement') }}</span>
           </template>
           <!--          资产管理二级菜单-->
           <!--        项目管理一级菜单-->
@@ -77,8 +78,8 @@
             />
             <span
               slot="title"
-              style="padding: 0 20px 0 30px"
-            >项目管理</span>
+              style="padding: 0 20px 0 20px"
+            >{{ $t('home.projectManagement') }}</span>
           </el-menu-item>
           <!--        账户管理一级菜单-->
           <el-menu-item index="/usermanage">
@@ -88,8 +89,8 @@
             />
             <span
               slot="title"
-              style="padding: 0 20px 0 30px"
-            >账户管理</span>
+              style="padding: 0 20px 0 20px"
+            >{{ $t('home.userManagement') }}</span>
           </el-menu-item>
           <!--          公司管理-->
           <el-menu-item
@@ -101,8 +102,8 @@
             />
             <span
               slot="title"
-              style="padding: 0 20px 0 30px"
-            >公司管理</span>
+              style="padding: 0 20px 0 20px"
+            >{{ $t('home.companyManagement') }}</span>
           </el-menu-item>
         </el-submenu>
         <!--        监控设置一级菜单-->
@@ -112,36 +113,42 @@
               class="el-icon-alarm-clock"
               style="font-size: 25px"
             />
-            <span style="padding: 0 20px 0 30px">监控设置</span>
+            <span style="padding: 0 20px 0 20px">{{ $t('home.deviceMonitor') }}</span>
           </template>
           <!--          监控二级菜单-->
           <el-menu-item index="/monitoring">
-            <i class="el-icon-notebook-2" /><span style="padding: 0 20px 0 20px">监控列表</span>
+            <i class="el-icon-notebook-2" /><span style="padding: 0 20px 0 20px">{{ $t('home.monitorList') }}</span>
           </el-menu-item>
-          <el-menu-item index="/poi">
-            <i class="el-icon-location-information" /><span style="padding: 0 20px 0 20px">关注点设置</span>
+          <el-menu-item
+            index="/poi"
+            v-if="false"
+          >
+            <i class="el-icon-location-information" /><span style="padding: 0 20px 0 20px">{{ $t('home.dashboard') }}关注点设置</span>
           </el-menu-item>
         </el-submenu>
         <!--        模型管理一级菜单-->
-        <el-submenu index="/model">
+        <el-submenu
+          index="/model"
+          v-if="ifAdmin"
+        >
           <template slot="title">
             <i
               class="el-icon-files"
               style="font-size: 25px"
             />
-            <span style="padding: 0 20px 0 30px">模型管理</span>
+            <span style="padding: 0 20px 0 20px">{{ $t('home.modelManagement') }}</span>
           </template>
           <!--          模型管理二级菜单-->
           <el-menu-item index="/tankmodel">
-            <i class="el-icon-truck" /><span style="padding: 0 20px 0 20px">罐箱模型</span>
+            <i class="el-icon-truck" /><span style="padding: 0 20px 0 20px">{{ $t('home.tankModel') }}</span>
           </el-menu-item>
           <el-menu-item index="/mediamodel">
-            <i class="el-icon-goblet-full" /><span style="padding: 0 20px 0 20px">介质模型</span>
+            <i class="el-icon-goblet-full" /><span style="padding: 0 20px 0 20px">{{ $t('home.mediaModel') }}</span>
           </el-menu-item>
           <el-menu-item
             index="/permissionmodel"
           >
-            <i class="el-icon-thumb" /><span style="padding: 0 20px 0 20px">权限模型</span>
+            <i class="el-icon-thumb" /><span style="padding: 0 20px 0 20px">{{ $t('home.permissionModel') }}</span>
           </el-menu-item>
         </el-submenu>
         <!--        用户支持一级菜单-->
@@ -151,39 +158,40 @@
               class="el-icon-service"
               style="font-size: 25px"
             />
-            <span style="padding: 0 20px 0 30px">用户支持</span>
+            <span style="padding: 0 20px 0 20px">{{ $t('home.userSupport') }}</span>
           </template>
           <!--          用户支持二级菜单-->
           <el-menu-item index="/product">
-            <i class="el-icon-document-copy" /><span style="padding: 0 20px 0 20px">产品资料</span>
+            <i class="el-icon-document-copy" /><span style="padding: 0 20px 0 20px">{{ $t('home.documentation') }}</span>
           </el-menu-item>
           <el-menu-item index="/contact">
-            <i class="el-icon-message" /><span style="padding: 0 20px 0 20px">联系我们</span>
+            <i class="el-icon-message" /><span style="padding: 0 20px 0 20px">{{ $t('home.contactUs') }}</span>
           </el-menu-item>
         </el-submenu>
         <!--        后台管理一级菜单-->
         <el-submenu
           index="/manage"
+          v-if="ifAdmin"
         >
           <template slot="title">
             <i
               class="el-icon-set-up"
               style="font-size: 25px"
             />
-            <span style="padding: 0 20px 0 30px">后台管理</span>
+            <span style="padding: 0 20px 0 20px">{{ $t('home.backStageManagement') }}</span>
           </template>
           <!--          二级菜单-->
           <el-menu-item index="/device">
-            <i class="el-icon-mobile-phone" /><span style="padding: 0 20px 0 20px">设备管理</span>
+            <i class="el-icon-mobile-phone" /><span style="padding: 0 20px 0 20px">{{ $t('home.deviceManagement') }}</span>
           </el-menu-item>
           <el-menu-item index="/firmware">
-            <i class="el-icon-box" /><span style="padding: 0 20px 0 20px">固件管理</span>
+            <i class="el-icon-box" /><span style="padding: 0 20px 0 20px">{{ $t('home.firmwareManagement') }}</span>
           </el-menu-item>
           <el-menu-item index="/bill">
-            <i class="el-icon-wallet" /><span style="padding: 0 20px 0 20px">账单管理</span>
+            <i class="el-icon-wallet" /><span style="padding: 0 20px 0 20px">{{ $t('home.userMessage') }}</span>
           </el-menu-item>
           <el-menu-item index="/record">
-            <i class="el-icon-mouse" /><span style="padding: 0 20px 0 20px">登录统计</span>
+            <i class="el-icon-mouse" /><span style="padding: 0 20px 0 20px">{{ $t('home.loginCount') }}</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -193,7 +201,7 @@
         v-show="!isCollapse"
       >
         <p style="margin-left: 10px">
-          Copyright © 2019-2020 <br>Nantong CIMC Tank Equipment Co., Ltd.
+          Copyright © 2020-2021 <br>CIMC Safeway Technologies Co., Ltd.
         </p>
       </div>
     </el-aside>
@@ -235,9 +243,12 @@
             </i>
           </el-menu-item>
           <!-- 基础设置-->
-          <el-menu-item index="/basicsetting">
+          <el-menu-item
+            index="/basicsetting"
+            disabled
+          >
             <i
-              class="el-icon-s-tools"
+              class="el-icon-setting"
               style="color: #6c6e6f;font-size: 20px;margin: 0"
             />
           </el-menu-item>
@@ -279,7 +290,7 @@
               </svg>
               <span style="font-size: 15px;width: 10px">EN</span>
             </el-dropdown-item>
-            <el-dropdown-item
+            <!--<el-dropdown-item
               command="jp"
               style="display: flex;justify-content: center;padding-left: 10px;-webkit-user-select: none;"
               disabled
@@ -291,7 +302,7 @@
                 <use xlink:href="#icon-jp" />
               </svg>
               <span style="font-size: 15px;width: 10px">JP</span>
-            </el-dropdown-item>
+            </el-dropdown-item>-->
           </el-dropdown-menu>
         </el-dropdown>
         <!--        个人信息菜单栏-->
@@ -328,13 +339,13 @@
               />
             </template>
             <el-menu-item index="/personalsetting">
-              个人设置
+              {{ $t('home.personalSetting') }}
             </el-menu-item>
-            <el-menu-item index="switchProject">
-              切换项目
+            <el-menu-item index="about">
+              {{ $t('home.about') }}
             </el-menu-item>
             <el-menu-item index="logout">
-              退出登录
+              {{ $t('home.logout') }}
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -352,21 +363,7 @@
           direction="rtl"
           size="20%"
         >
-          <vxe-grid
-            row-id="name"
-            :header-cell-style="{
-              backgroundColor: '#2A68D3',
-              color: '#ffffff'
-            }"
-            ref="xGrid"
-            height="100%"
-            v-bind="gridOptions"
-            highlight-hover-row
-            highlight-current-row
-            highlight-hover-column
-            highlight-current-column
-            size="mini"
-          />
+          中集安瑞环科版权所有
         </el-drawer>
       </el-main>
     </el-container>
@@ -374,9 +371,8 @@
 </template>
 
 <script>
-import {EventBus} from '@/assets/JS/eventBus'
-import VXETable from 'vxe-table'
-
+import { EventBus } from '@/assets/JS/eventBus'
+import 'xe-utils'
 export default {
   // created () {
   //   this.getMenuList()
@@ -385,54 +381,21 @@ export default {
   data () {
     return {
       ifAdmin: false,
-      username: '朱正刚',
+      username: 'tankmiles',
       currentLang: 'CN',
       classa: 'classa',
       classb: 'classb',
       drawer: false,
       isCollapse: false,
       path: 'https://oss.tankmiles.com/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg',
-      logoUrl: 'https://oss.tankmiles.com/homelogo.png',
-      gridOptions: {
-        resizable: true,
-        showOverflow: true,
-        border: 'none',
-        treeConfig: {
-          expandAll: true,
-          reserve: true,
-          line: true,
-          children: 'children'
-          // iconOpen: 'el-icon-folder-remove',
-          // iconClose: 'el-icon-folder-add'
-        },
-        proxyConfig: {
-          seq: false, // 启用动态序号代理
-          sort: false, // 启用排序代理
-          filter: false, // 启用筛选代理
-          ajax: {
-            query: async () => {
-              const response = await this.$http.post('project/list').catch((error) => {
-                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
-              })
-              console.log('源数据', response)
-              const projectData = response.data.data
-              this.addLevel(projectData)
-              console.log('修改后', projectData)
-              return projectData
-            }
-          }
-        },
-        columns: [
-          { field: 'name', title: '选择项目', minWidth: 150, treeNode: true, slots: { default: 'projectName' } }
-        ]
-      }
+      logoUrl: 'https://oss.tankmiles.com/homelogo.png'
     }
   },
   // 渲染页面时判断当前语言
   mounted () {
     // 判断菜单的折叠状态
     this.username = window.localStorage.getItem('nickName')
-    this.ifAdmin = window.localStorage.getItem('admin') === 'true'
+    this.ifAdmin = window.sessionStorage.getItem('admin') === 'true'
     this.path = window.localStorage.getItem('avatarUrl')
     this.isCollapse = localStorage.getItem('isCollapse')
     this.isCollapse = this.isCollapse === 'true'
@@ -458,7 +421,7 @@ export default {
           this.$router.push('/personalsetting')
           console.log(index)
           return
-        case 'switchProject':
+        case 'about':
           this.drawer = true
           console.log(index)
           return
@@ -546,9 +509,9 @@ export default {
 
       .home_lang {
         font-family: "Microsoft YaHei", serif;
-        font-size: 20px;
+        font-size: 18px;
         color: #6c6e6f;
-        // font-weight:lighter;
+        //font-weight:lighter;
         margin: 0;
         padding: 0;
         position: absolute;
@@ -611,7 +574,6 @@ export default {
     font-size: 10px;
     position: absolute;
     bottom: 0;
-    margin: 0 0 10px 0;
     color: #ffffff;
     font-family: "Helvetica Neue", sans-serif;
   }

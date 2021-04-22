@@ -2,19 +2,19 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
-        首页
+        {{ $t('projectDetail.dashboard') }}
       </el-breadcrumb-item>
       <el-breadcrumb-item :to="{path:'/project'}">
-        项目管理
+        {{ $t('projectDetail.projectManagement') }}
       </el-breadcrumb-item>
-      <el-breadcrumb-item>项目详情</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ $t('projectDetail.projectDetail') }}</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
           <div>
             <h1 style="display:inline-block;margin: 0">
-              项目详情:
+              {{ $t('projectDetail.projectDetail') }}:
             </h1>
             <h1 style="display: inline-block;color: #2A68D3;margin: 0">
               {{ this.$route.query.name }}
@@ -28,7 +28,7 @@
             round
             @click="assignDevice"
           >
-            分配罐箱
+            {{ $t('projectDetail.assignedTank') }}
           </el-button>
         </div>
       </div>
@@ -43,7 +43,7 @@ font-weight: 700;
 text-align: left;
 color: #58647a;"
         >
-          项目信息
+          {{ $t('projectDetail.projectInfo') }}
         </p>
         <ul
           style="
@@ -54,10 +54,10 @@ text-align: left;
 color: #58647a;
 line-height: 24px;"
         >
-          <li>项目id：{{ $route.query.id }}</li>
-          <li>项目名称：{{ $route.query.name }}</li>
-          <li>用户总数：{{ contentTanks.user.length }}</li>
-          <li>罐箱总数：{{ contentTanks.tankCount }}</li>
+          <li>{{ $t('projectDetail.projectID') }}:{{ $route.query.id }}</li>
+          <li>{{ $t('projectDetail.projectName') }}:{{ $route.query.name }}</li>
+          <li>{{ $t('projectDetail.totalNumOfUser') }}:{{ contentTanks.user.length }}</li>
+          <li>{{ $t('projectDetail.totalNumOfTank') }}:{{ contentTanks.tankCount }}</li>
         </ul>
         <p
           style="
@@ -66,7 +66,7 @@ font-weight: 700;
 text-align: left;
 color: #58647a;"
         >
-          已分配用户
+          {{ $t('projectDetail.assignedUser') }}
         </p>
         <vxe-grid
           stripe
@@ -86,12 +86,12 @@ color: #58647a;"
               type="primary"
               @click="cancelAssignUser(row)"
             >
-              取消分配
+              {{ $t('projectDetail.deAllocation') }}
             </el-button>
           </template>
           <!--自定义空数据模板-->
           <template v-slot:empty>
-            <p>此项目暂未分配任何用户</p>
+            <p>{{ $t('projectDetail.projectNoUser') }}</p>
           </template>
         </vxe-grid>
         <p
@@ -102,7 +102,7 @@ font-weight: 700;
 text-align: left;
 color: #58647a;"
         >
-          已分配罐箱
+          {{ $t('projectDetail.assignedTanks') }}
         </p>
         <vxe-grid
           stripe
@@ -122,12 +122,12 @@ color: #58647a;"
               type="primary"
               @click="cancelAssign(row)"
             >
-              取消分配
+              {{ $t('projectDetail.deAllocation') }}
             </el-button>
           </template>
           <!--自定义空数据模板-->
           <template v-slot:empty>
-            <p>此项目暂未分配任何罐箱</p>
+            <p>{{ $t('projectDetail.projectNoTank') }}</p>
           </template>
         </vxe-grid>
       </div>
@@ -137,7 +137,7 @@ color: #58647a;"
       :modal-append-to-body="false"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
-      title="分配罐箱"
+      :title="$t('projectDetail.assignedTank')"
       :visible.sync="assignDeviceDialogVisible"
       width="55%"
     >
@@ -149,7 +149,7 @@ color: #58647a;"
           class="el-icon-tickets"
           style="margin: 3px"
         />
-        <span>分配罐箱</span>
+        <span>{{ $t('projectDetail.assignedTank') }}</span>
       </div>
       <vxe-grid
         @checkbox-change="selectChangeEvent"
@@ -171,13 +171,13 @@ color: #58647a;"
             type="primary"
             @click="assignTanks"
           >
-            确定
+            {{ $t('projectDetail.yes') }}
           </el-button>
           <el-button
             @click="handleCloseDialog"
             size="small"
           >
-            取消
+            {{ $t('projectDetail.cancel') }}
           </el-button>
         </template>
         <!--总数插槽-->
@@ -186,7 +186,7 @@ color: #58647a;"
             <span
               class="addText"
               style="color: black;"
-            >已选择</span>
+            >{{ $t('projectDetail.selected') }}</span>
             <span
               class="addText"
               style="margin-left:10px;color: #2A68D3"
@@ -214,8 +214,8 @@ color: #58647a;"
 </template>
 
 <script>
-import VXETable from 'vxe-table'
 import XEUtils from 'xe-utils'
+import VXETable from 'vxe-table'
 
 export default {
   name: 'ProjectDetail',
@@ -236,7 +236,7 @@ export default {
             query: async () => {
               if (this.projectId) {
                 const response = await this.$http.post('/project/detail', { id: this.projectId }).catch((error) => {
-                  VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
+                  VXETable.modal.message({ message: `${this.$t('projectDetail.requireFailed')}@${error}`, status: 'error', size: 'medium', id: 'unique1' })
                 })
                 console.log('源数据', response)
                 const projectData = response.data.data.user
@@ -248,9 +248,9 @@ export default {
         },
         columns: [
           { type: 'seq', width: 50 },
-          { field: 'name', title: '用户名' },
-          { field: 'nickName', title: '显示名称', showHeaderOverflow: true },
-          { title: '取消分配', width: '120px', slots: { default: 'cancelAssignUser' } }
+          { field: 'name', title: `${this.$t('projectDetail.username')}` },
+          { field: 'nickName', title: `${this.$t('projectDetail.displayName')}`, showHeaderOverflow: true },
+          { title: `${this.$t('projectDetail.deAllocation')}`, width: '120px', slots: { default: 'cancelAssignUser' } }
         ]
       },
       gridOptions1: {
@@ -266,7 +266,7 @@ export default {
             query: async () => {
               if (this.projectId) {
                 const response = await this.$http.post('/project/detail', { id: this.projectId }).catch((error) => {
-                  VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
+                  VXETable.modal.message({ message: `${this.$t('projectDetail.deAllocation')}@${error}`, status: 'error', size: 'medium', id: 'unique1' })
                 })
                 console.log('源数据', response)
                 const projectData = response.data.data.detail
@@ -279,9 +279,9 @@ export default {
         },
         columns: [
           { type: 'seq', width: 50 },
-          { field: 'deviceSn', title: '设备号' },
-          { field: 'tankSn', title: '罐箱号', showHeaderOverflow: true },
-          { title: '取消分配', width: '120px', slots: { default: 'cancelAssign' } }
+          { field: 'deviceSn', title: `${this.$t('projectDetail.deviceID')}` },
+          { field: 'tankSn', title: `${this.$t('projectDetail.tankNo')}`, showHeaderOverflow: true },
+          { title: `${this.$t('projectDetail.deAllocation')}`, width: '120px', slots: { default: 'cancelAssign' } }
         ]
       },
       gridOptions: {
@@ -373,7 +373,7 @@ export default {
               console.log('请求值3', queryParams)
               // 请求数据
               const response = await this.$http.post('tank/list', queryParams).catch((error) => {
-                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+                VXETable.modal.message({ message: `${this.$t('projectDetail.requireFailed')}@${error}`, status: 'error', size: 'medium' })
               })
               console.log('源数据', response)
               this.totalDevices = response.data.data.total
@@ -395,13 +395,13 @@ export default {
           {
             field: 'sn',
             align: 'center',
-            title: '箱号',
+            title: `${this.$t('projectDetail.tankNo')}`,
             minWidth: 150,
             sortable: true
           },
-          { field: 'deviceSn', align: 'center', title: '设备号', sortable: true, minWidth: 100 },
-          { field: 'projectNames', title: '项目名称', width: 140, sortable: true },
-          { title: '操作', align: 'center', width: 80 }
+          { field: 'deviceSn', align: 'center', title: `${this.$t('projectDetail.deviceID')}`, sortable: true, minWidth: 100 },
+          { field: 'projectNames', title: `${this.$t('projectDetail.projectName')}`, width: 140, sortable: true },
+          { title: `${this.$t('projectDetail.operation')}`, align: 'center', width: 80 }
         ]
       },
       assignDeviceDialogVisible: false,
@@ -421,10 +421,18 @@ export default {
   methods: {
     cancelAssignUser (row) {
       console.log(row)
-      this.$http.post('/project/user/remove', { id: this.projectId, names: row.name }).then(response => {
-        console.log(response)
-        this.$refs.userGrid.remove(row)
-        VXETable.modal.message({ message: '取消分配成功', status: 'success', size: 'medium', id: '1' })
+      this.$confirm(`${this.$t('projectDetail.deleteAssign')}`, `${this.$t('projectDetail.warning')}`, {
+        confirmButtonText: `${this.$t('projectDetail.yes')}`,
+        cancelButtonText: `${this.$t('projectDetail.cancel')}`,
+        type: 'warning'
+      }).then(() => {
+        this.$http.post('/project/user/remove', { id: this.projectId, names: row.name }).then(response => {
+          console.log(response)
+          this.$refs.userGrid.remove(row)
+          VXETable.modal.message({ message: `${this.$t('projectDetail.cancelAssignedSuccess')}`, status: 'success', size: 'medium', id: '1' })
+        })
+      }).catch(() => {
+        VXETable.modal.message({ message: `${this.$t('projectDetail.cancelAssigned')}`, status: 'warning', id: '2' })
       })
     },
     handleCloseDialog () {
@@ -435,16 +443,16 @@ export default {
       console.log(result)
       this.$http.post('/project/tank/add', { id: this.projectId, tanksSn: result.toString() }).then(response => {
         if (response.data.code !== 0) {
-          VXETable.modal.message({ message: `分配失败@${response.data.message}`, status: 'error', size: 'medium' })
+          this.$XModal.message({ message: `${this.$t('projectDetail.assignFailed')}@${response.data.message}`, status: 'error', size: 'medium' })
         } else {
-          VXETable.modal.message({ message: '分配成功', status: 'success', size: 'medium' })
+          VXETable.modal.message({ message: `${this.$t('projectDetail.assignSuccess')}`, status: 'success', size: 'medium' })
           this.assignDeviceDialogVisible = false
           this.$refs.xGrid.commitProxy('reload')
           this.$refs.deviceGrid.commitProxy('reload')
           this.selectedDevices = []
         }
       }).catch(error => {
-        VXETable.modal.message({ message: `分配失败@${error}`, status: 'error', size: 'medium' })
+        VXETable.modal.message({ message: `${this.$t('projectDetail.assignFailed')}@${error}`, status: 'error', size: 'medium' })
       })
     },
     selectChosenDevices ({ row }) {
@@ -467,19 +475,27 @@ export default {
     },
     cancelAssign (row) {
       console.log(row)
-      this.$http.post('/project/tank/remove', { id: this.projectId, tanksSn: row.tankSn }).then(response => {
-        console.log(response)
-        if (response.data.code !== 0) {
-          VXETable.modal.message({ message: `操作失败${response.data.message}`, status: 'error', size: 'medium', id: '1' })
-        } else {
-          this.$refs.deviceGrid.remove(row)
-          VXETable.modal.message({ message: '取消分配成功', status: 'success', size: 'medium', id: '1' })
-        }
+      this.$confirm(`${this.$t('projectDetail.deleteAssign')}`, `${this.$t('projectDetail.warning')}`, {
+        confirmButtonText: `${this.$t('projectDetail.yes')}`,
+        cancelButtonText: `${this.$t('projectDetail.cancel')}`,
+        type: 'warning'
+      }).then(() => {
+        this.$http.post('/project/tank/remove', { id: this.projectId, tanksSn: row.tankSn }).then(response => {
+          console.log(response)
+          if (response.data.code !== 0) {
+            VXETable.modal.message({ message: `${this.$t('projectDetail.operationFailed')}${response.data.message}`, status: 'error', size: 'medium', id: '1' })
+          } else {
+            this.$refs.deviceGrid.remove(row)
+            VXETable.modal.message({ message: `${this.$t('projectDetail.cancelAssignedSuccess')}`, status: 'success', size: 'medium', id: '1' })
+          }
+        })
+      }).catch(() => {
+        VXETable.modal.message({ message: `${this.$t('projectDetail.cancelAssigned')}`, status: 'warning', id: '2' })
       })
     },
     async getProjectDetail () {
       const response = await this.$http.post('/project/detail', { id: this.projectId }).catch(error => {
-        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium' })
+        VXETable.modal.message({ message: `${this.$t('projectDetail.requireFailed')}@${error}`, status: 'error', size: 'medium' })
       })
       this.contentTanks = response.data.data
       console.log(this.contentTanks)

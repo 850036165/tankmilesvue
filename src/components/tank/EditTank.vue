@@ -2,29 +2,36 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
-        {{ $t('addTanks.dashboard') }}
+        {{ $t('editTanks.dashboard') }}
       </el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/tank' }">
-        {{ $t('addTanks.tankList') }}
+        {{ $t('editTanks.tankList') }}
       </el-breadcrumb-item>
-      <el-breadcrumb-item>{{ $t('addTanks.addTank') }}</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ $t('editTanks.editTank') }}</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="display: flex;align-items: center;justify-content: flex-end">
       <h1 style="margin-right: auto;margin-left: 10px">
-        {{ $t('addTanks.addTank') }}
+        {{ $t('editTanks.editTank') }}
       </h1>
+      <el-button
+        type="primary"
+        size="mini"
+        @click="editTank"
+      >
+        {{ $t('editTanks.edit') }}
+      </el-button>
+      <el-button
+        type="danger"
+        size="mini"
+        @click="deleteTank"
+      >
+        {{ $t('editTanks.delete') }}
+      </el-button>
       <el-button
         size="mini"
         @click="backToList"
       >
-        {{ $t('addTanks.cancel') }}
-      </el-button>
-      <el-button
-        type="primary"
-        size="mini"
-        @click="AddTanks"
-      >
-        {{ $t('addTanks.newTank') }}
+        {{ $t('editTanks.back') }}
       </el-button>
     </div>
     <el-card>
@@ -32,26 +39,26 @@
         v-model="activeName"
       >
         <el-tab-pane
-          :label="$t('addTanks.baseInfo')"
+          :label="$t('editTanks.baseInfo')"
           name="first"
         >
           <el-form
-            ref="addTankForm"
-            :model="addTankForm"
+            ref="editTankForm"
+            :model="editTankForm"
             :rules="ruleForm"
             size="small"
-            label-width="200px"
+            label-width="150px"
           >
             <div style="display: grid;grid-template-columns: 1fr 1fr">
               <div>
                 <el-form-item
                   label-width="100px"
-                  :label="$t('addTanks.tankNo')"
+                  :label="$t('editTanks.tankNo')"
                   prop="tankSn"
                 >
                   <el-input
-                    v-model="addTankForm.tankSn"
-                    :placeholder="$t('addTanks.inputTankNo')"
+                    v-model="editTankForm.tankSn"
+                    :placeholder="$t('editTanks.inputTankNo')"
                     clearable
                     :maxlength="13"
                     show-word-limit
@@ -60,27 +67,27 @@
                 </el-form-item>
                 <el-form-item
                   label-width="100px"
-                  :label="$t('addTanks.createDate')"
+                  :label="$t('editTanks.createDate')"
                   prop="buildAt"
                 >
                   <el-date-picker
-                    v-model="addTankForm.buildAt"
+                    v-model="editTankForm.buildAt"
                     format="yyyy/MM/dd"
                     value-format="yyyy-MM-dd"
                     :style="{width: '100%'}"
-                    :placeholder="$t('addTanks.inputCreateDate')"
+                    :placeholder="$t('editTanks.inputCreateDate')"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item
                   label-width="100px"
-                  :label="$t('addTanks.associatedDevice')"
+                  :label="$t('editTanks.associatedDevice')"
                   prop="device"
                 >
                   <el-select
                     :loading="loadingMedia"
-                    v-model="addTankForm.device"
-                    :placeholder="$t('addTanks.inputAssociatedDevice')"
+                    v-model="editTankForm.device"
+                    :placeholder="$t('editTanks.inputAssociatedDevice')"
                     remote
                     :remote-method="remoteMethod"
                     filterable
@@ -98,13 +105,13 @@
                 </el-form-item>
                 <el-form-item
                   label-width="100px"
-                  :label="$t('addTanks.medium')"
+                  :label="$t('editTanks.medium')"
                   prop="medium"
                 >
                   <el-select
                     :loading="loadingMedia"
-                    v-model="addTankForm.medium"
-                    :placeholder="$t('addTanks.selectMedium')"
+                    v-model="editTankForm.medium"
+                    :placeholder="$t('editTanks.selectMedium')"
                     filterable
                     clearable
                     default-first-option
@@ -120,12 +127,12 @@
                 </el-form-item>
                 <el-form-item
                   label-width="100px"
-                  :label="$t('addTanks.classificationSociety')"
+                  :label="$t('editTanks.classificationSociety')"
                   prop="classificationSociety"
                 >
                   <el-input
-                    v-model="addTankForm.classificationSociety"
-                    :placeholder="$t('addTanks.inputClassificationSociety')"
+                    v-model="editTankForm.classificationSociety"
+                    :placeholder="$t('editTanks.inputClassificationSociety')"
                     clearable
                     :maxlength="10"
                     show-word-limit
@@ -136,13 +143,13 @@
               <div>
                 <el-form-item
                   label-width="100px"
-                  :label="$t('addTanks.remark')"
+                  :label="$t('editTanks.remark')"
                   prop="remark"
                 >
                   <el-input
-                    v-model="addTankForm.remark"
+                    v-model="editTankForm.remark"
                     type="textarea"
-                    :placeholder="$t('addTanks.inputRemark')"
+                    :placeholder="$t('editTanks.inputRemark')"
                     :maxlength="200"
                     show-word-limit
                     :autosize="{minRows: 4, maxRows: 4}"
@@ -155,7 +162,7 @@
         </el-tab-pane>
 
         <el-tab-pane
-          :label="$t('addTanks.tankModel')"
+          :label="$t('editTanks.tankModel')"
           name="second"
         >
           <div
@@ -164,7 +171,7 @@
           >
             <div>
               <p class="title">
-                {{ $t('addTanks.tankModel') }}
+                {{ $t('editTanks.tankModel') }}
               </p>
               <div style="margin: 0 auto;padding:0 20px 0;">
                 <el-tag
@@ -172,7 +179,7 @@
                   class="addTagClass"
                   @click="$router.push('/tankmodel')"
                 >
-                  <i class="el-icon-circle-plus addTag" /><span class="addTagText">{{ $t('addTanks.createTankModel') }}</span>
+                  <i class="el-icon-circle-plus addTag" /><span class="addTagText">{{ $t('editTanks.createTankModel') }}</span>
                 </el-tag>
                 <el-tag
                   :id="item.name"
@@ -195,40 +202,40 @@
               <span class="tableTitle">{{ selectedTag |filter1 }}</span>
               <span
                 style="float:right;width: 100px;height: 18px;font-size: 14px;font-weight: 400;color: #58647a;line-height: 24px;"
-              >{{ $t('addTanks.tankVolume') }}:{{
+              >{{ $t('editTanks.tankVolume') }}:{{
                 selectedTagTable.capacity|filter2
               }}L</span>
               <table class="tankModelTable">
                 <tr>
                   <th colspan="3">
-                    {{ $t('addTanks.tankSize') }}mm
+                    {{ $t('editTanks.tankSize') }}mm
                   </th>
                   <th colspan="3">
-                    {{ $t('addTanks.tankWeightParameter') }}kg
+                    {{ $t('editTanks.tankWeightParameter') }}kg
                   </th>
-                  <th>{{ $t('addTanks.materialInformation') }}</th>
+                  <th>{{ $t('editTanks.materialInfo') }}</th>
                 </tr>
                 <tr>
                   <td class="tableBackground">
-                    {{ $t('addTanks.length') }}
+                    {{ $t('editTanks.length') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.width') }}
+                    {{ $t('editTanks.width') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.height') }}
+                    {{ $t('editTanks.height') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.maxGrossWeight') }}
+                    {{ $t('editTanks.maxGrossWeight') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.netWeight') }}
+                    {{ $t('editTanks.netWeight') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.loadWeight') }}
+                    {{ $t('editTanks.loadWeight') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.tankMaterial') }}
+                    {{ $t('editTanks.tankMaterial') }}
                   </td>
                 </tr>
                 <tr>
@@ -258,22 +265,22 @@
               <table class="tankModelTable">
                 <tr>
                   <th colspan="2">
-                    {{ $t('addTanks.cylinderSize') }}mm
+                    {{ $t('editTanks.cylinderSize') }}mm
                   </th>
                   <th colspan="4">
-                    {{ $t('addTanks.pressureParameter') }}Bar
+                    {{ $t('editTanks.pressureParameter') }}Bar
                   </th>
-                  <th>{{ $t('addTanks.insulation') }}</th>
+                  <th>{{ $t('editTanks.insulation') }}</th>
                 </tr>
                 <tr>
                   <td class="tableBackground">
-                    {{ $t('addTanks.internalDiameter') }}
+                    {{ $t('editTanks.internalDiameter') }}
                   </td>
                   <td
                     class="tableBackground"
                     style="width: 12%"
                   >
-                    {{ $t('addTanks.length') }}
+                    {{ $t('editTanks.length') }}
                   </td>
                   <td
                     style="width: 10%"
@@ -282,16 +289,16 @@
                     -
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.maxPressure') }}
+                    {{ $t('editTanks.maxPressure') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.testPressure') }}
+                    {{ $t('editTanks.testPressure') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.maxExternalPressure') }}
+                    {{ $t('editTanks.maxExternalPressure') }}
                   </td>
                   <td class="tableBackground">
-                    {{ $t('addTanks.insulationThickness') }}mm
+                    {{ $t('editTanks.insulationThickness') }}mm
                   </td>
                 </tr>
                 <tr>
@@ -301,7 +308,7 @@
                   <td class="tableContent">
                     {{ selectedTagTable.internalLength |filter2 }}
                   </td>
-                  <td>{{ $t('addTanks.tankBody') }}</td>
+                  <td>{{ $t('editTanks.tankBody') }}</td>
                   <td class="tableContent">
                     {{ selectedTagTable.tankMAWP |filter2 }}
                   </td>
@@ -317,9 +324,9 @@
                 </tr>
                 <tr>
                   <th colspan="2">
-                    {{ $t('addTanks.temperatureParameter') }}°C
+                    {{ $t('editTanks.temperatureParameter') }}°C
                   </th>
-                  <td>{{ $t('addTanks.heatingTube') }}</td>
+                  <td>{{ $t('editTanks.heatingTube') }}</td>
                   <td class="tableContent">
                     {{ selectedTagTable.heatingCoilsMAWP |filter2 }}
                   </td>
@@ -329,10 +336,10 @@
                   <td class="tableContent">
                     N/A
                   </td>
-                  <td>{{ $t('addTanks.insulationMaterial') }}</td>
+                  <td>{{ $t('editTanks.insulationMaterial') }}</td>
                 </tr>
                 <tr>
-                  <td>{{ $t('addTanks.cylinderDesignTemperature') }}</td>
+                  <td>{{ $t('editTanks.cylinderDesignTemperature') }}</td>
                   <td
                     class="tableContent"
                   >
@@ -348,13 +355,13 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-          :label="$t('addTanks.uploadAttachment')"
+          :label="$t('editTanks.uploadAttachment')"
           name="third"
         >
           <div style="display:flex;justify-content: flex-start">
             <el-card style="margin: 5px 20px;width: 400px;">
               <p class="uploadTile">
-                {{ $t('addTanks.uploadPicture') }}
+                {{ $t('editTanks.uploadPicture') }}
               </p>
               <el-upload
                 :headers="myHeaders"
@@ -376,25 +383,25 @@
               >
                 <i class="el-icon-upload" />
                 <div class="el-upload__text">
-                  {{ $t('addTanks.dragPictureUpload') }}<br>
+                  {{ $t('editTanks.dragPictureUpload') }}<br>
                   <el-button
                     type="primary"
                     size="small"
                   >
-                    {{ $t('addTanks.clickUpload') }}
+                    {{ $t('editTanks.clickUpload') }}
                   </el-button>
                 </div>
                 <div
                   slot="tip"
                   class="el-upload__tip"
                 >
-                  {{ $t('addTanks.imageOnly') }}
+                  {{ $t('editTanks.imageOnly') }}
                 </div>
               </el-upload>
             </el-card>
             <el-card style="margin: 5px 20px;width: 400px">
               <p class="uploadTile">
-                {{ $t('addTanks.uploadFile') }}
+                {{ $t('editTanks.uploadFile') }}
               </p>
               <el-upload
                 :headers="myHeaders"
@@ -412,19 +419,19 @@
               >
                 <i class="el-icon-upload" />
                 <div class="el-upload__text">
-                  {{ $t('addTanks.dragFileUpload') }}<br>
+                  {{ $t('editTanks.dragFileUpload') }}<br>
                   <el-button
                     type="primary"
                     size="small"
                   >
-                    {{ $t('addTanks.clickUpload') }}
+                    {{ $t('editTanks.clickUpload') }}
                   </el-button>
                 </div>
                 <div
                   slot="tip"
                   class="el-upload__tip"
                 >
-                  {{ $t('addTanks.fileOnly') }}
+                  {{ $t('editTanks.fileOnly') }}
                 </div>
               </el-upload>
             </el-card>
@@ -446,7 +453,7 @@
 import VXETable from 'vxe-table'
 
 export default {
-  name: 'AddTanks',
+  name: 'EditTank',
   filters: {
     longFilter: function (value) {
       if (value.length > 5) {
@@ -469,10 +476,10 @@ export default {
   beforeRouteLeave (to, from, next) {
     if (this.createTank === false) {
       setTimeout(() => {
-        this.$confirm(`${this.$t('addTanks.leaveWithoutSave')}`, `${this.$t('addTanks.confirmationInfo')}`, {
+        this.$confirm(`${this.$t('editTanks.leaveWithoutSave')}`, `${this.$t('editTanks.confirmationInfo')}`, {
           closeOnClickModal: false,
-          confirmButtonText: `${this.$t('addTanks.leave')}`,
-          cancelButtonText: `${this.$t('addTanks.stayHere')}`,
+          confirmButtonText: `${this.$t('editTanks.leave')}`,
+          cancelButtonText: `${this.$t('editTanks.stayHere')}`,
           type: 'warning'
         }).then(() => {
           const attachment1 = this.attachmentArray.join(';')
@@ -490,6 +497,7 @@ export default {
   },
   data () {
     return {
+      tankId: null,
       myHeaders: { authtoken: 1 },
       fileNumber: 10,
       pictureNumber: 5,
@@ -527,7 +535,8 @@ export default {
       options: [],
       mediaList: [],
       activeName: 'first',
-      addTankForm: {
+      editTankForm: {
+        id: null,
         tankSn: undefined,
         buildAt: null,
         device: undefined,
@@ -539,30 +548,18 @@ export default {
       ruleForm: {
         tankSn: [{
           required: true,
-          message: `${this.$t('addTanks.inputTankNo')}`,
+          message: `${this.$t('editTanks.inputTankNo')}`,
           trigger: 'blur'
         },
-        { min: 13, max: 13, message: `${this.$t('addTanks.maxLength')}`, trigger: 'blur' }],
+        { min: 13, max: 13, message: `${this.$t('editTanks.maxLength')}`, trigger: 'blur' }],
         buildAt: [{
           required: true,
-          message: `${this.$t('addTanks.inputCreateDate')}`,
+          message: `${this.$t('editTanks.inputCreateDate')}`,
           trigger: 'change'
         }],
-        device: [{
-          required: true,
-          message: `${this.$t('addTanks.inputAssociatedDevice')}`,
-          trigger: 'change'
-        }],
-        classificationSociety: [{
-          required: true,
-          message: `${this.$t('addTanks.inputClassificationSociety')}`,
-          trigger: 'blur'
-        }],
-        medium: [{
-          required: true,
-          message: `${this.$t('addTanks.selectMedium')}`,
-          trigger: 'change'
-        }]
+        device: [],
+        classificationSociety: [],
+        medium: []
       }
     }
   },
@@ -573,22 +570,56 @@ export default {
     window.removeEventListener('beforeunload', e => this.beforeunloadFn(e))
   },
   mounted () {
+    this.tankId = this.$route.query.id
     this.myHeaders.authtoken = sessionStorage.getItem('token')
+    this.getTankDetail(this.tankId)
     this.getMedia()
     this.getDevice()
     this.getTankModel()
   },
   methods: {
+    async getTankDetail (tankSn) {
+      const response = await this.$http.post('/tank/detail', { id: tankSn })
+      const tankDetail = response.data.data
+      this.editTankForm.buildAt = tankDetail.buildAt
+      this.editTankForm.classificationSociety = tankDetail.classificationSociety
+      this.editTankForm.medium = tankDetail.medium
+      this.editTankForm.remark = tankDetail.remark
+      this.editTankForm.tankSn = tankDetail.sn
+      this.editTankForm.device = tankDetail.device
+      this.selectedTag = tankDetail.tankModel
+      console.log(this.editTankForm, 'test')
+    },
+    deleteTank () {
+      this.$confirm(`${this.$t('editTanks.deleteTank')}`, `${this.$t('editTanks.warning')}`, {
+        confirmButtonText: `${this.$t('editTanks.yes')}`,
+        cancelButtonText: `${this.$t('editTanks.leave')}`,
+        type: 'warning'
+      }).then(() => {
+        this.$http.post('/tank/delete ', { id: this.tankId }).then(response => {
+          console.log(response)
+          if (response.data.code !== 0) {
+            VXETable.modal.message({ message: `${this.$t('editTanks.deleteFailed')}@${response.data.message}`, status: 'error', id: '2' })
+          } else {
+            VXETable.modal.message({ message: `${this.$t('editTanks.deleteSuccess')}`, status: 'success', id: '2' })
+            this.createTank = true
+            this.backToList()
+          }
+        })
+      }).catch(() => {
+        VXETable.modal.message({ message: `${this.$t('editTanks.cancel')}`, status: 'warning', id: '2' })
+      })
+    },
     uploadPicture (file) {
       const isPicture = ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml'].includes(file.type)
       const isLt5M = file.size / 1024 / 1024 < 5
       console.log('picture', file)
       console.log('isPicture', isPicture)
       if (!isPicture) {
-        VXETable.modal.message({ message: `${this.$t('addTanks.uploadImageFormat')}`, status: 'error', id: '1' })
+        VXETable.modal.message({ message: `${this.$t('editTanks.uploadImageFormat')}`, status: 'error', id: '1' })
       }
       if (!isLt5M) {
-        VXETable.modal.message({ message: `${this.$t('addTanks.maxImage5mb')}`, status: 'error', id: '1' })
+        VXETable.modal.message({ message: `${this.$t('editTanks.maxImage5mb')}`, status: 'error', id: '1' })
       }
       return isPicture && isLt5M
     },
@@ -598,10 +629,10 @@ export default {
       console.log('file', file)
       console.log('isFile', isFile)
       if (!isFile) {
-        VXETable.modal.message({ message: `${this.$t('addTanks.uploadFileFormat')}`, status: 'error', id: '1' })
+        VXETable.modal.message({ message: `${this.$t('editTanks.uploadFileFormat')}`, status: 'error', id: '1' })
       }
       if (!isLt5M) {
-        VXETable.modal.message({ message: `${this.$t('addTanks.maxFiles5mb')}`, status: 'error', id: '1' })
+        VXETable.modal.message({ message: `${this.$t('editTanks.maxFiles5mb')}`, status: 'error', id: '1' })
       }
       return isFile && isLt5M
     },
@@ -615,7 +646,7 @@ export default {
       this.$refs.upload.submit()
     },
     handleError (response) {
-      VXETable.modal.message({ message: `${this.$t('addTanks.uploadFailed')}`, status: 'error', id: '1' })
+      VXETable.modal.message({ message: `${this.$t('editTanks.uploadFailed')}`, status: 'error', id: '1' })
       console.log('错误', response)
     },
     handlePictureCardPreview (file) {
@@ -627,7 +658,7 @@ export default {
       console.log('文件列表', fileList)
       this.attachmentArray.push(response.data)
       console.log('附件列表数组', this.attachmentArray)
-      VXETable.modal.message({ message: `${this.$t('addTanks.uploadSuccess')}`, status: 'success', id: '1' })
+      VXETable.modal.message({ message: `${this.$t('editTanks.uploadSuccess')}`, status: 'success', id: '1' })
     },
     deletedFile (attachmentURL) {
       if (!attachmentURL) console.log('附件为空', attachmentURL)
@@ -635,12 +666,12 @@ export default {
         this.$http.post('/tank/attachment/delete', { attachment: attachmentURL }).then(response => {
           console.log('删除的响应值为', response)
           if (response.data.code === 0) {
-            VXETable.modal.message({ message: `${this.$t('addTanks.attachmentDeleted')}`, status: 'success', id: '1' })
+            VXETable.modal.message({ message: `${this.$t('editTanks.attachmentDeleted')}`, status: 'success', id: '1' })
           } else {
-            VXETable.modal.message({ message: `${this.$t('addTanks.deleteFailed')}`, status: 'error', id: '2' })
+            VXETable.modal.message({ message: `${this.$t('editTanks.deleteFailed')}`, status: 'error', id: '2' })
           }
         }).catch(error => {
-          VXETable.modal.message({ message: `${this.$t('addTanks.operationFailed')}@${error}`, status: 'error', id: '2' })
+          VXETable.modal.message({ message: `${this.$t('editTanks.operationFailed')}@${error}`, status: 'error', id: '2' })
         })
       }
     },
@@ -658,17 +689,17 @@ export default {
       console.log('附件列表数组', this.attachmentArray)
     },
     handleExceedFile (files, fileList) {
-      this.$message.info(`${this.$t('addTanks.currentSelectLimited')}${this.fileNumber} ${this.$t('addTanks.fileNum')}，${this.$t('addTanks.currentSelected')}${files.length} ${this.$t('addTanks.fileNum')}，${this.$t('addTanks.totalSelect')}${files.length + fileList.length}${this.$t('addTanks.fileNum')}`)
+      this.$message.info(`${this.$t('editTanks.currentSelectLimited')}${this.fileNumber} ${this.$t('editTanks.fileNum')}，${this.$t('editTanks.currentSelected')}${files.length} ${this.$t('editTanks.fileNum')}，${this.$t('editTanks.totalSelect')}${files.length + fileList.length}${this.$t('editTanks.fileNum')}`)
     },
     handleExceedPicture (files, fileList) {
-      this.$message.info(`${this.$t('addTanks.currentSelectLimited')}${this.fileNumber} ${this.$t('addTanks.fileNum')}，${this.$t('addTanks.currentSelected')}${files.length} ${this.$t('addTanks.fileNum')}，${this.$t('addTanks.totalSelect')}${files.length + fileList.length}${this.$t('addTanks.fileNum')}`)
+      this.$message.info(`${this.$t('editTanks.currentSelectLimited')}${this.fileNumber} ${this.$t('editTanks.fileNum')}，${this.$t('editTanks.currentSelected')}${files.length} ${this.$t('editTanks.fileNum')}，${this.$t('editTanks.totalSelect')}${files.length + fileList.length}${this.$t('editTanks.fileNum')}`)
     },
     beforeRemovePicture (file, fileList) {
       const isPicture = ['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml'].includes(file.raw.type)
       const isLt5M = file.size / 1024 / 1024 < 5
       console.log('beforeRemove', isPicture, file)
       if (isPicture && isLt5M) {
-        return this.$confirm(`${this.$t('addTanks.removeFile')}${file.name}?`)
+        return this.$confirm(`${this.$t('editTanks.removeFile')} ${file.name}?`)
       }
     },
     beforeRemoveFile (file, fileList) {
@@ -676,7 +707,7 @@ export default {
       const isLt5M = file.size / 1024 / 1024 < 5
       console.log('beforeRemove', isFile, file)
       if (isFile && isLt5M) {
-        return this.$confirm(`${this.$t('addTanks.removeFile')}${file.name}?`)
+        return this.$confirm(`${this.$t('editTanks.removeFile')} ${file.name}?`)
       }
     },
     backToList () {
@@ -689,7 +720,7 @@ export default {
     },
     async getTankModel () {
       const response = await this.$http.post('/tank/model/list').catch(error => {
-        VXETable.modal.message({ message: `${this.$t('addTanks.tankRequireFailed')}@${error}`, status: 'warning', id: '1' })
+        VXETable.modal.message({ message: `${this.$t('editTanks.tankRequireFailed')}@${error}`, status: 'warning', id: '1' })
       })
       this.tankModelList = response.data.data.data
       console.log('罐箱模型列表', this.tankModelList)
@@ -716,7 +747,7 @@ export default {
         pageSize: 999999
       }
       const response = await this.$http.post('/device/list', request).catch(error => {
-        VXETable.modal.message({ message: `${this.$t('addTanks.deviceListRequireFailed')}@${error}`, status: 'warning', id: '1' })
+        VXETable.modal.message({ message: `${this.$t('editTanks.deviceListRequireFailed')}@${error}`, status: 'warning', id: '1' })
       })
       console.log(response)
       this.deviceList = response.data.data.data.map(item => {
@@ -726,36 +757,37 @@ export default {
     },
     async getMedia () {
       const response = await this.$http.post('/tank/media/list').catch(error => {
-        VXETable.modal.message({ message: `${this.$t('addTanks.mediumListRequireFailed')}@${error}`, status: 'warning', id: '1' })
+        VXETable.modal.message({ message: `${this.$t('editTanks.mediumListRequireFailed')}@${error}`, status: 'warning', id: '1' })
       })
       this.mediaList = response.data.data.data
       console.log(this.mediaList)
     },
-    AddTanks () {
-      this.$refs.addTankForm.validate(valid => {
+    editTank () {
+      this.$refs.editTankForm.validate(valid => {
         if (valid) {
-          this.addTankForm.tankModel = this.selectedTag
-          this.addTankForm.attachment = this.attachmentArray.join(';')
-          console.log(this.addTankForm)
-          if (this.addTankForm.tankModel === undefined) {
-            VXETable.modal.message({ message: `${this.$t('addTanks.noTankModelSelected')}`, status: 'warning' })
+          this.editTankForm.id = this.tankId
+          this.editTankForm.tankModel = this.selectedTag
+          this.editTankForm.attachment = this.attachmentArray.join(';')
+          console.log(this.editTankForm)
+          if (this.editTankForm.tankModel === undefined) {
+            VXETable.modal.message({ message: `${this.$t('editTanks.noTankModelSelected')}`, status: 'warning' })
             this.activeName = 'second'
           } else {
-            this.$http.post('/tank/create', this.addTankForm).then(response => {
+            this.$http.post('/tank/edit', this.editTankForm).then(response => {
               console.log(response.data.code)
               if (response.data.code === 0) {
-                VXETable.modal.message({ message: `${this.$t('addTanks.createSuccess')}`, status: 'success', id: '1' })
+                VXETable.modal.message({ message: `${this.$t('editTanks.editSuccess')}`, status: 'success', id: '1' })
                 this.createTank = true
                 this.backToList()
               } else {
-                VXETable.modal.message({ message: `${this.$t('addTanks.createFailed')}@${response.data.message}`, status: 'warning', id: '1' })
+                VXETable.modal.message({ message: `${this.$t('editTanks.editFailed')}@${response.data.message}`, status: 'warning', id: '1' })
               }
             }).catch(error => {
-              VXETable.modal.message({ message: `${this.$t('addTanks.createFailed')}@${error}`, status: 'warning' })
+              VXETable.modal.message({ message: `${this.$t('editTanks.editFailed')}@${error}`, status: 'warning' })
             })
           }
         } else {
-          VXETable.modal.message({ message: `${this.$t('addTanks.checkRequired')}`, status: 'warning', id: '1' })
+          VXETable.modal.message({ message: `${this.$t('editTanks.checkRequired')}`, status: 'warning', id: '1' })
           this.activeName = 'first'
         }
       })

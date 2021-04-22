@@ -7,6 +7,9 @@
 <script>
 export default {
   name: 'App'
+  /* mounted () {
+    document.body.removeChild(document.getElementById('loader'))
+  } */
 }
 </script>
 

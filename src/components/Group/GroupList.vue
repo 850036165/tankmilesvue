@@ -15,7 +15,7 @@
           <h1 style="margin: 0">
             公司管理
           </h1>
-          <el-button
+        <!--  <el-button
             style="height: 30px;"
             size="mini"
             type="primary"
@@ -23,7 +23,7 @@
             round
           >
             keep
-          </el-button>
+          </el-button>-->
         </div>
       </div>
       <div>
@@ -157,8 +157,8 @@
 </template>
 
 <script>
-import VXETable from 'vxe-table'
 import XEUtils from 'xe-utils'
+import VXETable from 'vxe-table'
 
 export default {
   name: 'GroupList',
@@ -177,8 +177,6 @@ export default {
           trigger: 'blur'
         }]
       },
-      enabled: 'enabled',
-      disabled: 'disabled',
       toBeDeletedGroup: null,
       accountVisible: false,
       formData: {

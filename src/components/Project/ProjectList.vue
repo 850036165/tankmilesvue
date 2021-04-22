@@ -2,19 +2,19 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
-        首页
+        {{ $t('projectList.dashboard') }}
       </el-breadcrumb-item>
-      <el-breadcrumb-item>资产管理</el-breadcrumb-item>
-      <el-breadcrumb-item>项目管理</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ $t('projectList.tankManagement') }}</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ $t('projectList.projectManagement') }}</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-card style="margin-bottom: 0;padding-bottom: 0;padding-top: 0">
       <div slot="header">
         <div style="display: grid;grid-template-columns: 95fr 5fr;grid-template-rows: 30px">
           <h1 style="margin: 0">
-            项目管理
+            {{ $t('projectList.projectManagement') }}
           </h1>
-          <el-button
+          <!--<el-button
             style="height: 30px;"
             size="mini"
             type="primary"
@@ -22,7 +22,7 @@
             round
           >
             Button
-          </el-button>
+          </el-button>-->
         </div>
       </div>
       <div>
@@ -56,26 +56,28 @@
               <i
                 class="el-icon-delete deleteIcon"
                 @click="openDeleteDialog(row)"
-                title="删除"
+                :title="$t('projectList.deleteProject')"
               />
             </div>
           </template>
           <!--将表单放在工具栏中-->
           <template v-slot:toolbar_buttons>
-            <div style="display: grid;grid-template-columns: 100px 120px;grid-template-rows: 40px">
-              <div style="display: flex;justify-content:center;align-items:center;">
+            <div>
+              <div style="display: flex;justify-content:start;align-items:center;">
                 <i
                   class="el-icon-circle-plus addButton"
-                  @click="addProject"
+                  @click="projectList"
                 />
-                <span class="addText">新增项目</span>
+                <p class="addText">
+                  {{ $t('projectList.addProject') }}
+                </p>
               </div>
             </div>
           </template>
           <!--自定义空数据模板-->
           <template v-slot:empty>
             <span style="color: #2F74EB;">
-              <span>请联系CIMC后台咨询</span>
+              <span>{{ $t('projectList.contactCIMC') }}</span>
             </span>
           </template>
         </vxe-grid>
@@ -89,7 +91,7 @@
       width="20%"
     >
       <div slot="title">
-        <span class="deleteTitle">即将删除</span>
+        <span class="deleteTitle">{{ $t('projectList.aboutToDelete') }}</span>
         <p
           class="deleteTitle"
           style="color: #2f74eb;display: inline-block"
@@ -97,7 +99,7 @@
           {{ toBeDeletedProject.name }}
         </p>
       </div>
-      <span class="deleteContent">项目删除后，此项目下的管理账户将自动注销，是否确认删除该项目?</span>
+      <span class="deleteContent">{{ $t('projectList.accountCancellation') }}</span>
       <div slot="footer">
         <div style="display: grid;grid-template-columns: 1fr 1fr;grid-template-rows: 50px;border-radius:0 0 3px 3px ">
           <!--        <div style="display: flex;justify-content: center;align-items: flex-end;">-->
@@ -106,7 +108,7 @@
             class="deleteConfirm"
           >
             <p class="deleteText">
-              取消
+              {{ $t('projectList.cancel') }}
             </p>
           </div>
           <div
@@ -114,7 +116,7 @@
             class="deleteCancel"
           >
             <p class="deleteText">
-              确认
+              {{ $t('projectList.confirm') }}
             </p>
           </div>
         </div>
@@ -131,17 +133,17 @@
       width="30%"
     >
       <div slot="title">
-        <span class="deleteTitle">分配用户</span>
+        <span class="deleteTitle">{{ $t('projectList.assignUser') }}</span>
       </div>
       <span
         class="deleteContent"
-      >选择的用户将被分配至此项目</span>
+      >{{ $t('projectList.assignUserToProject') }}</span>
       <el-select
         style="width: 100%;margin: 10px 0"
         v-model="assignUserName"
         collapse-tags
         multiple
-        placeholder="请选择"
+        :placeholder="$t('projectList.select')"
       >
         <el-option
           v-for="item in userList"
@@ -158,7 +160,7 @@
             class="deleteConfirm"
           >
             <p class="deleteText">
-              取消
+              {{ $t('projectList.cancel') }}
             </p>
           </div>
           <div
@@ -166,7 +168,7 @@
             class="deleteCancel"
           >
             <p class="deleteText">
-              确认
+              {{ $t('projectList.confirm') }}
             </p>
           </div>
         </div>
@@ -176,8 +178,8 @@
 </template>
 
 <script>
-import VXETable from 'vxe-table'
 import XEUtils from 'xe-utils'
+import VXETable from 'vxe-table'
 
 export default {
   name: 'ProjectList',
@@ -226,7 +228,7 @@ export default {
           ajax: {
             query: async () => {
               const response = await this.$http.post('project/list').catch((error) => {
-                VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
+                VXETable.modal.message({ message: `${this.$t('projectList.requestFailed')}@${error}`, status: 'error', size: 'medium', id: 'unique1' })
               })
               console.log('源数据', response)
               const projectData = response.data.data
@@ -237,13 +239,13 @@ export default {
         },
         columns: [
           { field: 'id', title: 'Id', width: 50, align: 'center' },
-          { field: 'name', title: '项目名称', minWidth: 100, align: 'center' },
+          { field: 'name', title: `${this.$t('projectList.projectName')}`, minWidth: 100, align: 'center' },
           // { field: 'tankNum', title: '箱量', minWidth: 60 },
           // { field: 'accountNum', title: '账户数量', minWidth: 60 },
-          { field: 'createDate', title: '创建时间', minWidth: 60, formatter: this.formatDate2 },
-          { field: 'editAt', title: '最近修改时间', minWidth: 60, formatter: this.formatDate2 },
-          { field: 'projectGroup', title: '所属公司', minWidth: 60, align: 'center', slots: { default: 'projectGroup' } },
-          { title: '操作', align: 'center', maxWidth: 80, slots: { default: 'projectOperation' } }
+          { field: 'createDate', title: `${this.$t('projectList.createDate')}`, minWidth: 60, formatter: this.formatDate2 },
+          { field: 'editAt', title: `${this.$t('projectList.lastCreateDate')}`, minWidth: 60, formatter: this.formatDate2 },
+          { field: 'projectGroup', title: `${this.$t('projectList.company')}`, minWidth: 60, align: 'center', slots: { default: 'projectGroup' } },
+          { title: `${this.$t('projectList.operation')}`, align: 'center', maxWidth: 80, slots: { default: 'projectOperation' } }
         ]
       }
     }
@@ -253,14 +255,14 @@ export default {
       const assignProjectId = this.assignProject.id
       this.$http.post('project/user/add', { id: assignProjectId, names: this.assignUserName.toString() }).then(response => {
         if (response.data.code !== 0) {
-          VXETable.modal.message({ message: `分配失败@${response.data.message}`, status: 'error', size: 'medium' })
+          this.$XModal.message({ message: `${this.$t('projectList.assignFailed')}@${response.data.message}`, status: 'error', size: 'medium' })
         } else {
-          VXETable.modal.message({ message: '分配成功', status: 'success', size: 'medium' })
+          this.$XModal.message({ message: `${this.$t('projectList.assignSuccess')}`, status: 'success', size: 'medium' })
           this.createDialogVisible = false
           this.assignUserName = []
         }
       }).catch(error => {
-        VXETable.modal.message({ message: `分配失败@${error}`, status: 'error', size: 'medium' })
+        this.$XModal.message({ message: `${this.$t('projectList.assignFailed')}@${error}`, status: 'error', size: 'medium' })
       })
     },
     async getUserList () {
@@ -272,7 +274,7 @@ export default {
         pageSize: 999
       }).catch(error => {
         VXETable.modal.message({
-          message: `请求失败@${error}`,
+          message: `${this.$t('projectList.requestFailed')}@${error}`,
           status: 'error',
           size: 'medium',
           id: 'unique1'
@@ -311,10 +313,10 @@ export default {
           console.log(response)
           if (response.data.code === 0) {
             this.$refs.xGrid.remove(this.toBeDeletedProject)
-            VXETable.modal.message({ message: '删除成功', status: 'success', size: 'medium', id: 'unique1' })
+            VXETable.modal.message({ message: `${this.$t('projectList.deleteSuccess')}`, status: 'success', size: 'medium', id: 'unique1' })
           } else {
             VXETable.modal.message({
-              message: `删除失败@${response.data.message}`,
+              message: `${this.$t('projectList.deleteFailed')}@${response.data.message}`,
               status: 'error',
               size: 'medium',
               id: 'unique1'
@@ -322,7 +324,7 @@ export default {
           }
         }
       ).catch(error => {
-        VXETable.modal.message({ message: `请求失败@${error}`, status: 'error', size: 'medium', id: 'unique1' })
+        VXETable.modal.message({ message: `${this.$t('projectList.requestFailed')}@${error}`, status: 'error', size: 'medium', id: 'unique1' })
       })
       this.deleteDialogVisible = false
     },
@@ -332,7 +334,7 @@ export default {
         color: '#ffffff'
       }
     },
-    addProject () {
+    projectList () {
       this.$router.push('/project/addproject')
     }
   },

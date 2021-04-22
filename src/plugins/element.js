@@ -56,7 +56,8 @@ import {
   Tag,
   TimePicker,
   Tooltip,
-  Upload
+  Upload,
+  Slider
 } from 'element-ui'
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition'
 import './index.css'
@@ -118,6 +119,7 @@ Vue.use(Upload)
 Vue.use(Card)
 Vue.use(DatePicker)
 Vue.use(Popconfirm)
+Vue.use(Slider)
 Vue.prototype.$message = Message
 Vue.prototype.$notify = Notification
 Vue.prototype.$confirm = MessageBox.confirm

@@ -4,22 +4,22 @@
       separator-class="el-icon-arrow-right"
       style="margin-bottom:0;"
     >
-      <el-breadcrumb-item :to="{ path: '/welcome' }">
-        <i class="el-icon-s-home" />首页
+      <el-breadcrumb-item :to="{ path: '/dashboard' }">
+        <i class="el-icon-s-home" />{{ $t('dashboard.mainPage') }}
       </el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/dashboard' }">
-        看板
+        {{ $t('dashboard.dashboard') }}
       </el-breadcrumb-item>
     </el-breadcrumb>
     <h1 class="dashboardText">
-      首页看板
+      {{ $t('dashboard.dashboard') }}
     </h1>
     <div class="dashboardCard">
       <el-card class="card1">
         <div class="card1Content">
           <div class="Text">
             <p class="cardText">
-              总箱量
+              {{ $t('dashboard.totalTanks') }}
             </p>
           </div>
           <div class="Number">
@@ -27,7 +27,7 @@
               class="cardNumber"
               :start-val="startVal"
               :end-val="totalTanks"
-              :duration="4000"
+              :duration="1000"
               separator=","
             />
           </div>
@@ -43,7 +43,7 @@
         <div class="card2Content">
           <div class="Text">
             <p class="cardText">
-              待机量
+              {{ $t('dashboard.availableTanks') }}
             </p>
           </div>
           <div class="Number">
@@ -51,7 +51,7 @@
               class="cardNumber"
               :start-val="startVal"
               :end-val="stayTanks"
-              :duration="4000"
+              :duration="1000"
               separator=","
             />
           </div>
@@ -67,7 +67,7 @@
         <div class="card3Content">
           <div class="Text">
             <p class="cardText">
-              项目数量
+              {{ $t('dashboard.projectNumber') }}
             </p>
           </div>
           <div class="Number">
@@ -75,7 +75,7 @@
               class="cardNumber"
               :start-val="startVal"
               :end-val="projectNumbers"
-              :duration="3000"
+              :duration="1000"
               separator=","
             />
           </div>
@@ -91,7 +91,7 @@
         <div class="card4Content">
           <div class="Text">
             <p class="cardText">
-              报警数量
+              {{ $t('dashboard.alertNumber') }}
             </p>
           </div>
           <div class="Number">
@@ -99,7 +99,7 @@
               class="cardNumber"
               :start-val="startVal"
               :end-val="alertNumbers"
-              :duration="2000"
+              :duration="1000"
               separator=","
             />
           </div>
@@ -116,9 +116,10 @@
       class="mapCard"
       v-loading="loading1"
     >
-      <p
+      <div
         id="map"
         ref="mapDiv"
+        :style="{height:mapHeight}"
         class="mapDiv"
       />
     </el-card>
@@ -126,12 +127,13 @@
 </template>
 
 <script>
-import {EventBus} from '@/assets/JS/eventBus'
+import { EventBus } from '@/assets/JS/eventBus'
 import mapboxgl from 'mapbox-gl'
 import countTo from 'vue-count-to'
+import VXETable from 'vxe-table'
 
 export default {
-  name: 'Dashbord',
+  name: 'DashBord',
   components: {
     countTo
   },
@@ -139,20 +141,16 @@ export default {
     return {
       loading1: false,
       startVal: 0,
-      totalTanks: 9999,
-      stayTanks: 488,
-      projectNumbers: 202,
-      alertNumbers: 50,
-      deviceLocation: [-77.034084, 38.909671],
-      items: 0,
-      stores: []
+      totalTanks: 0,
+      stayTanks: 0,
+      projectNumbers: 0,
+      alertNumbers: 0,
+      deviceLocation: [120.79332682291667, 32.03734537760417]
     }
-  },
-  created () {
-    this.initData()
   },
   mounted () {
     const that = this
+    this.getProfile()
     this.initMap()
     EventBus.$on('demo', function (isCollapse) {
       if (isCollapse === true) {
@@ -166,211 +164,23 @@ export default {
     })
   },
   methods: {
-    initData () {
-      this.stores = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.034084142948, 38.909671288923]
-            },
-            properties: {
-              phoneFormatted: '(202) 234-7336',
-              phone: '2022347336',
-              address: '1471 P St NW',
-              city: 'Washington DC',
-              country: 'United States',
-              crossStreet: 'at 15th St NW',
-              postalCode: '20005',
-              state: 'D.C.'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.049766, 38.900772]
-            },
-            properties: {
-              phoneFormatted: '(202) 507-8357',
-              phone: '2025078357',
-              address: '2221 I St NW',
-              city: 'Washington DC',
-              country: 'United States',
-              crossStreet: 'at 22nd St NW',
-              postalCode: '20037',
-              state: 'D.C.'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.043929, 38.910525]
-            },
-            properties: {
-              phoneFormatted: '(202) 387-9338',
-              phone: '2023879338',
-              address: '1512 Connecticut Ave NW',
-              city: 'Washington DC',
-              country: 'United States',
-              crossStreet: 'at Dupont Circle',
-              postalCode: '20036',
-              state: 'D.C.'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.0672, 38.90516896]
-            },
-            properties: {
-              phoneFormatted: '(202) 337-9338',
-              phone: '2023379338',
-              address: '3333 M St NW',
-              city: 'Washington DC',
-              country: 'United States',
-              crossStreet: 'at 34th St NW',
-              postalCode: '20007',
-              state: 'D.C.'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.002583742142, 38.887041080933]
-            },
-            properties: {
-              phoneFormatted: '(202) 547-9338',
-              phone: '2025479338',
-              address: '221 Pennsylvania Ave SE',
-              city: 'Washington DC',
-              country: 'United States',
-              crossStreet: 'btwn 2nd & 3rd Sts. SE',
-              postalCode: '20003',
-              state: 'D.C.'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-76.933492720127, 38.99225245786]
-            },
-            properties: {
-              address: '8204 Baltimore Ave',
-              city: 'College Park',
-              country: 'United States',
-              postalCode: '20740',
-              state: 'MD'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.097083330154, 38.980979]
-            },
-            properties: {
-              phoneFormatted: '(301) 654-7336',
-              phone: '3016547336',
-              address: '4831 Bethesda Ave',
-              cc: 'US',
-              city: 'Bethesda',
-              country: 'United States',
-              postalCode: '20814',
-              state: 'MD'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.359425054188, 38.958058116661]
-            },
-            properties: {
-              phoneFormatted: '(571) 203-0082',
-              phone: '5712030082',
-              address: '11935 Democracy Dr',
-              city: 'Reston',
-              country: 'United States',
-              crossStreet: 'btw Explorer & Library',
-              postalCode: '20190',
-              state: 'VA'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.10853099823, 38.880100922392]
-            },
-            properties: {
-              phoneFormatted: '(703) 522-2016',
-              phone: '7035222016',
-              address: '4075 Wilson Blvd',
-              city: 'Arlington',
-              country: 'United States',
-              crossStreet: 'at N Randolph St.',
-              postalCode: '22203',
-              state: 'VA'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-75.28784, 40.008008]
-            },
-            properties: {
-              phoneFormatted: '(610) 642-9400',
-              phone: '6106429400',
-              address: '68 Coulter Ave',
-              city: 'Ardmore',
-              country: 'United States',
-              postalCode: '19003',
-              state: 'PA'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-75.20121216774, 39.954030175164]
-            },
-            properties: {
-              phoneFormatted: '(215) 386-1365',
-              phone: '2153861365',
-              address: '3925 Walnut St',
-              city: 'Philadelphia',
-              country: 'United States',
-              postalCode: '19104',
-              state: 'PA'
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [-77.043959498405, 38.903883387232]
-            },
-            properties: {
-              phoneFormatted: '(202) 331-3355',
-              phone: '2023313355',
-              address: '1901 L St. NW',
-              city: 'Washington DC',
-              country: 'United States',
-              crossStreet: 'at 19th St',
-              postalCode: '20036',
-              state: 'D.C.'
-            }
-          }
-        ]
+    translatePosition (x, y) {
+      const lon = Math.floor(x / 100) + (x % 100) / 60
+      const lat = Math.floor(y / 100) + (y % 100) / 60
+      console.log([lon, lat])
+      return [lon, lat]
+    },
+    async  getProfile () {
+      const data = await this.$http.post('/user/profile').catch(error => {
+        VXETable.modal.message({ message: `${this.$t('dashboard.requestFailed')}@${error}`, status: 'error', size: 'medium', id: 'unique' })
       }
+      )
+      this.profile = data.data.data
+      this.totalTanks = this.profile.tank_all_count
+      this.stayTanks = this.profile.tank_standby_count
+      this.projectNumbers = this.profile.project_count
+      this.alertNumbers = this.profile.alarm_count
+      console.log(this.profile)
     },
     changeMap () {
       this.Mapbox.resize()
@@ -378,48 +188,77 @@ export default {
     initMap () {
       const that = this
       this.loading1 = true
-      mapboxgl.accessToken = 'pk.eyJ1IjoiemhlbmdnYW5nemh1IiwiYSI6ImNrZWFxMGRoOTAxYXcycnFqbjFkaXBmcHgifQ.C7gXGFGRWOuA3w5hwfuU1g' // 这里请换成自己的token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiemhlbmdnYW5nemh1IiwiYSI6ImNrZWFxMGRoOTAxYXcycnFqbjFkaXBmcHgifQ.C7gXGFGRWOuA3w5hwfuU1g' //
       this.Mapbox = new mapboxgl.Map({  // eslint-disable-line
         container: 'map', // container id 绑定的组件的id
         style: 'mapbox://styles/mapbox/streets-v11', // 地图样式
         center: this.deviceLocation,
-        minZoom: 3,
+        minZoom: 0,
         customAttribution: 'Tankmiles',
-        zoom: 8, // starting zoom 地图初始的拉伸比例
-        pitch: 60, // 地图的角度，不写默认是0，取值是0-60度，一般在3D中使用
-        bearing: 20, // 地图的初始方向，值是北的逆时针度数，默认是0，即是正北
+        zoom: 10, // starting zoom 地图初始的拉伸比例
+        pitch: 0, // 地图的角度，不写默认是0，取值是0-60度，一般在3D中使用
+        bearing: 0, // 地图的初始方向，值是北的逆时针度数，默认是0，即是正北
         antialias: false // 抗锯齿，通过false关闭提升性能
       })
-      const marker = new mapboxgl.Marker() // eslint-disable-line
-        .setLngLat(this.deviceLocation)
-        .addTo(this.Mapbox)
       this.Mapbox.addControl(new mapboxgl.FullscreenControl())
       this.Mapbox.addControl(new mapboxgl.NavigationControl())
-      this.Mapbox.on('load', function () {
-        // 向地图中添加数据图层
-        that.Mapbox.addLayer({
-          id: 'locations',
-          type: 'symbol',
-          // 添加包含有坐标和附加信息的GeoJSON数据源
-          source: {
-            type: 'geojson',
-            data: that.stores
-          },
-          layout: {
-            'icon-image': 'rocket-15',
-            'icon-allow-overlap': true
-          }
+      this.$http.post('/tank/all/latest/track ').then(response => {
+        console.log(response)
+        response.data.data.forEach(item => {
+          const GPSPosition = this.translatePosition(item.lon, item.lat)
+          console.log('GPSPosition', GPSPosition)
+          // this.Mapbox.setCenter(GPSPosition)
+          const el = document.createElement('div')
+          el.innerHTML = `<div style="background-color: white"><P>${item.tankSn}</p></div>`
+          const marker1 = new mapboxgl.Marker({element:el,anchor:'top'}) //eslint-disable-line
+            .setLngLat(GPSPosition)
+            .addTo(that.Mapbox)
+          const marker = new mapboxgl.Marker({ color: '#2A68D3' })
+            .setLngLat(GPSPosition)
+            .addTo(that.Mapbox)
+          // create the popup
+          if (item.tankPressure < 0)item.tankPressure = 0
+          if (item.tankLevel < 0)item.tankLevel = 0
+          const popup = new mapboxgl.Popup({ offset: 25 })
+            .setHTML(`<p style="margin: 0">${this.$t('dashboard.tankNo')}：${item.tankSn}</p>
+<p style="margin: 0">${this.$t('dashboard.time')}：${item.sampledAt}</p>
+<p style="margin: 0">${this.$t('dashboard.temperature')}：${item.tankTemperature}℃</p>
+<p style="margin: 0">${this.$t('dashboard.pressure')}：${item.tankPressure}Bar</p>
+<p style="margin: 0">${this.$t('dashboard.tankLevel')}：${item.tankLevel}mm</p>`)
+          marker.setPopup(popup)
         })
+        if (response.data.data[0]) {
+          const firstPoint = response.data.data[0]
+          const flyPoint = this.translatePosition(firstPoint.lon, firstPoint.lat)
+          this.Mapbox.flyTo({
+            center: flyPoint,
+            zoom: 3,
+            curve: 1.42
+          })
+        }
+      }).catch(error => {
+        VXETable.modal.message({ message: `${this.$t('dashboard.requestFailed')}@${error}`, status: 'error', size: 'medium', id: 'unique' })
+        that.loading1 = false
+      }
+      )
+      this.Mapbox.on('load', function () {
         that.Mapbox.resize()
         that.loading1 = false
       })
+    }
+  },
+  computed: {
+    mapHeight: function () {
+      return (window.innerHeight - 330) + 'px'
     }
   }
 }
 </script>
 
 <style scoped lang="less">
-
+/deep/:focus{
+  outline: none;
+}
 /deep/ .el-loading-spinner .el-loading-text {
   color: white;
 }
@@ -442,7 +281,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows:18vh;
-  grid-column-gap: 30px;
+  grid-column-gap: 32px;
 }
 
 .card1 {

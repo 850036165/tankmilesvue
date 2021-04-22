@@ -20,9 +20,9 @@
           <el-dropdown-item command="en">
             English
           </el-dropdown-item>
-          <el-dropdown-item disabled>
-            こんにちは
-          </el-dropdown-item>
+          <!--          <el-dropdown-item disabled>-->
+          <!--            こんにちは-->
+          <!--          </el-dropdown-item>-->
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -43,18 +43,19 @@
             @click="goHomePage"
           />
           <p class="welcomeText hidden-md-and-down">
-            欢迎回来！请登录您的罐程账户。
+            {{ $t('login.welcome') }}
           </p>
           <p class="welcomeText1 hidden-md-and-down">
-            如需帮助请联系
+            {{ $t('login.help') }}
             <a
               href="mailto:tankmiles@cimc.com?subject=Question%20For%20Tankmiles"
               class="welcomeText1 hidden-md-and-down"
-            >tankmiles@cimc.com</a> 或
+            >tankmiles@cimc.com</a>
+            {{ $t('login.or') }}
             <a
-              href="mailto:info@savvy-telematics.com"
+              href="mailto:support@tankmiles.com"
               class="welcomeText1 hidden-md-and-down"
-            >info@savvy-telematics.com</a>
+            >support@tankmiles.com</a>
           </p>
           <!--<label>用户名</label>-->
           <el-form-item
@@ -104,13 +105,13 @@
               >
                 {{ loadingText1.loadingText }}
               </el-button>
-              <span class="forgetPassword hidden-sm-and-down">忘记密码</span>
+              <span class="forgetPassword hidden-sm-and-down">{{ $t('login.forget') }}</span>
             </div>
           </el-form-item>
         </el-form>
       </div>
       <p class="bottom_text hidden-md-and-down">
-        Copyright © 2019-2020 Nantong CIMC Tank Equipment Co., Ltd.
+        Copyright © 2020-2021 CIMC Safeway Technologies Co., Ltd.
       </p>
     </div>
     <!--    轮播背景-->
@@ -152,8 +153,8 @@ export default {
       welcomeLoading: true,
       loadingStatus: false,
       loginForm: {
-        name: 'zoya',
-        password: '111111'
+        name: '',
+        password: ''
       },
       imageBox: [
         { path: 'https://oss.tankmiles.com/1.jpg' },
@@ -176,10 +177,10 @@ export default {
       // 验证规则
       return {
         name: [
-          { required: true, message: `${this.$t('login.alert1')}`, trigger: 'blur' }
+          { required: true, message: `${this.$t('login.needUserName')}`, trigger: 'blur' }
         ],
         password: [
-          { required: true, message: `${this.$t('login.alert2')}`, trigger: 'blur' }
+          { required: true, message: `${this.$t('login.needPassword')}`, trigger: 'blur' }
         ]
       }
     }
@@ -206,16 +207,16 @@ export default {
           // console.log(response.data.code)
           if (response.data.code === 102) {
             this.$notify({
-              title: `${this.$t('login.alert3')}`,
-              message: `${this.$t('login.alert6')}`,
+              title: `${this.$t('login.loginFailed')}`,
+              message: `${this.$t('login.wrongPassword')}`,
               type: 'warning'
             })
             this.loadingText1.loadingText = `${this.$t('login.login')}`
             this.loadingStatus = false
           } else if (response.data.code === 103) {
             this.$notify({
-              title: '登录失败',
-              message: '您的账户已被禁用',
+              title: `${this.$t('login.loginFailed')}`,
+              message: `${this.$t('login.userBanned')}`,
               type: 'warning'
             })
             this.loadingText1.loadingText = `${this.$t('login.login')}`
@@ -224,41 +225,42 @@ export default {
             let text = ''
             const time = new Date().getHours()
             if ((time >= 0) && (time < 7)) {
-              text = '夜猫子，要注意身体哦！ '
+              text = `${this.$t('login.noticeFrom0To7')}`
             }
             if ((time >= 7) && (time < 12)) {
-              text = '上午好'
+              text = `${this.$t('login.noticeFrom7To12')}`
             }
             if ((time >= 12) && (time < 14)) {
-              text = '午休时间。您要保持睡眠哦！'
+              text = `${this.$t('login.noticeFrom12To14')}`
             }
             if ((time >= 14) && (time < 18)) {
-              text = '下午好！'
+              text = `${this.$t('login.noticeFrom14To18')}`
             }
             if ((time >= 18) && (time <= 22)) {
-              text = '还在加班吗？'
+              text = `${this.$t('login.noticeFrom18To22')}`
             }
             if ((time >= 22) && (time < 24)) {
-              text = '您应该休息了！'
+              text = `${this.$t('login.noticeFrom22To24')}`
             }
             console.log(text)
             this.$notify({
-              title: `${this.$t('login.alert4')}`,
+              title: `${this.$t('login.loginSuccess')}`,
               message: `${response.data.data.nickName}!${text}`,
               type: 'success'
             })
             this.loadingText1.loadingText = `${this.$t('login.login')}`
             this.loadingStatus = false
             window.sessionStorage.setItem('token', response.data.data.sessionId)
+            window.sessionStorage.setItem('userName', this.loginForm.name)
             window.localStorage.setItem('avatarUrl', response.data.data.avatarUrl)
             window.localStorage.setItem('nickName', response.data.data.nickName)
             window.localStorage.setItem('groupId', response.data.data.groupId)
-            window.localStorage.setItem('admin', response.data.data.admin)
+            window.sessionStorage.setItem('admin', response.data.data.admin)
             await this.$router.push('/dashboard')
           } else {
             this.$notify({
-              title: '未知错误',
-              message: '未知错误',
+              title: `${this.$t('login.unknownError')}`,
+              message: `${this.$t('login.unknownError')}`,
               type: 'error'
             })
             this.loadingText1.loadingText = `${this.$t('login.login')}`
@@ -267,7 +269,7 @@ export default {
           // end
         }).catch((error) => {
           this.$notify({
-            title: `${this.$t('login.alert3')}`,
+            title: `${this.$t('login.loginFailed')}`,
             message: `${error}!`,
             type: 'error'
           })
@@ -294,7 +296,7 @@ export default {
     const isSafari = userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1 // 判断是否Safari浏览器
     const isChrome = userAgent.indexOf('Chrome') > -1 && userAgent.indexOf('Safari') > -1 // 判断Chrome浏览器
     if (isOpera === true || isIE === true || isEdge === true || isFF === true || isSafari === true) {
-      alert('检测到非Chrome浏览器,可能会导致兼容性问题!\r\n是否继续?')
+      alert(`${this.$t('login.isChrome')}`)
     } else {
       console.log(isChrome)
     }
